@@ -5,7 +5,7 @@ CSC207 Final Project
 ## Team Members
 - Ibraheem Hussain
 - Andrej Prekajski
-- Mark Haoyang Wang
+- Mark Wang
 - Parsa Hammati
 - Yaohui Huang
 - Wilson Liang
@@ -23,32 +23,32 @@ Sports Analytics platform focused on NBA player and team insights. Users can loo
 - **AI Predictions:** Get AI-based predictions for player/team stats.
 
 ## Use Cases
-### 1. Searching for Players
+### 1. Searching for Players (Ibraheem Hussain)
 - Enter player name (with autofill), select seasons and stats.
 - Results shown in table and graphs (JavaFX).
 - Error handling for invalid names, seasons, or missing data.
 
-### 2. Filtering Players
+### 2. Filtering Players (Andrej Prekajski)
 - Filter by team, position, season; badges show active filters.
 - Paginate large results; clear filters option.
 - Error handling for unavailable filters or data issues.
 
-### 3. Compare Players/Teams
+### 3. Compare Players/Teams (Yaohui Huang)
 - Select 2-5 players/teams and time range.
 - Side-by-side table comparison; scroll bar for large data.
 - Handles missing/comparable data gracefully.
 
-### 4 & 8. Favourite/Unfavourite
+### 4 & 8. Favourite/Unfavourite (Parsa Hemmati)
 - Toggle favourite/bookmark on player/team profile or list.
 - Filter by favourites; unfavourite by toggling again.
 - Message if no favourites exist.
 
-### 5. Sorting Player Stats
+### 5. Sorting Player Stats (Wilson Liang)
 - Sort by stat columns (PPG, APG, RPG, FG%, etc.).
 - Arrow indicator for sort order; toggle ascending/descending.
 - Handles missing/non-numeric stats.
 
-### 6 & 7. AI Insights & Predictions
+### 6 & 7. AI Insights & Predictions (Mark Wang)
 - LLM backend generates summaries and predictions for selected player/team.
 - Handles insufficient data, computation errors, and LLM failures.
 
@@ -72,4 +72,5 @@ Sports Analytics platform focused on NBA player and team insights. Users can loo
 - Paginate/filter large datasets.
 - Control user input for AI queries.
 - Test API and libraries for reliability.
+
 
