@@ -2,6 +2,14 @@
 # NBA Wizz
 CSC207 Final Project
 
+## Team Members
+- Ibraheem Hussain
+- Andrej Prekajski
+- Mark Haoyang Wang
+- Parsa Hammati
+- Yaohui Huang
+- Wilson Liang
+
 ## Domain
 Sports Analytics platform focused on NBA player and team insights. Users can look up, compare, and analyze player and team data, with features like player lookup, filters, team comparisons, performance graphs, and AI-generated insights/stat predictions.
 
@@ -64,3 +72,4 @@ Sports Analytics platform focused on NBA player and team insights. Users can loo
 - Paginate/filter large datasets.
 - Control user input for AI queries.
 - Test API and libraries for reliability.
+
