@@ -16,9 +16,6 @@ User Story 3: As a user, I want to compare two or more players or teams so that 
 User Story 4: As a user, I want to favourite or bookmark players/teams so that I can revisit their stats quickly.
 
 
-User Story 8: As a user, I want to unfavourite players/team in case I no longer want the player/team on my favourites. 
-
-
 User Story 5: As a user, I want to sort player stats (e.g., by points per game) so that I can identify top performers easily.
 
 
@@ -28,6 +25,7 @@ User Story 6: As a casual user, I want the AI system to generate insights or sum
 User Story 7: As a sports enthusiast, I want to see AI-based predictions for player stats or team performance so that I can get an idea of future outcomes based on past data. 
 
 
+User Story 8: As a user, I want to unfavourite players/team in case I no longer want the player/team on my favourites. 
 
 
 Use Cases:
