@@ -15,6 +15,7 @@ import view.ViewManager;
 import javax.swing.*;
 import java.awt.*;
 
+/*Run this file to run NBA Wizz*/
 public class Main {
     public static void main(String[] args) {
         JFrame application = new JFrame("NBA Wizz");
