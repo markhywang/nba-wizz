@@ -12,7 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class MainMenuView extends JPanel implements ActionListener, PropertyChangeListener {
-    public final String viewName = "player_search";
+    public final String viewName = "main_menu";
     private final MainMenuViewModel mainMenuViewModel;
     private final MainMenuController mainMenuController;
     private final JButton searchForPlayer;
