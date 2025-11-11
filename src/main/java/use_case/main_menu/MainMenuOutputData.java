@@ -1,12 +1,12 @@
-package use_case.player_search;
+package use_case.main_menu;
 
 import entity.Player;
 
-public class PlayerSearchOutputData {
+public class MainMenuOutputData {
     private final Player player;
     private final boolean useCaseFailed;
 
-    public PlayerSearchOutputData(Player player, boolean useCaseFailed) {
+    public MainMenuOutputData(Player player, boolean useCaseFailed) {
         this.player = player;
         this.useCaseFailed = useCaseFailed;
     }

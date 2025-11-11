@@ -3,18 +3,19 @@ package app;
 import data_access.CsvPlayerDataAccessObject;
 import data_access.PlayerDataAccessInterface;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.player_search.PlayerSearchController;
-import interface_adapter.player_search.PlayerSearchPresenter;
-import interface_adapter.player_search.PlayerSearchViewModel;
-import use_case.player_search.PlayerSearchInputBoundary;
-import use_case.player_search.PlayerSearchInteractor;
-import use_case.player_search.PlayerSearchOutputBoundary;
-import view.PlayerSearchView;
+import interface_adapter.main_menu.MainMenuController;
+import interface_adapter.main_menu.MainMenuPresenter;
+import interface_adapter.main_menu.MainMenuViewModel;
+import use_case.main_menu.MainMenuInputBoundary;
+import use_case.main_menu.MainMenuInteractor;
+import use_case.main_menu.MainMenuOutputBoundary;
+import view.MainMenuView;
 import view.ViewManager;
 
 import javax.swing.*;
 import java.awt.*;
 
+/*Run this file to run NBA Wizz*/
 public class Main {
     public static void main(String[] args) {
         JFrame application = new JFrame("NBA Wizz");
@@ -27,20 +28,20 @@ public class Main {
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout);
 
-        PlayerSearchViewModel playerSearchViewModel = new PlayerSearchViewModel();
+        MainMenuViewModel mainMenuViewModel = new MainMenuViewModel();
 
         // The data access object.
         // TODO: Update the path to the CSV file.
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
 
-        PlayerSearchOutputBoundary playerSearchOutputBoundary = new PlayerSearchPresenter(playerSearchViewModel, viewManagerModel);
-        PlayerSearchInputBoundary playerSearchInteractor = new PlayerSearchInteractor(playerDataAccessObject, playerSearchOutputBoundary);
-        PlayerSearchController playerSearchController = new PlayerSearchController(playerSearchInteractor);
+        MainMenuOutputBoundary mainMenuOutputBoundary = new MainMenuPresenter(mainMenuViewModel, viewManagerModel);
+        MainMenuInputBoundary playerSearchInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuOutputBoundary);
+        MainMenuController mainMenuController = new MainMenuController(playerSearchInteractor);
 
-        PlayerSearchView playerSearchView = new PlayerSearchView(playerSearchViewModel, playerSearchController);
-        views.add(playerSearchView, playerSearchView.viewName);
+        MainMenuView mainMenuView = new MainMenuView(mainMenuViewModel, mainMenuController);
+        views.add(mainMenuView, mainMenuView.viewName);
 
-        viewManagerModel.setActiveView(playerSearchView.viewName);
+        viewManagerModel.setActiveView(mainMenuView.viewName);
         viewManagerModel.firePropertyChanged();
 
         application.pack();

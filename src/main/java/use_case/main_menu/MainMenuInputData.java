@@ -1,9 +1,9 @@
-package use_case.player_search;
+package use_case.main_menu;
 
-public class PlayerSearchInputData {
+public class MainMenuInputData {
     private final String playerName;
 
-    public PlayerSearchInputData(String playerName) {
+    public MainMenuInputData(String playerName) {
         this.playerName = playerName;
     }
 

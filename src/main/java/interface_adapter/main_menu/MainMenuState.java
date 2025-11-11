@@ -1,13 +1,13 @@
-package interface_adapter.player_search;
+package interface_adapter.main_menu;
 
-public class PlayerSearchState {
+public class MainMenuState {
     private String error = null;
 
-    public PlayerSearchState(PlayerSearchState copy) {
+    public MainMenuState(MainMenuState copy) {
         error = copy.error;
     }
 
-    public PlayerSearchState() {}
+    public MainMenuState() {}
 
     public String getError() {
         return error;
