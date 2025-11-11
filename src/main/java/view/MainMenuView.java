@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.player_search.PlayerSearchController;
-import interface_adapter.player_search.PlayerSearchViewModel;
-import interface_adapter.player_search.PlayerSearchState;
+import interface_adapter.main_menu.MainMenuController;
+import interface_adapter.main_menu.MainMenuViewModel;
+import interface_adapter.main_menu.MainMenuState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,43 +11,43 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-public class PlayerSearchView extends JPanel implements ActionListener, PropertyChangeListener {
+public class MainMenuView extends JPanel implements ActionListener, PropertyChangeListener {
     public final String viewName = "player_search";
-    private final PlayerSearchViewModel playerSearchViewModel;
-    private final PlayerSearchController playerSearchController;
+    private final MainMenuViewModel mainMenuViewModel;
+    private final MainMenuController mainMenuController;
     private final JButton searchForPlayer;
     private final JButton filterAndSort;
     private final JButton compare;
     private final JButton aiInsights;
 
-    public PlayerSearchView(PlayerSearchViewModel playerSearchViewModel, PlayerSearchController controller) {
-        this.playerSearchController = controller;
-        this.playerSearchViewModel = playerSearchViewModel;
-        playerSearchViewModel.addPropertyChangeListener(this);
+    public MainMenuView(MainMenuViewModel mainMenuViewModel, MainMenuController controller) {
+        this.mainMenuController = controller;
+        this.mainMenuViewModel = mainMenuViewModel;
+        mainMenuViewModel.addPropertyChangeListener(this);
 
-        JLabel title = new JLabel(PlayerSearchViewModel.TITLE_LABEL);
+        JLabel title = new JLabel(MainMenuViewModel.TITLE_LABEL);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
         // Ensure all buttons are the same size
         Dimension buttonSize = new Dimension(220, 40); // width, height
-        searchForPlayer = new JButton(PlayerSearchViewModel.SEARCH_FOR_PLAYER_BUTTON_LABEL);
+        searchForPlayer = new JButton(MainMenuViewModel.SEARCH_FOR_PLAYER_BUTTON_LABEL);
         searchForPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
         searchForPlayer.setMaximumSize(buttonSize);
         searchForPlayer.setPreferredSize(buttonSize);
 
-        filterAndSort = new JButton(PlayerSearchViewModel.FILTER_SORT_BUTTON_LABEL);
+        filterAndSort = new JButton(MainMenuViewModel.FILTER_SORT_BUTTON_LABEL);
         filterAndSort.setAlignmentX(Component.CENTER_ALIGNMENT);
         filterAndSort.setMaximumSize(buttonSize);
         filterAndSort.setPreferredSize(buttonSize);
 
-        compare = new JButton(PlayerSearchViewModel.COMPARE_BUTTON_LABEL);
+        compare = new JButton(MainMenuViewModel.COMPARE_BUTTON_LABEL);
         compare.setAlignmentX(Component.CENTER_ALIGNMENT);
         compare.setMaximumSize(buttonSize);
         compare.setPreferredSize(buttonSize);
 
-        aiInsights = new JButton(PlayerSearchViewModel.AI_INSIGHTS_BUTTON_LABEL);
+        aiInsights = new JButton(MainMenuViewModel.AI_INSIGHTS_BUTTON_LABEL);
         aiInsights.setAlignmentX(Component.CENTER_ALIGNMENT);
         aiInsights.setMaximumSize(buttonSize);
         aiInsights.setPreferredSize(buttonSize);
@@ -84,7 +84,7 @@ public class PlayerSearchView extends JPanel implements ActionListener, Property
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        PlayerSearchState state = (PlayerSearchState) evt.getNewValue();
+        MainMenuState state = (MainMenuState) evt.getNewValue();
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(this, state.getError());
         }
