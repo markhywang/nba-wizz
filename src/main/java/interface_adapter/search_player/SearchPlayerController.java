@@ -3,6 +3,8 @@ package interface_adapter.search_player;
 import use_case.search_player.SearchPlayerInputBoundary;
 import use_case.search_player.SearchPlayerInputData;
 
+import java.util.List;
+
 public class SearchPlayerController {
     private final SearchPlayerInputBoundary interactor;
 
@@ -10,7 +12,11 @@ public class SearchPlayerController {
         this.interactor = interactor;
     }
 
-    public void onSearch(String searchText) {
-        interactor.execute(new SearchPlayerInputData(searchText));
+    public void executeSearch(String playerName, String startSeason, String endSeason, List<String> statSelections) {
+        SearchPlayerInputData inputData = new SearchPlayerInputData(
+                playerName, startSeason, endSeason, statSelections
+        );
+
+        interactor.execute(inputData);
     }
 }

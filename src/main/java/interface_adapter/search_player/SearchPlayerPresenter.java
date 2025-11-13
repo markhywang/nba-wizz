@@ -1,6 +1,5 @@
 package interface_adapter.search_player;
 
-import entity.Player;
 import use_case.search_player.SearchPlayerOutputBoundary;
 import use_case.search_player.SearchPlayerOutputData;
 
@@ -14,26 +13,25 @@ public class SearchPlayerPresenter implements SearchPlayerOutputBoundary {
     @Override
     public void present(SearchPlayerOutputData outputData) {
         SearchPlayerState state = viewModel.getState();
-        Player player = outputData.getPlayer();
 
-        state.setPlayerName(player.getName());
-        state.setPlayerTeam(player.getTeam().getName());
-        state.setPlayerPosition(player.getPosition());
-        state.setMessage("");
+        state.setErrorMessage(null);
 
-        viewModel.firePropertyChanged();
+        state.setResultsTableData(outputData.getTableRows());
+
+        state.setGraphData(outputData.getGraphData());
+
+        viewModel.setState(state);
 
     }
 
     @Override
     public void presentPlayerNotFound(String message) {
-        SearchPlayerState state = viewModel.getState();
+        SearchPlayerState state = new SearchPlayerState();
 
-        state.setPlayerName("");
-        state.setPlayerTeam("");
-        state.setPlayerPosition("");
-        state.setMessage(message);
+        state.setErrorMessage(message);
+        state.setResultsTableData(null);
+        state.setGraphData(null);
 
-        viewModel.firePropertyChanged();
+        viewModel.setState(state);
     }
 }

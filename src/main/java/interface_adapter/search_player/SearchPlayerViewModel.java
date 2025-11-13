@@ -20,10 +20,6 @@ public class SearchPlayerViewModel {
         support.addPropertyChangeListener(listener);
     }
 
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        support.removePropertyChangeListener(listener);
-    }
-
     public void firePropertyChanged() {
         support.firePropertyChange("state", null, this.state);
     }
