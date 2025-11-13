@@ -1,5 +1,6 @@
 package use_case.main_menu;
 
 public interface MainMenuOutputBoundary {
-    void present(MainMenuOutputData mainMenuOutputData);
+    void prepareSuccessView(MainMenuOutputData outputData);
+    void prepareFailView(String error);
 }

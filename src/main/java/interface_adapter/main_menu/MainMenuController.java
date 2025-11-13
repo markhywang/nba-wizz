@@ -10,8 +10,12 @@ public class MainMenuController {
         this.mainMenuInteractor = mainMenuInteractor;
     }
 
-    public void execute(String playerName) {
-        MainMenuInputData mainMenuInputData = new MainMenuInputData(playerName);
+    public void execute(String button) {
+        MainMenuInputData mainMenuInputData = new MainMenuInputData(button);
         mainMenuInteractor.execute(mainMenuInputData);
+    }
+
+    public void switchToGenerateInsights() {
+        mainMenuInteractor.switchToGenerateInsights();
     }
 }
