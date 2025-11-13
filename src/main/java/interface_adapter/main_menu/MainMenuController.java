@@ -14,8 +14,20 @@ public class MainMenuController {
         this.viewManagerModel = viewManagerModel;
     }
 
+<<<<<<< HEAD
     public void onSearchPlayerPressed() {
         viewManagerModel.setActiveView("search_player");
         viewManagerModel.firePropertyChanged();
     }
 }
+=======
+    public void execute(String button) {
+        MainMenuInputData mainMenuInputData = new MainMenuInputData(button);
+        mainMenuInteractor.execute(mainMenuInputData);
+    }
+
+    public void switchToGenerateInsights() {
+        mainMenuInteractor.switchToGenerateInsights();
+    }
+}
+>>>>>>> ea40270 (Added initial AI insights backend)

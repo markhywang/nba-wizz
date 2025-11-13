@@ -1,0 +1,49 @@
+package interface_adapter.generate_insights;
+
+public class GenerateInsightsState {
+    private String entityName = "";
+    private String entityType = "Player";
+    private String insight = "";
+    private String error = null;
+
+    public GenerateInsightsState(GenerateInsightsState copy) {
+        this.entityName = copy.entityName;
+        this.entityType = copy.entityType;
+        this.insight = copy.insight;
+        this.error = copy.error;
+    }
+
+    public GenerateInsightsState() {}
+
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
+
+    public String getInsight() {
+        return insight;
+    }
+
+    public void setInsight(String insight) {
+        this.insight = insight;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+}
