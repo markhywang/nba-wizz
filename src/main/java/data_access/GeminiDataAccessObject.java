@@ -96,7 +96,8 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
         // Similar configuration as before, but with timeouts and logging.
         String apiUrl = System.getenv("GEMINI_API_URL");
         if (apiUrl == null || apiUrl.isEmpty()) {
-            apiUrl = "http://localhost:11434/api/generate";
+            // Default to Google's Generative Language REST endpoint for text-bison-001.
+            apiUrl = "https://generativelanguage.googleapis.com/v1/models/text-bison-001:generate";
         }
 
         String apiKey = System.getenv("GEMINI_API_KEY");
@@ -109,8 +110,11 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
 
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             com.fasterxml.jackson.databind.node.ObjectNode body = mapper.createObjectNode();
-            body.put("prompt", prompt);
-            body.put("max_output_tokens", 512);
+            com.fasterxml.jackson.databind.node.ObjectNode promptNode = mapper.createObjectNode();
+            promptNode.put("text", prompt);
+            body.set("prompt", promptNode);
+            // Google uses camelCase for this field name
+            body.put("maxOutputTokens", 512);
 
             String jsonBody = mapper.writeValueAsString(body);
 
