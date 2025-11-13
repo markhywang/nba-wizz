@@ -14,8 +14,8 @@ import view.ViewManager;
 import interface_adapter.generate_insights.GenerateInsightsViewModel;
 import interface_adapter.generate_insights.GenerateInsightsController;
 import interface_adapter.generate_insights.GenerateInsightsPresenter;
-import data_access.OllamaDataAccessObject;
-import data_access.GenerateInsightsDataAccessInterface;
+import data_access.GeminiDataAccessObject;
+import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 import use_case.generate_insights.GenerateInsightsInputBoundary;
 import use_case.generate_insights.GenerateInsightsInteractor;
 import use_case.generate_insights.GenerateInsightsOutputBoundary;
@@ -44,7 +44,7 @@ public class Main {
         // The data access object.
         // TODO: Update the path to the CSV file.
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
-        GenerateInsightsDataAccessInterface ollamaDataAccessObject = new OllamaDataAccessObject();
+        GenerateInsightsDataAccessInterface geminiDataAccessObject = new GeminiDataAccessObject();
 
         MainMenuOutputBoundary mainMenuOutputBoundary = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
         MainMenuInputBoundary playerSearchInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuOutputBoundary);
@@ -54,7 +54,7 @@ public class Main {
         views.add(mainMenuView, mainMenuView.viewName);
 
         GenerateInsightsOutputBoundary generateInsightsOutputBoundary = new GenerateInsightsPresenter(generateInsightsViewModel, viewManagerModel);
-        GenerateInsightsInputBoundary generateInsightsInteractor = new GenerateInsightsInteractor(ollamaDataAccessObject, generateInsightsOutputBoundary);
+        GenerateInsightsInputBoundary generateInsightsInteractor = new GenerateInsightsInteractor(geminiDataAccessObject, generateInsightsOutputBoundary);
         GenerateInsightsController generateInsightsController = new GenerateInsightsController(generateInsightsInteractor, viewManagerModel, mainMenuViewModel);
 
         GenerateInsightsView generateInsightsView = new GenerateInsightsView(generateInsightsViewModel, generateInsightsController);
