@@ -18,7 +18,15 @@ public class GenerateInsightsController {
 
     public void execute(String entityName, String entityType) {
         GenerateInsightsInputData inputData = new GenerateInsightsInputData(entityName, entityType);
-        generateInsightsInteractor.execute(inputData);
+        // Run the potentially-blocking interactor off the Swing EDT so the UI stays responsive.
+        javax.swing.SwingWorker<Void, Void> worker = new javax.swing.SwingWorker<>() {
+            @Override
+            protected Void doInBackground() {
+                generateInsightsInteractor.execute(inputData);
+                return null;
+            }
+        };
+        worker.execute();
     }
 
     public void goBack() {

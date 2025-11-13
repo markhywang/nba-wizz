@@ -15,13 +15,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class OllamaDataAccessObject implements GenerateInsightsDataAccessInterface {
+public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterface {
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(GeminiDataAccessObject.class.getName());
     private final String csvFile = "PlayerStatsDataset.csv";
     private final Map<String, Player> playerMap = new HashMap<>();
     private final Map<String, Team> teamMap = new HashMap<>();
     private int nextPlayerId = 1;
     private int nextTeamId = 1;
-    public OllamaDataAccessObject() {
+
+    public GeminiDataAccessObject() {
         load();
     }
 
@@ -71,11 +73,11 @@ public class OllamaDataAccessObject implements GenerateInsightsDataAccessInterfa
                     team.getPlayers().add(player);
 
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Skipping malformed line: " + line);
+                    LOGGER.warning("Skipping malformed line: " + line);
                 }
             }
         } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
+            LOGGER.log(java.util.logging.Level.SEVERE, "Failed loading CSV: " + csvFile, e);
         }
     }
 
@@ -91,15 +93,9 @@ public class OllamaDataAccessObject implements GenerateInsightsDataAccessInterfa
 
     @Override
     public String getAiInsight(String prompt) {
-        // New: send request to a configurable Generative/Gemini-style REST API.
-        // Configuration (environment variables):
-        // - GEMINI_API_URL : full URL to POST generation requests to (required)
-        // - GEMINI_API_KEY : optional API key; if present and the URL has no ?key=, it will be appended as ?key=...
-        // - GEMINI_AUTH_BEARER : optional OAuth bearer token; if present it will be used as "Authorization: Bearer ..."
-        // If you use Google Cloud, prefer Application Default Credentials (ADC) and the official client libraries.
+        // Similar configuration as before, but with timeouts and logging.
         String apiUrl = System.getenv("GEMINI_API_URL");
         if (apiUrl == null || apiUrl.isEmpty()) {
-            // fall back to the local Ollama endpoint used previously (for local dev)
             apiUrl = "http://localhost:11434/api/generate";
         }
 
@@ -107,10 +103,10 @@ public class OllamaDataAccessObject implements GenerateInsightsDataAccessInterfa
         String bearer = System.getenv("GEMINI_AUTH_BEARER");
 
         try {
-            java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder().build();
+            java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
+                    .connectTimeout(java.time.Duration.ofSeconds(10))
+                    .build();
 
-            // Build a permissive JSON body that many generative endpoints accept.
-            // For Google Generative Language API you may need a different shape (e.g. {"prompt":{"text":"..."}}).
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             com.fasterxml.jackson.databind.node.ObjectNode body = mapper.createObjectNode();
             body.put("prompt", prompt);
@@ -118,7 +114,6 @@ public class OllamaDataAccessObject implements GenerateInsightsDataAccessInterfa
 
             String jsonBody = mapper.writeValueAsString(body);
 
-            // If an API key is set and the URL has no query, append as ?key=KEY
             String requestUrl = apiUrl;
             if (apiKey != null && !apiKey.isEmpty() && !requestUrl.contains("?")) {
                 requestUrl = requestUrl + "?key=" + java.net.URLEncoder.encode(apiKey, java.nio.charset.StandardCharsets.UTF_8);
@@ -127,6 +122,7 @@ public class OllamaDataAccessObject implements GenerateInsightsDataAccessInterfa
             java.net.http.HttpRequest.Builder reqBuilder = java.net.http.HttpRequest.newBuilder()
                     .uri(java.net.URI.create(requestUrl))
                     .header("Content-Type", "application/json")
+                    .timeout(java.time.Duration.ofSeconds(60))
                     .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonBody));
 
             if (bearer != null && !bearer.isEmpty()) {
@@ -137,35 +133,27 @@ public class OllamaDataAccessObject implements GenerateInsightsDataAccessInterfa
 
             java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                return "Error: LLM endpoint returned status " + response.statusCode() + ": " + response.body();
+                LOGGER.warning("LLM endpoint returned status " + response.statusCode() + ": " + response.body());
+                return "Error: LLM endpoint returned status " + response.statusCode();
             }
 
             com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(response.body());
 
-            // Try several common response shapes to extract the generated text.
             String respText = null;
-
-            // 1) Google Generative Language style: { "candidates": [ { "content": "..." } ] }
             if (root.has("candidates") && root.get("candidates").isArray() && root.get("candidates").size() > 0) {
                 respText = root.get("candidates").get(0).path("content").asText(null);
             }
-
-            // 2) Some APIs return an "output" or "response" string
             if ((respText == null || respText.isEmpty()) && root.has("output")) {
                 respText = root.path("output").asText(null);
             }
             if ((respText == null || respText.isEmpty()) && root.has("response")) {
                 respText = root.path("response").asText(null);
             }
-
-            // 3) Some simple APIs return { "text": "..." }
             if ((respText == null || respText.isEmpty()) && root.has("text")) {
                 respText = root.path("text").asText(null);
             }
 
-            // 4) Fallback: try to stringify the first top-level string value we find
             if (respText == null || respText.isEmpty()) {
-                // walk fields and pick the first textual node
                 java.util.Iterator<java.util.Map.Entry<String, com.fasterxml.jackson.databind.JsonNode>> it = root.fields();
                 while (it.hasNext() && (respText == null || respText.isEmpty())) {
                     com.fasterxml.jackson.databind.JsonNode node = it.next().getValue();
@@ -174,13 +162,12 @@ public class OllamaDataAccessObject implements GenerateInsightsDataAccessInterfa
             }
 
             if (respText == null || respText.isEmpty()) {
-                // Last resort: return raw body so developer can inspect format
                 return response.body();
             }
 
             return respText;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(java.util.logging.Level.SEVERE, "Error generating AI insight", e);
             return "Error generating AI insight: " + e.getMessage();
         }
     }
