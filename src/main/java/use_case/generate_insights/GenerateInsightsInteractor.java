@@ -1,6 +1,6 @@
 package use_case.generate_insights;
 
-import data_access.GenerateInsightsDataAccessInterface;
+import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 import entity.Player;
 import entity.AIInsight;
 import entity.Team;
