@@ -19,15 +19,25 @@ public class SearchPlayerInteractor implements SearchPlayerInputBoundary {
     @Override
     public void execute(SearchPlayerInputData inputData) {
 
+        int start = Integer.parseInt(inputData.getStartSeason());
+        int end = Integer.parseInt(inputData.getEndSeason());
+
         Player player = playerDataAccessObject.getPlayerByName(inputData.getPlayerName());
 
-        if (player == null) {
-            presenter.presentPlayerNotFound("Player not found.");
+        if (start < 1980 || end > 2024 ) {
+            presenter.presentPlayerNotFound("Season range must be between 1980 and 2024");
             return;
         }
 
-        int start = Integer.parseInt(inputData.getStartSeason());
-        int end = Integer.parseInt(inputData.getEndSeason());
+        if (start > end) {
+            presenter.presentPlayerNotFound("Start season cannot be after end season");
+            return;
+        }
+
+        if (player == null) {
+            presenter.presentPlayerNotFound("Player not found. Re-enter a valid player name.");
+            return;
+        }
 
         List<String[]> tableRows = new ArrayList<>();
         Map<String, Map<Integer, Double>> graphData = new HashMap<>();

@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.application.Platform;
@@ -107,6 +108,10 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
 
         Platform.runLater(() -> {
             NumberAxis xAxis = new NumberAxis();
+            xAxis.setAutoRanging(false);
+            xAxis.setLowerBound(1980);
+            xAxis.setUpperBound(2024);
+            xAxis.setTickUnit(1);
             NumberAxis yAxis = new NumberAxis();
             xAxis.setLabel("Season");
             yAxis.setLabel("Stat Value");
@@ -114,7 +119,6 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
             lineChart = new LineChart<>(xAxis, yAxis);
             lineChart.setTitle("Performance Over Seasons");
 
-            // Empty to start; presenter/state can later update this
             fxPanel.setScene(new Scene(lineChart, 600, 300));
         });
     }
@@ -163,5 +167,25 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         for (String[] row : state.getResultsTableData()) {
             tableModel.addRow(row);
         }
+
+        Platform.runLater(() -> {
+            lineChart.getData().clear();
+
+            Map<String, Map<Integer, Double>> graphData = state.getGraphData();
+            if (graphData == null) return;
+
+            for (String statName : graphData.keySet()) {
+                XYChart.Series<Number, Number> series = new XYChart.Series<>();
+                series.setName(statName);
+
+                for (var entry : graphData.get(statName).entrySet()) {
+                    int season = entry.getKey();
+                    double value = entry.getValue();
+                    series.getData().add(new XYChart.Data<>(season, value));
+                }
+
+                lineChart.getData().add(series);
+            }
+        });
     }
 }
