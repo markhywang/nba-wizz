@@ -1,13 +1,18 @@
 package interface_adapter.search_player;
 
+import entity.Player;
+import interface_adapter.ViewManagerModel;
 import use_case.search_player.SearchPlayerOutputBoundary;
 import use_case.search_player.SearchPlayerOutputData;
+import view.ViewManager;
 
 public class SearchPlayerPresenter implements SearchPlayerOutputBoundary {
     private final SearchPlayerViewModel viewModel;
+    public final ViewManagerModel viewManagerModel;
 
-    public SearchPlayerPresenter(SearchPlayerViewModel viewModel) {
+    public SearchPlayerPresenter(SearchPlayerViewModel viewModel, ViewManagerModel viewManagerModel) {
         this.viewModel = viewModel;
+        this.viewManagerModel = viewManagerModel;
     }
 
     @Override
