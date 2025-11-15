@@ -23,7 +23,7 @@ import javafx.scene.chart.XYChart;
 
 /**
  * The SearchPlayerView is the UI where users can search for NBA players and
- * view their selected statistics over a selected season range in a table and graph.
+ * view their selected statistics over a selected season range in a table and graph format.
  */
 public class SearchPlayerView extends JPanel implements ActionListener, PropertyChangeListener {
 
