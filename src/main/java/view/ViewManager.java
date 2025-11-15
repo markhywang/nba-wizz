@@ -15,13 +15,8 @@ public class ViewManager implements PropertyChangeListener {
     public ViewManager(JPanel views, CardLayout cardLayout, ViewManagerModel viewManagerModel) {
         this.views = views;
         this.cardLayout = cardLayout;
-<<<<<<< HEAD
-
-        viewManagerModel.addPropertyChangeListener(this);
-=======
         this.viewManagerModel = viewManagerModel;
-        this.viewManagerModel.addPropertyChangeListener(this);
->>>>>>> ea40270 (Added initial AI insights backend)
+        viewManagerModel.addPropertyChangeListener(this);
     }
 
     @Override
