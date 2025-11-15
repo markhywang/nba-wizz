@@ -1,13 +1,13 @@
 package use_case.main_menu;
 
 public class MainMenuInputData {
-    private final String playerName;
+    private final String buttonLabel;
 
-    public MainMenuInputData(String playerName) {
-        this.playerName = playerName;
+    public MainMenuInputData(String buttonLabel) {
+        this.buttonLabel = buttonLabel;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public String getButtonLabel() {
+        return buttonLabel;
     }
 }

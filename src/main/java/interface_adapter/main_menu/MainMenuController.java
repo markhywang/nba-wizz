@@ -15,7 +15,15 @@ public class MainMenuController {
     }
 
     public void onSearchPlayerPressed() {
-        viewManagerModel.setActiveView("search_player");
-        viewManagerModel.firePropertyChanged();
+        interactor.switchToSearchPlayer();
+    }
+
+    public void execute(String button) {
+        MainMenuInputData mainMenuInputData = new MainMenuInputData(button);
+        interactor.execute(mainMenuInputData);
+    }
+
+    public void switchToGenerateInsights() {
+        interactor.switchToGenerateInsights();
     }
 }

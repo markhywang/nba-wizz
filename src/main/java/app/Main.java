@@ -18,6 +18,16 @@ import use_case.search_player.SearchPlayerOutputBoundary;
 import view.MainMenuView;
 import view.SearchPlayerView;
 import view.ViewManager;
+import interface_adapter.generate_insights.GenerateInsightsViewModel;
+import interface_adapter.generate_insights.GenerateInsightsController;
+import interface_adapter.generate_insights.GenerateInsightsPresenter;
+import data_access.GeminiDataAccessObject;
+import use_case.generate_insights.GenerateInsightsDataAccessInterface;
+import use_case.generate_insights.GenerateInsightsInputBoundary;
+import use_case.generate_insights.GenerateInsightsInteractor;
+import use_case.generate_insights.GenerateInsightsOutputBoundary;
+import view.GenerateInsightsView;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,17 +46,26 @@ public class Main {
         new ViewManager(views, cardLayout, viewManagerModel);
 
         MainMenuViewModel mainMenuViewModel = new MainMenuViewModel();
+        GenerateInsightsViewModel generateInsightsViewModel = new GenerateInsightsViewModel();
 
         // The data access object.
         // TODO: Update the path to the CSV file.
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
+        GenerateInsightsDataAccessInterface geminiDataAccessObject = new GeminiDataAccessObject();
 
-        MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(viewManagerModel);
-        MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(mainMenuPresenter);
-        MainMenuController mainMenuController =
-                new MainMenuController(mainMenuInteractor, viewManagerModel);
+        MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
+        MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuPresenter);
+        MainMenuController mainMenuController = new MainMenuController(mainMenuInteractor, viewManagerModel);
         MainMenuView mainMenuView = new MainMenuView(mainMenuViewModel, mainMenuController);
         views.add(mainMenuView, mainMenuView.viewName);
+
+        GenerateInsightsOutputBoundary generateInsightsOutputBoundary = new GenerateInsightsPresenter(generateInsightsViewModel, viewManagerModel);
+        GenerateInsightsInputBoundary generateInsightsInteractor = new GenerateInsightsInteractor(geminiDataAccessObject, generateInsightsOutputBoundary);
+        GenerateInsightsController generateInsightsController = new GenerateInsightsController(generateInsightsInteractor, viewManagerModel, mainMenuViewModel);
+
+        GenerateInsightsView generateInsightsView = new GenerateInsightsView(generateInsightsViewModel, generateInsightsController);
+        views.add(generateInsightsView, generateInsightsView.viewName);
+
 
         viewManagerModel.setActiveView(mainMenuView.viewName);
         viewManagerModel.firePropertyChanged();

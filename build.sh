@@ -1,2 +1,3 @@
+$env:GEMINI_API_KEY = 'YOUR_API_KEY'
 mvn package
-java -jar target/nba-wizz-1.0-SNAPSHOT.jar
+mvn exec:java
