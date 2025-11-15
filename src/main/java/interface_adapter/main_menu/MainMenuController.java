@@ -15,8 +15,7 @@ public class MainMenuController {
     }
 
     public void onSearchPlayerPressed() {
-        viewManagerModel.setActiveView("search_player");
-        viewManagerModel.firePropertyChanged();
+        interactor.switchToSearchPlayer();
     }
 
     public void execute(String button) {

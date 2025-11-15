@@ -13,7 +13,7 @@ public class MainMenuInteractor implements MainMenuInputBoundary {
 
     @Override
     public void switchToSearchPlayer() {
-        mainMenuPresenter.presentSearchPlayerView();
+        mainMenuPresenter.switchToSearchPlayer();
     }
 
     @Override

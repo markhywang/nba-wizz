@@ -17,7 +17,7 @@ public class MainMenuPresenter implements MainMenuOutputBoundary {
     }
 
     @Override
-    public void presentSearchPlayerView() {
+    public void switchToSearchPlayer() {
         viewManagerModel.setActiveView("search_player");
         viewManagerModel.firePropertyChanged();
     }
