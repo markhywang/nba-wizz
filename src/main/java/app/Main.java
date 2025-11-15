@@ -72,6 +72,7 @@ public class Main {
 
         /*Search Player Feature Setup*/
         SearchPlayerViewModel searchPlayerViewModel = new SearchPlayerViewModel();
+        searchPlayerViewModel.setViewManagerModel(viewManagerModel);
 
         SearchPlayerOutputBoundary searchPlayerPresenter =
                 new SearchPlayerPresenter(searchPlayerViewModel, viewManagerModel);
