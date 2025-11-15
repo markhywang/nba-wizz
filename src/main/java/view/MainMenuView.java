@@ -12,7 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 public class MainMenuView extends JPanel implements ActionListener, PropertyChangeListener {
-    public final String viewName = "player_search";
+    public final String viewName = "main_menu";
     private final MainMenuViewModel mainMenuViewModel;
     private final MainMenuController mainMenuController;
     private final JButton searchForPlayer;
@@ -60,16 +60,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         buttons.add(Box.createRigidArea(new Dimension(0, 10)));
         buttons.add(aiInsights);
 
-        searchForPlayer.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(searchForPlayer)) {
-                            // TODO: Implement search for player functionality
-                        }
-                    }
-                }
-        );
-        // TODO: Add action listeners for other buttons
+        searchForPlayer.addActionListener(e -> mainMenuController.onSearchPlayerPressed());
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);

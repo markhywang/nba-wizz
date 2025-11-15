@@ -6,10 +6,17 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuPresenter;
 import interface_adapter.main_menu.MainMenuViewModel;
+import interface_adapter.search_player.SearchPlayerController;
+import interface_adapter.search_player.SearchPlayerPresenter;
+import interface_adapter.search_player.SearchPlayerViewModel;
 import use_case.main_menu.MainMenuInputBoundary;
 import use_case.main_menu.MainMenuInteractor;
 import use_case.main_menu.MainMenuOutputBoundary;
+import use_case.search_player.SearchPlayerInputBoundary;
+import use_case.search_player.SearchPlayerInteractor;
+import use_case.search_player.SearchPlayerOutputBoundary;
 import view.MainMenuView;
+import view.SearchPlayerView;
 import view.ViewManager;
 
 import javax.swing.*;
@@ -26,7 +33,7 @@ public class Main {
         application.add(views);
 
         ViewManagerModel viewManagerModel = new ViewManagerModel();
-        new ViewManager(views, cardLayout);
+        new ViewManager(views, cardLayout, viewManagerModel);
 
         MainMenuViewModel mainMenuViewModel = new MainMenuViewModel();
 
@@ -34,15 +41,32 @@ public class Main {
         // TODO: Update the path to the CSV file.
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
 
-        MainMenuOutputBoundary mainMenuOutputBoundary = new MainMenuPresenter(mainMenuViewModel, viewManagerModel);
-        MainMenuInputBoundary playerSearchInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuOutputBoundary);
-        MainMenuController mainMenuController = new MainMenuController(playerSearchInteractor);
-
+        MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(viewManagerModel);
+        MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(mainMenuPresenter);
+        MainMenuController mainMenuController =
+                new MainMenuController(mainMenuInteractor, viewManagerModel);
         MainMenuView mainMenuView = new MainMenuView(mainMenuViewModel, mainMenuController);
         views.add(mainMenuView, mainMenuView.viewName);
 
         viewManagerModel.setActiveView(mainMenuView.viewName);
         viewManagerModel.firePropertyChanged();
+
+        /*Search Player Feature Setup*/
+        SearchPlayerViewModel searchPlayerViewModel = new SearchPlayerViewModel();
+
+        SearchPlayerOutputBoundary searchPlayerPresenter =
+                new SearchPlayerPresenter(searchPlayerViewModel, viewManagerModel);
+
+        SearchPlayerInputBoundary searchPlayerInteractor =
+                new SearchPlayerInteractor(playerDataAccessObject, searchPlayerPresenter);
+
+        SearchPlayerController searchPlayerController =
+                new SearchPlayerController(searchPlayerInteractor);
+
+        SearchPlayerView searchPlayerView =
+                new SearchPlayerView(searchPlayerController, searchPlayerViewModel);
+
+        views.add(searchPlayerView, searchPlayerView.viewName);
 
         application.pack();
         application.setVisible(true);

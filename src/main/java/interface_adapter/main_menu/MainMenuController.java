@@ -1,17 +1,21 @@
 package interface_adapter.main_menu;
 
+import interface_adapter.ViewManagerModel;
 import use_case.main_menu.MainMenuInputBoundary;
 import use_case.main_menu.MainMenuInputData;
 
 public class MainMenuController {
-    private final MainMenuInputBoundary mainMenuInteractor;
+    private final MainMenuInputBoundary interactor;
+    private final ViewManagerModel viewManagerModel;
 
-    public MainMenuController(MainMenuInputBoundary mainMenuInteractor) {
-        this.mainMenuInteractor = mainMenuInteractor;
+    public MainMenuController(MainMenuInputBoundary interactor,
+                              ViewManagerModel viewManagerModel) {
+        this.interactor = interactor;
+        this.viewManagerModel = viewManagerModel;
     }
 
-    public void execute(String playerName) {
-        MainMenuInputData mainMenuInputData = new MainMenuInputData(playerName);
-        mainMenuInteractor.execute(mainMenuInputData);
+    public void onSearchPlayerPressed() {
+        viewManagerModel.setActiveView("search_player");
+        viewManagerModel.firePropertyChanged();
     }
 }
