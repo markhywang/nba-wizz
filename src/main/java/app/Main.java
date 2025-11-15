@@ -53,10 +53,9 @@ public class Main {
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
         GenerateInsightsDataAccessInterface geminiDataAccessObject = new GeminiDataAccessObject();
 
-        MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(viewManagerModel);
-        MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(mainMenuPresenter);
-        MainMenuController mainMenuController =
-                new MainMenuController(mainMenuInteractor, viewManagerModel);
+        MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
+        MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuPresenter);
+        MainMenuController mainMenuController = new MainMenuController(mainMenuInteractor, viewManagerModel);
         MainMenuView mainMenuView = new MainMenuView(mainMenuViewModel, mainMenuController);
         views.add(mainMenuView, mainMenuView.viewName);
 

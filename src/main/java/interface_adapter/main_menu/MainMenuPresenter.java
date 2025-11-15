@@ -9,22 +9,20 @@ public class MainMenuPresenter implements MainMenuOutputBoundary {
     private final ViewManagerModel viewManagerModel;
     private final GenerateInsightsViewModel generateInsightsViewModel;
 
-<<<<<<< HEAD
-    public MainMenuPresenter(ViewManagerModel viewManagerModel) {
-=======
+    private MainMenuViewModel mainMenuViewModel;
     public MainMenuPresenter(MainMenuViewModel mainMenuViewModel, ViewManagerModel viewManagerModel, GenerateInsightsViewModel generateInsightsViewModel) {
         this.mainMenuViewModel = mainMenuViewModel;
->>>>>>> ea40270 (Added initial AI insights backend)
         this.viewManagerModel = viewManagerModel;
         this.generateInsightsViewModel = generateInsightsViewModel;
     }
 
     @Override
-<<<<<<< HEAD
     public void presentSearchPlayerView() {
         viewManagerModel.setActiveView("search_player");
         viewManagerModel.firePropertyChanged();
-=======
+    }
+
+    @Override
     public void prepareSuccessView(MainMenuOutputData outputData) {
         // On success, switch to the generate insights view.
         viewManagerModel.setActiveView(generateInsightsViewModel.getViewName());
@@ -36,6 +34,11 @@ public class MainMenuPresenter implements MainMenuOutputBoundary {
         MainMenuState mainMenuState = mainMenuViewModel.getState();
         mainMenuState.setError(error);
         mainMenuViewModel.firePropertyChanged();
->>>>>>> ea40270 (Added initial AI insights backend)
+    }
+
+    @Override
+    public void switchToGenerateInsights() {
+        viewManagerModel.setActiveView(generateInsightsViewModel.getViewName());
+        viewManagerModel.firePropertyChanged();
     }
 }

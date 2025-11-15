@@ -60,18 +60,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         buttons.add(Box.createRigidArea(new Dimension(0, 10)));
         buttons.add(aiInsights);
 
-<<<<<<< HEAD
         searchForPlayer.addActionListener(e -> mainMenuController.onSearchPlayerPressed());
-=======
-        searchForPlayer.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        if (evt.getSource().equals(searchForPlayer)) {
-                            // TODO: Implement search for player functionality
-                        }
-                    }
-                }
-        );
+
         aiInsights.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
@@ -81,7 +71,6 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
                     }
                 }
         );
->>>>>>> ea40270 (Added initial AI insights backend)
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
