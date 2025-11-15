@@ -19,6 +19,11 @@ public class SearchPlayerInteractor implements SearchPlayerInputBoundary {
     @Override
     public void execute(SearchPlayerInputData inputData) {
 
+        if (inputData.getStartSeason().isEmpty() || inputData.getEndSeason().isEmpty()) {
+            presenter.presentPlayerNotFound("Season fields cannot be empty.");
+            return;
+        }
+
         int start = Integer.parseInt(inputData.getStartSeason());
         int end = Integer.parseInt(inputData.getEndSeason());
 
