@@ -71,8 +71,8 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
             prompt.append(String.format("Points per game: %.2f\n", lastSeason.getPointsPerGame()));
             prompt.append(String.format("Assists per game: %.2f\n", lastSeason.getAssistsPerGame()));
             prompt.append(String.format("Rebounds per game: %.2f\n", lastSeason.getReboundsPerGame()));
-            prompt.append(String.format("Field goal percentage: %.2f%%\n", lastSeason.getFieldGoalPercentage() * 100));
-            prompt.append(String.format("Three-point percentage: %.2f%%\n", lastSeason.getThreePointPercentage() * 100));
+            prompt.append(String.format("Field goal percentage: %.2f%%\n", lastSeason.getFieldGoalPercentage()));
+            prompt.append(String.format("Three-point percentage: %.2f%%\n", lastSeason.getThreePointPercentage()));
         }
 
         prompt.append("\nAnalysis:");
