@@ -77,6 +77,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
             mainMenuController.onSearchPlayerPressed();
         } else if (e.getSource().equals(aiInsights)) {
             mainMenuController.switchToGenerateInsights();
+        } else if (e.getSource().equals(compare)) {
+            mainMenuController.onCompareButtonClicked();
         }
     }
 
