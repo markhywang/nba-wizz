@@ -37,7 +37,7 @@ public class CsvPlayerDataAccessObject implements PlayerDataAccessInterface {
                 String[] data = line.split(cvsSplitBy);
 
                 try {
-                    String name = data[0];
+                    String name = data[0].toLowerCase();
                     String pos = data[1];
                     int age = Integer.parseInt(data[2]);
                     String teamName = data[3];
@@ -104,12 +104,7 @@ public class CsvPlayerDataAccessObject implements PlayerDataAccessInterface {
 
     @Override
     public Player getPlayerByName(String playerName) {
-        for (Player player : players) {
-            if (player.getName().equalsIgnoreCase(playerName.trim())) {
-                return player;
-            }
-        }
-        return null;
+        return playerMap.get(playerName.toLowerCase());
     }
 
     @Override

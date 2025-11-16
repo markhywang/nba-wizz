@@ -1,10 +1,12 @@
 package data_access;
 
 import com.google.genai.Client;
+import com.google.genai.ResponseStream;
 import com.google.genai.types.GenerateContentResponse;
 import entity.Player;
 import entity.SeasonStats;
 import entity.Team;
+import io.github.cdimascio.dotenv.Dotenv;
 import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 
 import java.io.BufferedReader;
@@ -45,7 +47,7 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
                 String[] data = line.split(cvsSplitBy);
 
                 try {
-                    String name = data[0];
+                    String name = data[0].toLowerCase();
                     String pos = data[1];
                     int age = Integer.parseInt(data[2]);
                     String teamName = data[3];
@@ -63,8 +65,12 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
                             k -> new Team(nextTeamId++, teamName, "N/A",
                                     new ArrayList<>(), 0, 0, "N/A", new HashMap<>()));
 
-                    Player player = playerMap.computeIfAbsent(name,
-                            k -> new Player(nextPlayerId++, name, team, pos, age, 0, 0, new ArrayList<>()));
+                    Player player = playerMap.get(name);
+                    if (player == null) {
+                        player = new Player(nextPlayerId++, name, team, pos, age, 0, 0, new ArrayList<>());
+                        playerMap.put(name, player);
+                    }
+
 
                     SeasonStats seasonStats = new SeasonStats(
                             season, pts, ast, trb, fgPercentage, gamesPlayed, minutesPlayed, threePtPercentage, player
@@ -85,7 +91,7 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
 
     @Override
     public Optional<Player> getPlayerByName(String playerName) {
-        return Optional.ofNullable(playerMap.get(playerName));
+        return Optional.ofNullable(playerMap.get(playerName.toLowerCase()));
     }
 
     @Override
@@ -97,23 +103,34 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
     public String getAiInsight(String prompt) {
         LOGGER.info("Prompt sent to Gemini: " + prompt);
 
-        String apiKey = System.getenv("GEMINI_API_KEY");
+        Dotenv dotenv = Dotenv.load();
+        String apiKey = dotenv.get("GEMINI_API_KEY");
+
         if (apiKey == null || apiKey.isEmpty()) {
-            // The README mentions GOOGLE_API_KEY, so let's check for that too.
-            apiKey = System.getenv("GOOGLE_API_KEY");
+            apiKey = System.getenv("GEMINI_API_KEY");
+            if (apiKey == null || apiKey.isEmpty()) {
+                // The README mentions GOOGLE_API_KEY, so let's check for that too.
+                apiKey = System.getenv("GOOGLE_API_KEY");
+            }
         }
 
         if (apiKey == null || apiKey.isEmpty()) {
-            LOGGER.severe("API key not set. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable.");
+            LOGGER.severe("API key not set. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable or in .env file.");
             return "Error: API key not set.";
         }
 
 
         try {
             Client client = Client.builder().apiKey(apiKey).build();
-            GenerateContentResponse response =
-                    client.models.generateContent("gemini-2.5-flash", prompt, null);
-            return response.text();
+            ResponseStream<GenerateContentResponse> responseStream =
+                    client.models.generateContentStream("gemini-2.5-flash", prompt, null);
+
+            StringBuilder insight = new StringBuilder();
+            for (GenerateContentResponse response : responseStream) {
+                insight.append(response.text());
+            }
+            responseStream.close();
+            return insight.toString();
         } catch (NoSuchElementException e) {
             LOGGER.severe("Gemini API returned no content: " + e.getMessage());
             return "Error: AI returned no content.";
