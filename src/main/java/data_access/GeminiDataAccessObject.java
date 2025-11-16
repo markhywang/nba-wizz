@@ -135,24 +135,26 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
     }
 
     private String createQuestionPrompt(String question, String context) {
-        return "You are a basketball analyst. Your task is to answer questions based on the provided dataset and your general knowledge. " +
-                "First, determine if the question is appropriate and related to basketball. If it is inappropriate, off-topic, or harmful, you must refuse to answer by responding with 'I cannot answer this question.'. " +
-                "If the question is valid, use the following CSV data to answer it. Do not mention the dataset in your response.\n\n" +
-                "Dataset:\n" + context + "\n\n" +
+        return "You are a sports data analyst. Your task is to answer questions *strictly* and *only* based on the statistical data provided below.\n\n" +
+                "The dataset contains data from the 1982 to 2024 seasons.\n\n" +
+                "Do not use any external knowledge. Do not make assumptions or calculations that are not directly supported by the data.\n" +
+                "Under no circumstances should you answer questions that are not about basketball player statistics.\n\n" +
+                "If the answer to the question cannot be found in the provided data, you *must* respond with the exact phrase: 'I cannot answer this question as the information is not in the dataset.'\n\n" +
+                "Dataset:\n" +
+                "```csv\n" +
+                context +
+                "```\n\n" +
                 "Question: " + question + "\n\n" +
                 "Answer:";
     }
 
     private String createPlayerComparisonPrompt(Player player1, Player player2) {
-        StringBuilder prompt = new StringBuilder();
-        prompt.append("You are a basketball analyst. Provide a detailed comparison of the following two players, considering their stats and your own knowledge. ");
-        prompt.append("Discuss their strengths, weaknesses, and potential impact on a team.\n\n");
-        prompt.append("Player 1: ").append(player1.getName()).append("\n");
-        prompt.append(getPlayerStatsAsString(player1));
-        prompt.append("\nPlayer 2: ").append(player2.getName()).append("\n");
-        prompt.append(getPlayerStatsAsString(player2));
-        prompt.append("\nComparison:");
-        return prompt.toString();
+        return "You are a basketball analyst. Your task is to provide a detailed comparison of two players based on the provided stats. " +
+                "Do not use any external knowledge. " +
+                "Discuss their strengths, weaknesses, and potential impact on a team.\n\n" +
+                "Player 1: " + player1.getName() + "\n" + getPlayerStatsAsString(player1) + "\n" +
+                "Player 2: " + player2.getName() + "\n" + getPlayerStatsAsString(player2) + "\n" +
+                "Comparison:";
     }
 
     private String getPlayerStatsAsString(Player player) {

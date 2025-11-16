@@ -20,7 +20,8 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     private final ComparePlayersViewModel comparePlayersViewModel;
     private final ComparePlayersController comparePlayersController;
 
-    private final JTextArea chatArea;
+    private final DefaultListModel<ChatMessage> chatModel;
+    private final JList<ChatMessage> chatList;
     private final JTextField inputField;
     private final JButton sendButton;
     private final JRadioButton askQuestionRadioButton;
@@ -47,9 +48,10 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
         setLayout(new BorderLayout());
 
-        chatArea = new JTextArea();
-        chatArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(chatArea);
+        chatModel = new DefaultListModel<>();
+        chatList = new JList<>(chatModel);
+        chatList.setCellRenderer(new ChatBubbleCellRenderer());
+        JScrollPane scrollPane = new JScrollPane(chatList);
         add(scrollPane, BorderLayout.CENTER);
 
         JPanel inputPanel = new JPanel(new BorderLayout());
@@ -94,13 +96,14 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         if (e.getSource() == sendButton) {
             String inputText = inputField.getText();
             if (currentMode == Mode.ASK_QUESTION) {
-                askQuestionController.execute(inputText);
-                chatArea.append("You: " + inputText + "\n");
-            } else {
+                                    chatModel.addElement(new ChatMessage(inputText, ChatMessage.Sender.USER));
+                                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                                    askQuestionController.execute(inputText);            } else {
                 String[] playerNames = inputText.split(",");
                 if (playerNames.length == 2) {
+                    String message = "Compare " + playerNames[0].trim() + " and " + playerNames[1].trim();
+                    chatModel.addElement(new ChatMessage(message, ChatMessage.Sender.USER));
                     comparePlayersController.execute(playerNames[0].trim(), playerNames[1].trim());
-                    chatArea.append("You: Compare " + playerNames[0].trim() + " and " + playerNames[1].trim() + "\n");
                 } else {
                     JOptionPane.showMessageDialog(this, "Please enter two player names separated by a comma.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                 }
@@ -115,20 +118,24 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
             if (evt.getSource() == askQuestionViewModel) {
                 String answer = askQuestionViewModel.getState().getAnswer();
                 if (answer != null && !answer.isEmpty()) {
-                    chatArea.append("AI: " + answer + "\n");
+                    chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
+                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
                 }
                 String error = askQuestionViewModel.getState().getError();
                 if (error != null) {
-                    chatArea.append("AI Error: " + error + "\n");
+                    chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
+                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
                 }
             } else if (evt.getSource() == comparePlayersViewModel) {
                 String comparison = comparePlayersViewModel.getState().getComparison();
                 if (comparison != null && !comparison.isEmpty()) {
-                    chatArea.append("AI: " + comparison + "\n");
+                    chatModel.addElement(new ChatMessage(comparison, ChatMessage.Sender.AI));
+                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
                 }
                 String error = comparePlayersViewModel.getState().getError();
                 if (error != null) {
-                    chatArea.append("AI Error: " + error + "\n");
+                    chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
+                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
                 }
             }
         }

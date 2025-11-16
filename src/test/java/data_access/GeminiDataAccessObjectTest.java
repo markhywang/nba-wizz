@@ -18,6 +18,8 @@ class GeminiDataAccessObjectTest {
 
     @Test
     void testGetAiInsight() {
+        // NOTE: This test might fail if the Gemini API quota is exceeded.
+        // Please check your Google Cloud project's API & Services -> Quotas page.
         // For example, by running `gcloud auth application-default login`.
         String playerName = "LeBron James";
         String prompt = "Give me a summary of " + playerName + "'s career.";
