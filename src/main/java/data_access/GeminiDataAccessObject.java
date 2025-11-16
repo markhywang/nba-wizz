@@ -1,8 +1,15 @@
 package data_access;
 
+import com.google.cloud.aiplatform.v1.EndpointName;
+import com.google.cloud.aiplatform.v1.PredictResponse;
+import com.google.cloud.aiplatform.v1.PredictionServiceClient;
+import com.google.cloud.aiplatform.v1.PredictionServiceSettings;
+import com.google.protobuf.Value;
+import com.google.protobuf.util.JsonFormat;
 import entity.Player;
 import entity.SeasonStats;
 import entity.Team;
+import io.github.cdimascio.dotenv.Dotenv;
 import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 
 import java.io.BufferedReader;
@@ -11,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -93,84 +99,60 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
 
     @Override
     public String getAiInsight(String prompt) {
-        // Similar configuration as before, but with timeouts and logging.
-        String apiUrl = System.getenv("GEMINI_API_URL");
-        if (apiUrl == null || apiUrl.isEmpty()) {
-            // Default to Google's Generative Language REST endpoint for text-bison-001.
-            apiUrl = "https://generativelanguage.googleapis.com/v1/models/text-bison-001:generate";
+        LOGGER.info("Prompt sent to Gemini API: " + prompt);
+        Dotenv dotenv = Dotenv.load();
+        String apiKey = dotenv.get("GEMINI_API_KEY");
+
+        if (apiKey == null || apiKey.isEmpty()) {
+            apiKey = System.getenv("GEMINI_API_KEY");
         }
 
-        String apiKey = System.getenv("GEMINI_API_KEY");
-        String bearer = System.getenv("GEMINI_AUTH_BEARER");
+        if (apiKey == null || apiKey.isEmpty()) {
+            LOGGER.severe("GEMINI_API_KEY environment variable not set.");
+            return "Error: API key not configured. Please set the GEMINI_API_KEY environment variable.";
+        }
+
+        String projectId = "gcp-java-424801";
+        String location = "us-central1";
+        String modelName = "gemini-pro";
 
         try {
-            java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
-                    .connectTimeout(java.time.Duration.ofSeconds(10))
-                    .build();
+            String endpoint = String.format("%s-aiplatform.googleapis.com:443", location);
+            PredictionServiceSettings predictionServiceSettings =
+                PredictionServiceSettings.newBuilder().setEndpoint(endpoint).build();
 
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            com.fasterxml.jackson.databind.node.ObjectNode body = mapper.createObjectNode();
-            com.fasterxml.jackson.databind.node.ObjectNode promptNode = mapper.createObjectNode();
-            promptNode.put("text", prompt);
-            body.set("prompt", promptNode);
-            // Google uses camelCase for this field name
-            body.put("maxOutputTokens", 512);
+            try (PredictionServiceClient predictionServiceClient =
+                PredictionServiceClient.create(predictionServiceSettings)) {
+                final EndpointName endpointName =
+                    EndpointName.ofProjectLocationPublisherModelName(projectId, location, "google", modelName);
 
-            String jsonBody = mapper.writeValueAsString(body);
+                String escapedPrompt = prompt.replace("\"", "\\\"").replace("\n", "\\n");
+                String instanceJson = String.format("{\"contents\":[{\"parts\":[{\"text\":\"%s\"}]}]}", escapedPrompt);
 
-            String requestUrl = apiUrl;
-            if (apiKey != null && !apiKey.isEmpty() && !requestUrl.contains("?")) {
-                requestUrl = requestUrl + "?key=" + java.net.URLEncoder.encode(apiKey, java.nio.charset.StandardCharsets.UTF_8);
+                Value.Builder instanceBuilder = Value.newBuilder();
+                JsonFormat.parser().merge(instanceJson, instanceBuilder);
+                java.util.List<Value> instances = java.util.Collections.singletonList(instanceBuilder.build());
+
+                Value.Builder parametersBuilder = Value.newBuilder();
+                JsonFormat.parser().merge("{}", parametersBuilder);
+                Value parameters = parametersBuilder.build();
+
+
+                PredictResponse predictResponse =
+                    predictionServiceClient.predict(endpointName, instances, parameters);
+
+                Value prediction = predictResponse.getPredictions(0);
+                String text = prediction.getStructValue()
+                    .getFieldsOrThrow("candidates")
+                    .getListValue().getValues(0)
+                    .getStructValue().getFieldsOrThrow("content")
+                    .getStructValue().getFieldsOrThrow("parts")
+                    .getListValue().getValues(0)
+                    .getStructValue().getFieldsOrThrow("text")
+                    .getStringValue();
+                return text;
             }
-
-            java.net.http.HttpRequest.Builder reqBuilder = java.net.http.HttpRequest.newBuilder()
-                    .uri(java.net.URI.create(requestUrl))
-                    .header("Content-Type", "application/json")
-                    .timeout(java.time.Duration.ofSeconds(60))
-                    .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonBody));
-
-            if (bearer != null && !bearer.isEmpty()) {
-                reqBuilder.header("Authorization", "Bearer " + bearer);
-            }
-
-            java.net.http.HttpRequest request = reqBuilder.build();
-
-            java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                LOGGER.warning("LLM endpoint returned status " + response.statusCode() + ": " + response.body());
-                return "Error: LLM endpoint returned status " + response.statusCode();
-            }
-
-            com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(response.body());
-
-            String respText = null;
-            if (root.has("candidates") && root.get("candidates").isArray() && root.get("candidates").size() > 0) {
-                respText = root.get("candidates").get(0).path("content").asText(null);
-            }
-            if ((respText == null || respText.isEmpty()) && root.has("output")) {
-                respText = root.path("output").asText(null);
-            }
-            if ((respText == null || respText.isEmpty()) && root.has("response")) {
-                respText = root.path("response").asText(null);
-            }
-            if ((respText == null || respText.isEmpty()) && root.has("text")) {
-                respText = root.path("text").asText(null);
-            }
-
-            if (respText == null || respText.isEmpty()) {
-                java.util.Iterator<java.util.Map.Entry<String, com.fasterxml.jackson.databind.JsonNode>> it = root.fields();
-                while (it.hasNext() && (respText == null || respText.isEmpty())) {
-                    com.fasterxml.jackson.databind.JsonNode node = it.next().getValue();
-                    if (node.isTextual()) respText = node.asText();
-                }
-            }
-
-            if (respText == null || respText.isEmpty()) {
-                return response.body();
-            }
-
-            return respText;
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOGGER.log(java.util.logging.Level.SEVERE, "Error generating AI insight", e);
             return "Error generating AI insight: " + e.getMessage();
         }

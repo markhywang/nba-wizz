@@ -52,8 +52,13 @@ public class GenerateInsightsView extends JPanel implements ActionListener, Prop
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
                         if (evt.getSource().equals(generateButton)) {
+                            String entityName = entityNameTextField.getText();
+                            if (entityName == null || entityName.trim().isEmpty()) {
+                                JOptionPane.showMessageDialog(GenerateInsightsView.this, "Player or team name cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
                             generateInsightsController.execute(
-                                    entityNameTextField.getText(),
+                                    entityName,
                                     (String) entityTypeComboBox.getSelectedItem()
                             );
                         }

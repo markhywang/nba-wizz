@@ -20,6 +20,11 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
 
     @Override
     public void execute(GenerateInsightsInputData inputData) {
+        if (inputData.getEntityName() == null || inputData.getEntityName().trim().isEmpty()) {
+            presenter.prepareFailView("Player or team name cannot be empty.");
+            return;
+        }
+
         if ("Player".equalsIgnoreCase(inputData.getEntityType())) {
             Optional<Player> playerOptional = dataAccess.getPlayerByName(inputData.getEntityName());
             if (playerOptional.isPresent()) {
@@ -51,34 +56,39 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
 
     private String createPlayerPrompt(Player player) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("Generate a short insight about the NBA player ").append(player.getName()).append(".\\n");
-        prompt.append("Here are some of his stats from his last season:\\n");
+        prompt.append("You are a basketball analyst. Provide a concise insight into the strengths and weaknesses of the following player based on their recent season statistics. ");
+        prompt.append("Keep your analysis to a maximum of three sentences.\n\n");
+        prompt.append("Player: ").append(player.getName()).append("\n");
+        prompt.append("Position: ").append(player.getPosition()).append("\n");
 
         if (player.getCareerStats() != null && !player.getCareerStats().isEmpty()) {
             SeasonStats lastSeason = player.getCareerStats().get(player.getCareerStats().size() - 1);
-            prompt.append("Season: ").append(lastSeason.getSeasonYear()).append("\\n");
-            prompt.append("Points per game: ").append(lastSeason.getPointsPerGame()).append("\\n");
-            prompt.append("Assists per game: ").append(lastSeason.getAssistsPerGame()).append("\\n");
-            prompt.append("Rebounds per game: ").append(lastSeason.getReboundsPerGame()).append("\\n");
-            prompt.append("Field goal percentage: ").append(lastSeason.getFieldGoalPercentage()).append("\\n");
+            prompt.append("Season: ").append(lastSeason.getSeasonYear()).append("\n");
+            prompt.append(String.format("Points per game: %.2f\n", lastSeason.getPointsPerGame()));
+            prompt.append(String.format("Assists per game: %.2f\n", lastSeason.getAssistsPerGame()));
+            prompt.append(String.format("Rebounds per game: %.2f\n", lastSeason.getReboundsPerGame()));
+            prompt.append(String.format("Field goal percentage: %.2f%%\n", lastSeason.getFieldGoalPercentage() * 100));
+            prompt.append(String.format("Three-point percentage: %.2f%%\n", lastSeason.getThreePointPercentage() * 100));
         }
 
-        prompt.append("\\nBased on these stats, what can you tell me about his performance and what do you predict for his future performance in the next season?");
+        prompt.append("\nAnalysis:");
         return prompt.toString();
     }
 
     private String createTeamPrompt(Team team) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("Generate a short insight about the NBA team ").append(team.getName()).append(".\\n");
-        prompt.append("Here is their roster:\\n");
+        prompt.append("You are a basketball analyst. Provide a concise insight into the strengths and weaknesses of the following team based on its roster. ");
+        prompt.append("Keep your analysis to a maximum of three sentences.\n\n");
+        prompt.append("Team: ").append(team.getName()).append("\n");
+        prompt.append("Roster:\n");
 
         if (team.getPlayers() != null && !team.getPlayers().isEmpty()) {
             for (Player player : team.getPlayers()) {
-                prompt.append("- ").append(player.getName()).append("\\n");
+                prompt.append("- ").append(player.getName()).append(" (").append(player.getPosition()).append(")\n");
             }
         }
 
-        prompt.append("\\nBased on this roster, what can you tell me about the team's performance and what do you predict for their performance in the next season?");
+        prompt.append("\nAnalysis:");
         return prompt.toString();
     }
 }
