@@ -2,14 +2,17 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.RoundRectangle2D;
 
 public class ChatMessagePanel extends JPanel {
     private final JTextArea messageArea;
     private final ChatMessage.Sender sender;
-    private static final int BUBBLE_RADIUS = 15;
+    private static final int BUBBLE_RADIUS = 25;
     private static final Color USER_BUBBLE_COLOR = new Color(0, 122, 255); // Blue
     private static final Color AI_BUBBLE_COLOR = new Color(229, 229, 234); // Light Gray
+    private static final Font MESSAGE_FONT = new Font("Arial", Font.PLAIN, 16);
 
     public ChatMessagePanel(ChatMessage message) {
         this.sender = message.getSender();
@@ -20,7 +23,8 @@ public class ChatMessagePanel extends JPanel {
         messageArea.setLineWrap(true);
         messageArea.setWrapStyleWord(true);
         messageArea.setOpaque(false); // Make text area transparent
-        messageArea.setMargin(new Insets(8, 12, 8, 12)); // Padding inside the bubble
+        messageArea.setFont(MESSAGE_FONT);
+        messageArea.setMargin(new Insets(12, 12, 12, 12)); // Padding inside the bubble
 
         if (sender == ChatMessage.Sender.USER) {
             messageArea.setForeground(Color.WHITE);
@@ -58,9 +62,30 @@ public class ChatMessagePanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        // Calculate preferred size based on message area
-        Dimension textAreaPreferredSize = messageArea.getPreferredSize();
-        // Add some extra padding for the bubble itself
-        return new Dimension(textAreaPreferredSize.width + 24, textAreaPreferredSize.height + 16);
+        // Create a temporary dummy component to calculate the preferred size
+        JTextArea dummy = new JTextArea(messageArea.getText());
+        dummy.setLineWrap(true);
+        dummy.setWrapStyleWord(true);
+        dummy.setFont(MESSAGE_FONT);
+        dummy.setMargin(new Insets(12, 12, 12, 12));
+
+        // Determine the maximum width for the bubble
+        int maxWidth;
+        if (getParent() != null && getParent().getWidth() > 0) {
+            maxWidth = (int) (getParent().getWidth() * 0.6);
+        } else {
+            // Fallback to a reasonable default if the parent is not yet realized
+            maxWidth = 300;
+        }
+
+        // Set the size of the dummy text area to calculate the wrapped height
+        dummy.setSize(new Dimension(maxWidth, Short.MAX_VALUE));
+        Dimension preferredSize = dummy.getPreferredSize();
+
+        // Add padding for the bubble shape
+        preferredSize.width = Math.min(preferredSize.width, maxWidth) + 24;
+        preferredSize.height += 24;
+
+        return preferredSize;
     }
 }

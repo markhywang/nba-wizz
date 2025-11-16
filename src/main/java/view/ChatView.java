@@ -26,6 +26,8 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     private final JButton sendButton;
     private final JRadioButton askQuestionRadioButton;
     private final JRadioButton comparePlayersRadioButton;
+    private static final Font INPUT_FONT = new Font("Arial", Font.PLAIN, 16);
+
 
     private enum Mode {
         ASK_QUESTION,
@@ -54,16 +56,23 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         JScrollPane scrollPane = new JScrollPane(chatList);
         add(scrollPane, BorderLayout.CENTER);
 
-        JPanel inputPanel = new JPanel(new BorderLayout());
+        JPanel inputPanel = new JPanel(new BorderLayout(5, 5));
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         inputField = new JTextField();
+        inputField.setFont(INPUT_FONT);
         sendButton = new JButton("Send");
+        sendButton.setFont(INPUT_FONT);
         sendButton.addActionListener(this);
         inputPanel.add(inputField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
+        inputPanel.setPreferredSize(new Dimension(0, 60));
+
 
         JPanel modePanel = new JPanel();
         askQuestionRadioButton = new JRadioButton("Ask a Question", true);
+        askQuestionRadioButton.setFont(INPUT_FONT);
         comparePlayersRadioButton = new JRadioButton("Compare Players");
+        comparePlayersRadioButton.setFont(INPUT_FONT);
         ButtonGroup modeGroup = new ButtonGroup();
         modeGroup.add(askQuestionRadioButton);
         modeGroup.add(comparePlayersRadioButton);
