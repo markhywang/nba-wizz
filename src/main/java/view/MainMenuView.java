@@ -63,6 +63,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         searchForPlayer.addActionListener(this);
         aiInsights.addActionListener(this);
 
+        compare.addActionListener(this);
+
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
         this.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -75,6 +77,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
             mainMenuController.onSearchPlayerPressed();
         } else if (e.getSource().equals(aiInsights)) {
             mainMenuController.switchToGenerateInsights();
+        } else if (e.getSource().equals(compare)) {
+            mainMenuController.onCompareButtonClicked();
         }
     }
 
