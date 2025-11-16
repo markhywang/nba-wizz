@@ -52,6 +52,11 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         aiInsights.setMaximumSize(buttonSize);
         aiInsights.setPreferredSize(buttonSize);
 
+        JButton aiChat = new JButton(MainMenuViewModel.AI_CHAT_BUTTON_LABEL);
+        aiChat.setAlignmentX(Component.CENTER_ALIGNMENT);
+        aiChat.setMaximumSize(buttonSize);
+        aiChat.setPreferredSize(buttonSize);
+
         buttons.add(searchForPlayer);
         buttons.add(Box.createRigidArea(new Dimension(0, 10)));
         buttons.add(filterAndSort);
@@ -59,9 +64,12 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         buttons.add(compare);
         buttons.add(Box.createRigidArea(new Dimension(0, 10)));
         buttons.add(aiInsights);
+        buttons.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttons.add(aiChat);
 
         searchForPlayer.addActionListener(this);
         aiInsights.addActionListener(this);
+        aiChat.addActionListener(this);
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
@@ -75,6 +83,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
             mainMenuController.onSearchPlayerPressed();
         } else if (e.getSource().equals(aiInsights)) {
             mainMenuController.switchToGenerateInsights();
+        } else if (e.getSource() instanceof JButton && ((JButton) e.getSource()).getText().equals(MainMenuViewModel.AI_CHAT_BUTTON_LABEL)) {
+            mainMenuController.switchToChat();
         }
     }
 

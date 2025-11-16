@@ -17,28 +17,34 @@ public class MainMenuPresenter implements MainMenuOutputBoundary {
     }
 
     @Override
-    public void switchToSearchPlayer() {
-        viewManagerModel.setActiveView("search_player");
-        viewManagerModel.firePropertyChanged();
-    }
-
-    @Override
-    public void prepareSuccessView(MainMenuOutputData outputData) {
+    public void onSearchPlayerSuccess(MainMenuOutputData outputData) {
         // On success, switch to the generate insights view.
         viewManagerModel.setActiveView(generateInsightsViewModel.getViewName());
         viewManagerModel.firePropertyChanged();
     }
 
     @Override
-    public void prepareFailView(String error) {
+    public void onSearchPlayerFailure(String message) {
         MainMenuState mainMenuState = mainMenuViewModel.getState();
-        mainMenuState.setError(error);
+        mainMenuState.setError(message);
         mainMenuViewModel.firePropertyChanged();
     }
 
     @Override
+    public void switchToSearchPlayer() {
+        viewManagerModel.setActiveView("search_player");
+        viewManagerModel.firePropertyChanged();
+    }
+
+    @Override
     public void switchToGenerateInsights() {
-        viewManagerModel.setActiveView(generateInsightsViewModel.getViewName());
+        viewManagerModel.setActiveView("generate_insights");
+        viewManagerModel.firePropertyChanged();
+    }
+
+    @Override
+    public void switchView(String viewName) {
+        viewManagerModel.setActiveView(viewName);
         viewManagerModel.firePropertyChanged();
     }
 }

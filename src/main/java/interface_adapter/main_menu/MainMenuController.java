@@ -18,12 +18,11 @@ public class MainMenuController {
         interactor.switchToSearchPlayer();
     }
 
-    public void execute(String button) {
-        MainMenuInputData mainMenuInputData = new MainMenuInputData(button);
-        interactor.execute(mainMenuInputData);
-    }
-
     public void switchToGenerateInsights() {
         interactor.switchToGenerateInsights();
+    }
+
+    public void switchToChat() {
+        interactor.switchToChat();
     }
 }
