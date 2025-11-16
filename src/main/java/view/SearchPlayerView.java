@@ -39,6 +39,8 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     private final JButton searchButton;
     private final JTable resultTable;
     private final DefaultTableModel tableModel;
+    private final JButton homeButton;
+    private final JButton clearButton;
 
     private LineChart<Number, Number> lineChart;
 
@@ -85,6 +87,14 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         searchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         searchButton.addActionListener(this);
 
+        homeButton = new JButton("Home");
+        homeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        clearButton = new JButton("Clear");
+        clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        homeButton.addActionListener(this);
+        clearButton.addActionListener(this);
+
         String[] columnNames = {"Season", "PPG", "APG", "RPG", "FG%"};
         tableModel = new DefaultTableModel(columnNames, 0);
         resultTable = new JTable(tableModel);
@@ -98,6 +108,10 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         add(statPanel);
         add(Box.createRigidArea(new Dimension(0, 10)));
         add(searchButton);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(homeButton);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(clearButton);
         add(Box.createRigidArea(new Dimension(0, 15)));
         add(scrollPane);
 
@@ -125,6 +139,26 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == homeButton) {
+            viewModel.getViewManagerModel().setActiveView("main_menu");
+            viewModel.getViewManagerModel().firePropertyChanged();
+        }
+
+        if (e.getSource() == clearButton) {
+            playerNameField.setText("");
+            startSeasonField.setText("");
+            endSeasonField.setText("");
+
+            ppgBox.setSelected(false);
+            apgBox.setSelected(false);
+            rpgBox.setSelected(false);
+            fgBox.setSelected(false);
+
+            tableModel.setRowCount(0);
+
+            Platform.runLater(() -> lineChart.getData().clear());
+        }
+
         if (e.getSource() == searchButton) {
             String playerName  = playerNameField.getText().trim();
             String startSeason = startSeasonField.getText().trim();
