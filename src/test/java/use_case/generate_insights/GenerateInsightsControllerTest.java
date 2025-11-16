@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import interface_adapter.generate_insights.GenerateInsightsController;
 
+import org.mockito.ArgumentCaptor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 class GenerateInsightsControllerTest {
@@ -25,10 +27,16 @@ class GenerateInsightsControllerTest {
     @Test
     void testExecute() throws InterruptedException {
         String playerName = "LeBron James";
-        generateInsightsController.execute(playerName, "player");
+        String entityType = "player";
+        generateInsightsController.execute(playerName, entityType);
 
         Thread.sleep(1000); // Wait for the SwingWorker to finish
 
-        verify(generateInsightsInteractor).execute(new GenerateInsightsInputData(playerName, "player"));
+        ArgumentCaptor<GenerateInsightsInputData> argumentCaptor = ArgumentCaptor.forClass(GenerateInsightsInputData.class);
+        verify(generateInsightsInteractor).execute(argumentCaptor.capture());
+        
+        GenerateInsightsInputData capturedInputData = argumentCaptor.getValue();
+        assertEquals(playerName, capturedInputData.getEntityName());
+        assertEquals(entityType, capturedInputData.getEntityType());
     }
 }
