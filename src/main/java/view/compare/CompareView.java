@@ -39,7 +39,7 @@ public class CompareView extends JPanel implements PropertyChangeListener {
     private final JTextArea noticesArea = new JTextArea(3, 40);
     private final JTextArea insightArea = new JTextArea(2, 40);
 
-    public CompareView(CompareViewModel viewModel, CompareController compareController) {
+    public CompareView(CompareController compareController, CompareViewModel viewModel) {
         this.viewModel = viewModel;
         this.compareController = compareController;
         this.viewModel.addPropertyChangeListener(this);
