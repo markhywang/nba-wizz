@@ -26,4 +26,9 @@ public class MainMenuController {
     public void switchToGenerateInsights() {
         interactor.switchToGenerateInsights();
     }
+
+    public void onCompareButtonClicked() {
+        viewManagerModel.setActiveView("compare");
+        viewManagerModel.firePropertyChanged();
+    }
 }
