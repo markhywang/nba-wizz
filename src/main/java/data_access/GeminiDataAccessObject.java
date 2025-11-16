@@ -7,6 +7,8 @@ import entity.Player;
 import entity.SeasonStats;
 import entity.Team;
 import io.github.cdimascio.dotenv.Dotenv;
+import use_case.ask_question.AskQuestionDataAccessInterface;
+import use_case.compare_players.ComparePlayersDataAccessInterface;
 import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 
 import java.io.BufferedReader;
@@ -19,7 +21,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterface {
+public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterface, AskQuestionDataAccessInterface, ComparePlayersDataAccessInterface {
 
     private static final java.util.logging.Logger LOGGER =
             java.util.logging.Logger.getLogger(GeminiDataAccessObject.class.getName());
@@ -102,14 +104,79 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
     @Override
     public String getAiInsight(String prompt) {
         LOGGER.info("Prompt sent to Gemini: " + prompt);
+        return callGeminiApi(prompt);
+    }
 
+    @Override
+    public String getAnswer(String question, String context) {
+        String prompt = createQuestionPrompt(question, context);
+        LOGGER.info("Prompt sent to Gemini: " + prompt);
+        return callGeminiApi(prompt);
+    }
+
+    @Override
+    public String getDatasetContent() throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (InputStream inputStream = getClass().getResourceAsStream("/data/" + csvFile);
+             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        }
+        return content.toString();
+    }
+
+    @Override
+    public String getPlayerComparison(Player player1, Player player2) {
+        String prompt = createPlayerComparisonPrompt(player1, player2);
+        LOGGER.info("Prompt sent to Gemini: " + prompt);
+        return callGeminiApi(prompt);
+    }
+
+    private String createQuestionPrompt(String question, String context) {
+        return "You are a sports data analyst. Your task is to answer questions *strictly* and *only* based on the statistical data provided below.\n\n" +
+                "The dataset contains data from the 1982 to 2024 seasons.\n\n" +
+                "Do not use any external knowledge. Do not make assumptions or calculations that are not directly supported by the data.\n" +
+                "Under no circumstances should you answer questions that are not about basketball player statistics.\n\n" +
+                "If the answer to the question cannot be found in the provided data, you *must* respond with the exact phrase: 'I cannot answer this question as the information is not in the dataset.'\n\n" +
+                "Dataset:\n" +
+                "```csv\n" +
+                context +
+                "```\n\n" +
+                "Question: " + question + "\n\n" +
+                "Answer:";
+    }
+
+    private String createPlayerComparisonPrompt(Player player1, Player player2) {
+        return "You are a basketball analyst. Your task is to provide a detailed comparison of two players based on the provided stats. " +
+                "Do not use any external knowledge. " +
+                "Discuss their strengths, weaknesses, and potential impact on a team.\n\n" +
+                "Player 1: " + player1.getName() + "\n" + getPlayerStatsAsString(player1) + "\n" +
+                "Player 2: " + player2.getName() + "\n" + getPlayerStatsAsString(player2) + "\n" +
+                "Comparison:";
+    }
+
+    private String getPlayerStatsAsString(Player player) {
+        StringBuilder stats = new StringBuilder();
+        stats.append("Position: ").append(player.getPosition()).append("\n");
+        if (player.getCareerStats() != null && !player.getCareerStats().isEmpty()) {
+            SeasonStats lastSeason = player.getCareerStats().get(player.getCareerStats().size() - 1);
+            stats.append("Season: ").append(lastSeason.getSeasonYear()).append("\n");
+            stats.append(String.format("Points per game: %.2f\n", lastSeason.getPointsPerGame()));
+            stats.append(String.format("Assists per game: %.2f\n", lastSeason.getAssistsPerGame()));
+            stats.append(String.format("Rebounds per game: %.2f\n", lastSeason.getReboundsPerGame()));
+        }
+        return stats.toString();
+    }
+
+    private String callGeminiApi(String prompt) {
         Dotenv dotenv = Dotenv.load();
         String apiKey = dotenv.get("GEMINI_API_KEY");
 
         if (apiKey == null || apiKey.isEmpty()) {
             apiKey = System.getenv("GEMINI_API_KEY");
             if (apiKey == null || apiKey.isEmpty()) {
-                // The README mentions GOOGLE_API_KEY, so let's check for that too.
                 apiKey = System.getenv("GOOGLE_API_KEY");
             }
         }
@@ -118,7 +185,6 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
             LOGGER.severe("API key not set. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable or in .env file.");
             return "Error: API key not set.";
         }
-
 
         try {
             Client client = Client.builder().apiKey(apiKey).build();
@@ -134,8 +200,7 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
         } catch (NoSuchElementException e) {
             LOGGER.severe("Gemini API returned no content: " + e.getMessage());
             return "Error: AI returned no content.";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.severe("Gemini API error: " + e.getMessage());
             return "Error generating AI insight: " + e.getMessage();
         }
