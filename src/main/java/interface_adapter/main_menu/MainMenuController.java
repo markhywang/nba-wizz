@@ -30,4 +30,10 @@ public class MainMenuController {
         viewManagerModel.setActiveView("compare");
         viewManagerModel.firePropertyChanged();
     }
+
+    public void onFilterAndSortButtonClicked() {
+        viewManagerModel.setActiveView("sort_players");
+        viewManagerModel.firePropertyChanged();
+    }
+
 }
