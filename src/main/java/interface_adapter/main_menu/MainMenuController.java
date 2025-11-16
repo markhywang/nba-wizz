@@ -25,4 +25,9 @@ public class MainMenuController {
     public void switchToChat() {
         interactor.switchToChat();
     }
+
+    public void onCompareButtonClicked() {
+        viewManagerModel.setActiveView("compare");
+        viewManagerModel.firePropertyChanged();
+    }
 }

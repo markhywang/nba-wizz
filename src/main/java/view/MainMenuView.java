@@ -83,6 +83,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         aiInsights.addActionListener(this);
         aiChat.addActionListener(this);
 
+        compare.addActionListener(this);
+
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
         this.add(Box.createRigidArea(new Dimension(0, 40)));
@@ -97,6 +99,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
             mainMenuController.switchToGenerateInsights();
         } else if (e.getSource() instanceof JButton && ((JButton) e.getSource()).getText().equals(MainMenuViewModel.AI_CHAT_BUTTON_LABEL)) {
             mainMenuController.switchToChat();
+        } else if (e.getSource().equals(compare)) {
+            mainMenuController.onCompareButtonClicked();
         }
     }
 
