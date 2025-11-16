@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import interface_adapter.generate_insights.GenerateInsightsController;
 
 import static org.mockito.Mockito.verify;
 
@@ -22,10 +23,12 @@ class GenerateInsightsControllerTest {
     }
 
     @Test
-    void testExecute() {
+    void testExecute() throws InterruptedException {
         String playerName = "LeBron James";
-        generateInsightsController.execute(playerName);
+        generateInsightsController.execute(playerName, "player");
 
-        verify(generateInsightsInteractor).execute(new GenerateInsightsInputData(playerName));
+        Thread.sleep(1000); // Wait for the SwingWorker to finish
+
+        verify(generateInsightsInteractor).execute(new GenerateInsightsInputData(playerName, "player"));
     }
 }

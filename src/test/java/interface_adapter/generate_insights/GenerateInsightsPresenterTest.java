@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import use_case.generate_insights.GenerateInsightsOutputData;
+import entity.AIInsight;
+import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,7 +31,7 @@ class GenerateInsightsPresenterTest {
 
     @Test
     void testPrepareSuccessView() {
-        String insight = "LeBron James is a great player.";
+        AIInsight insight = new AIInsight(1, "player", "LeBron James", "LeBron James is a great player.", LocalDateTime.now());
         GenerateInsightsOutputData outputData = new GenerateInsightsOutputData(insight, false);
 
         GenerateInsightsState state = new GenerateInsightsState();
@@ -44,7 +46,6 @@ class GenerateInsightsPresenterTest {
     @Test
     void testPrepareFailView() {
         String error = "Failed to generate insights.";
-        GenerateInsightsOutputData outputData = new GenerateInsightsOutputData(error, true);
 
         GenerateInsightsState state = new GenerateInsightsState();
         when(generateInsightsViewModel.getState()).thenReturn(state);
