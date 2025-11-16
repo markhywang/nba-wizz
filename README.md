@@ -60,10 +60,11 @@ Sports Analytics platform focused on NBA player and team insights. Users can loo
 - **Filter:** ID, team, position, min/max points, season, sort field/order
 
 ## API & Libraries
-- **Gemini API:** A Java API used to instantiate a client that uses a Google Gemini language model capable of performing inference on natural language requests.
+- **Gemini API:** A Java API used to instantiate a client that uses a Google Gemini language model capable of performing inference on natural language requests. The official documentation can be found under the official Google API repository: https://github.com/googleapis/java-genai
 
 ## Datasets
 - [Historical NBA Data & Player Box Scores](https://www.kaggle.com/datasets/eoinamoore/historical-nba-data-and-player-box-scores/)
 - [NBA Players Data](https://www.kaggle.com/datasets/justinas/nba-players-data)
 - [Basketball Dataset](https://www.kaggle.com/datasets/wyattowalsh/basketball)
+
 
