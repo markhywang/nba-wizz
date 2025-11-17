@@ -1,7 +1,7 @@
 package view;
 
 public class ChatMessage {
-    private final String message;
+    private String message;
     private final Sender sender;
 
     public enum Sender {
@@ -15,6 +15,10 @@ public class ChatMessage {
 
     public String getMessage() {
         return message;
+    }
+
+    public void setText(String message) {
+        this.message = message;
     }
 
     public Sender getSender() {

@@ -161,7 +161,7 @@ public class Main {
         ComparePlayersInputBoundary comparePlayersInteractor = new ComparePlayersInteractor(geminiDataAccessObject, comparePlayersPresenter);
         ComparePlayersController comparePlayersController = new ComparePlayersController(comparePlayersInteractor);
 
-        ChatView chatView = new ChatView(askQuestionViewModel, askQuestionController, comparePlayersViewModel, comparePlayersController);
+        ChatView chatView = new ChatView(askQuestionViewModel, askQuestionController, comparePlayersViewModel, comparePlayersController, viewManagerModel);
         views.add(chatView, chatView.viewName);
 
         application.pack();

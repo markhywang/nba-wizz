@@ -20,21 +20,27 @@ public class AskQuestionInteractor implements AskQuestionInputBoundary {
             return;
         }
 
+        presenter.presentLoading();
+
         try {
             String context = dataAccess.getDatasetContent();
-            String answerText = dataAccess.getAnswer(inputData.getQuestion(), context);
-
-            if (answerText.startsWith("Error:") || answerText.contains("I cannot answer this question.")) {
-                presenter.prepareFailView(answerText);
-            } else {
-                Answer answer = new Answer(answerText);
-                AskQuestionOutputData outputData = new AskQuestionOutputData(answer, inputData.getQuestion(), false);
-                presenter.prepareSuccessView(outputData);
-            }
+            dataAccess.getAnswer(
+                    inputData.getQuestion(),
+                    context,
+                    (String partialResponse) -> {
+                        Answer answer = new Answer(partialResponse);
+                        AskQuestionOutputData outputData = new AskQuestionOutputData(answer, inputData.getQuestion(), false);
+                        presenter.presentPartialResponse(outputData);
+                    },
+                    () -> {
+                        presenter.presentStreamingComplete();
+                    },
+                    (Exception e) -> {
+                        presenter.prepareFailView(e.getMessage());
+                    }
+            );
         } catch (IOException e) {
             presenter.prepareFailView("Error reading dataset: " + e.getMessage());
-        } catch (Exception e) {
-            presenter.prepareFailView("An unexpected error occurred: " + e.getMessage());
         }
     }
 }
