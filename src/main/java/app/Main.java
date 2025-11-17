@@ -139,9 +139,7 @@ public class Main {
         GenerateInsightsView generateInsightsView = new GenerateInsightsView(generateInsightsViewModel, generateInsightsController);
         views.add(generateInsightsView, generateInsightsView.viewName);
 
-        // Favorited players view (added as a card so it replaces the main view when shown)
-        FavoritedPlayersView favoritedPlayersView = new FavoritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel);
-        views.add(favoritedPlayersView, favoritedPlayersView.viewName);
+        // (FavoritedPlayersView will be registered later after SearchPlayerController exists)
 
 
         viewManagerModel.setActiveView(authView.viewName);
@@ -178,6 +176,10 @@ public class Main {
                                     favouriteController, favouriteViewModel);
 
         views.add(searchPlayerView, searchPlayerView.viewName);
+
+        // Now that SearchPlayerController and SearchPlayerView exist, register the favorited players card with them
+        FavoritedPlayersView favoritedPlayersView = new FavoritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
+        views.add(favoritedPlayersView, favoritedPlayersView.viewName);
 
 
         // Sort Players Feature Setup
