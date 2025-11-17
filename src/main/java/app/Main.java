@@ -222,6 +222,7 @@ public class Main {
         views.add(chatView, chatView.viewName);
 
         application.pack();
+        application.setExtendedState(JFrame.MAXIMIZED_BOTH);
         application.setVisible(true);
     }
 }
