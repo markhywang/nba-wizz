@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 class AskQuestionInteractorTest {
 
@@ -63,8 +64,9 @@ class AskQuestionInteractorTest {
     void execute_withInappropriateQuestion_shouldPrepareFailView() {
         dataAccess = new MockAskQuestionDataAccess() {
             @Override
-            public String getAnswer(String question, String context) {
-                return "I cannot answer this question.";
+            public void getAnswer(String question, String context, Consumer<String> onData, Runnable onComplete, Consumer<Exception> onError) {
+                onData.accept("I cannot answer this question.");
+                onComplete.run();
             }
         };
         interactor = new AskQuestionInteractor(dataAccess, presenter);
@@ -72,15 +74,16 @@ class AskQuestionInteractorTest {
         interactor.execute(inputData);
 
         MockAskQuestionPresenter mockPresenter = (MockAskQuestionPresenter) presenter;
-        assertFalse(mockPresenter.isSuccess());
-        assertEquals("I cannot answer this question.", mockPresenter.getError());
+        assertTrue(mockPresenter.isSuccess());
+        assertEquals("I cannot answer this question.", mockPresenter.getOutputData().getAnswer().getResponse());
     }
 
     // Mock implementations for testing
     private static class MockAskQuestionDataAccess implements AskQuestionDataAccessInterface {
         @Override
-        public String getAnswer(String question, String context) {
-            return "Michael Jordan is the GOAT.";
+        public void getAnswer(String question, String context, Consumer<String> onData, Runnable onComplete, Consumer<Exception> onError) {
+            onData.accept("Michael Jordan is the GOAT.");
+            onComplete.run();
         }
 
         @Override
@@ -93,6 +96,8 @@ class AskQuestionInteractorTest {
         private boolean success = false;
         private String error = null;
         private AskQuestionOutputData outputData;
+        private boolean loading = false;
+        private StringBuilder partialResponse = new StringBuilder();
 
         @Override
         public void prepareSuccessView(AskQuestionOutputData outputData) {
@@ -104,6 +109,23 @@ class AskQuestionInteractorTest {
         public void prepareFailView(String error) {
             this.success = false;
             this.error = error;
+        }
+
+        @Override
+        public void presentLoading() {
+            this.loading = true;
+        }
+
+        @Override
+        public void presentPartialResponse(AskQuestionOutputData outputData) {
+            this.success = true;
+            this.outputData = outputData;
+            this.partialResponse.append(outputData.getAnswer().getResponse());
+        }
+
+        @Override
+        public void presentStreamingComplete() {
+            this.loading = false;
         }
 
         public boolean isSuccess() {

@@ -80,6 +80,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         buttons.add(aiChat);
 
         searchForPlayer.addActionListener(this);
+        filterAndSort.addActionListener(this);
         aiInsights.addActionListener(this);
         aiChat.addActionListener(this);
 
@@ -95,6 +96,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(searchForPlayer)) {
             mainMenuController.onSearchPlayerPressed();
+        } else if (e.getSource().equals(filterAndSort)) {
+            mainMenuController.onFilterAndSortButtonClicked();
         } else if (e.getSource().equals(aiInsights)) {
             mainMenuController.switchToGenerateInsights();
         } else if (e.getSource() instanceof JButton && ((JButton) e.getSource()).getText().equals(MainMenuViewModel.AI_CHAT_BUTTON_LABEL)) {
