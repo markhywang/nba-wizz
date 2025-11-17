@@ -1,10 +1,14 @@
 package data_access;
 
 import com.google.genai.Client;
+import com.google.genai.ResponseStream;
 import com.google.genai.types.GenerateContentResponse;
 import entity.Player;
 import entity.SeasonStats;
 import entity.Team;
+import io.github.cdimascio.dotenv.Dotenv;
+import use_case.ask_question.AskQuestionDataAccessInterface;
+import use_case.compare_players.ComparePlayersDataAccessInterface;
 import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 
 import java.io.BufferedReader;
@@ -16,8 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
-public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterface {
+public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterface, AskQuestionDataAccessInterface, ComparePlayersDataAccessInterface {
 
     private static final java.util.logging.Logger LOGGER =
             java.util.logging.Logger.getLogger(GeminiDataAccessObject.class.getName());
@@ -45,7 +51,7 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
                 String[] data = line.split(cvsSplitBy);
 
                 try {
-                    String name = data[0];
+                    String name = data[0].toLowerCase();
                     String pos = data[1];
                     int age = Integer.parseInt(data[2]);
                     String teamName = data[3];
@@ -63,8 +69,12 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
                             k -> new Team(nextTeamId++, teamName, "N/A",
                                     new ArrayList<>(), 0, 0, "N/A", new HashMap<>()));
 
-                    Player player = playerMap.computeIfAbsent(name,
-                            k -> new Player(nextPlayerId++, name, team, pos, age, 0, 0, new ArrayList<>()));
+                    Player player = playerMap.get(name);
+                    if (player == null) {
+                        player = new Player(nextPlayerId++, name, team, pos, age, 0, 0, new ArrayList<>());
+                        playerMap.put(name, player);
+                    }
+
 
                     SeasonStats seasonStats = new SeasonStats(
                             season, pts, ast, trb, fgPercentage, gamesPlayed, minutesPlayed, threePtPercentage, player
@@ -85,7 +95,7 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
 
     @Override
     public Optional<Player> getPlayerByName(String playerName) {
-        return Optional.ofNullable(playerMap.get(playerName));
+        return Optional.ofNullable(playerMap.get(playerName.toLowerCase()));
     }
 
     @Override
@@ -96,31 +106,111 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
     @Override
     public String getAiInsight(String prompt) {
         LOGGER.info("Prompt sent to Gemini: " + prompt);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        callGeminiApi(prompt, future::complete, () -> {}, future::completeExceptionally);
+        return future.join();
+    }
 
-        String apiKey = System.getenv("GEMINI_API_KEY");
-        if (apiKey == null || apiKey.isEmpty()) {
-            // The README mentions GOOGLE_API_KEY, so let's check for that too.
-            apiKey = System.getenv("GOOGLE_API_KEY");
-        }
+    @Override
+    public void getAnswer(String question, String context, Consumer<String> onData, Runnable onComplete, Consumer<Exception> onError) {
+        String prompt = createQuestionPrompt(question, context);
+        LOGGER.info("Prompt sent to Gemini: " + prompt);
+        callGeminiApi(prompt, onData, onComplete, onError);
+    }
 
-        if (apiKey == null || apiKey.isEmpty()) {
-            LOGGER.severe("API key not set. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable.");
-            return "Error: API key not set.";
+    @Override
+    public String getDatasetContent() throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (InputStream inputStream = getClass().getResourceAsStream("/data/" + csvFile);
+             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                content.append(line).append("\n");
+            }
         }
+        return content.toString();
+    }
 
+    @Override
+    public String getPlayerComparison(Player player1, Player player2) {
+        String prompt = createPlayerComparisonPrompt(player1, player2);
+        LOGGER.info("Prompt sent to Gemini: " + prompt);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        callGeminiApi(prompt, future::complete, () -> {}, future::completeExceptionally);
+        return future.join();
+    }
 
-        try {
-            Client client = Client.builder().apiKey(apiKey).build();
-            GenerateContentResponse response =
-                    client.models.generateContent("gemini-2.5-flash", prompt, null);
-            return response.text();
-        } catch (NoSuchElementException e) {
-            LOGGER.severe("Gemini API returned no content: " + e.getMessage());
-            return "Error: AI returned no content.";
+    private String createQuestionPrompt(String question, String context) {
+        return "You are a sports data analyst. Your task is to answer questions *strictly* and *only* based on the statistical data provided below.\n\n" +
+                "The dataset contains data from the 1982 to 2024 seasons.\n\n" +
+                "Do not use any external knowledge. Do not make assumptions or calculations that are not directly supported by the data.\n" +
+                "Under no circumstances should you answer questions that are not about basketball player statistics.\n\n" +
+                "If the answer to the question cannot be found in the provided data, you *must* respond with the exact phrase: 'I cannot answer this question as the information is not in the dataset.'\n\n" +
+                "Dataset:\n" +
+                "```csv\n" +
+                context +
+                "```\n\n" +
+                "Question: " + question + "\n\n" +
+                "Answer:";
+    }
+
+    private String createPlayerComparisonPrompt(Player player1, Player player2) {
+        return "You are a basketball analyst. Your task is to provide a detailed comparison of two players based on the provided stats. " +
+                "Do not use any external knowledge. " +
+                "Discuss their strengths, weaknesses, and potential impact on a team.\n\n" +
+                "Player 1: " + player1.getName() + "\n" + getPlayerStatsAsString(player1) + "\n" +
+                "Player 2: " + player2.getName() + "\n" + getPlayerStatsAsString(player2) + "\n" +
+                "Comparison:";
+    }
+
+    private String getPlayerStatsAsString(Player player) {
+        StringBuilder stats = new StringBuilder();
+        stats.append("Position: ").append(player.getPosition()).append("\n");
+        if (player.getCareerStats() != null && !player.getCareerStats().isEmpty()) {
+            SeasonStats lastSeason = player.getCareerStats().get(player.getCareerStats().size() - 1);
+            stats.append("Season: ").append(lastSeason.getSeasonYear()).append("\n");
+            stats.append(String.format("Points per game: %.2f\n", lastSeason.getPointsPerGame()));
+            stats.append(String.format("Assists per game: %.2f\n", lastSeason.getAssistsPerGame()));
+            stats.append(String.format("Rebounds per game: %.2f\n", lastSeason.getReboundsPerGame()));
         }
-        catch (Exception e) {
-            LOGGER.severe("Gemini API error: " + e.getMessage());
-            return "Error generating AI insight: " + e.getMessage();
-        }
+        return stats.toString();
+    }
+
+    private void callGeminiApi(String prompt, Consumer<String> onData, Runnable onComplete, Consumer<Exception> onError) {
+        new Thread(() -> {
+            Dotenv dotenv = Dotenv.load();
+            String apiKey = dotenv.get("GEMINI_API_KEY");
+
+            if (apiKey == null || apiKey.isEmpty()) {
+                apiKey = System.getenv("GEMINI_API_KEY");
+                if (apiKey == null || apiKey.isEmpty()) {
+                    apiKey = System.getenv("GOOGLE_API_KEY");
+                }
+            }
+
+            if (apiKey == null || apiKey.isEmpty()) {
+                LOGGER.severe("API key not set. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable or in .env file.");
+                onError.accept(new Exception("Error: API key not set."));
+                return;
+            }
+
+            try {
+                Client client = Client.builder().apiKey(apiKey).build();
+                ResponseStream<GenerateContentResponse> responseStream =
+                        client.models.generateContentStream("gemini-2.5-flash", prompt, null);
+
+                for (GenerateContentResponse response : responseStream) {
+                    onData.accept(response.text());
+                }
+                responseStream.close();
+                onComplete.run();
+            } catch (NoSuchElementException e) {
+                LOGGER.severe("Gemini API returned no content: " + e.getMessage());
+                onError.accept(new Exception("Error: AI returned no content."));
+            } catch (Exception e) {
+                LOGGER.severe("Gemini API error: " + e.getMessage());
+                onError.accept(new Exception("Error generating AI insight: " + e.getMessage()));
+            }
+        }).start();
     }
 }

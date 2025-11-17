@@ -13,16 +13,17 @@ public class MainMenuInteractor implements MainMenuInputBoundary {
 
     @Override
     public void switchToSearchPlayer() {
-        mainMenuPresenter.switchToSearchPlayer();
-    }
-
-    @Override
-    public void execute(MainMenuInputData mainMenuInputData) {
-        // TODO: Implement this method
+        mainMenuPresenter.switchView("search_player");
     }
 
     @Override
     public void switchToGenerateInsights() {
-        mainMenuPresenter.switchToGenerateInsights();
+        mainMenuPresenter.switchView("generate_insights");
+    }
+
+    @Override
+    public void switchToChat() {
+        mainMenuPresenter.switchView("chat");
     }
 }
+

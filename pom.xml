@@ -17,8 +17,11 @@
     </properties>
 
     <dependencies>
-        <!-- Swing is part of the JDK, so no explicit dependency is needed for compilation.
-             Dependencies for other libraries, like Ollama4j, will be added here later. -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>5.2.2</version>
+        </dependency>
         <dependency>
             <groupId>com.google.genai</groupId>
             <artifactId>google-genai</artifactId>

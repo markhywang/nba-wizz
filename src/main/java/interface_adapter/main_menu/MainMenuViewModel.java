@@ -9,7 +9,8 @@ public class MainMenuViewModel extends ViewModel {
     public static final String SEARCH_FOR_PLAYER_BUTTON_LABEL = "Search for player";
     public static final String FILTER_SORT_BUTTON_LABEL = "Filter & Sort";
     public static final String COMPARE_BUTTON_LABEL = "Compare";
-    public static final String AI_INSIGHTS_BUTTON_LABEL = "AI Insights";
+    public static final String AI_INSIGHTS_BUTTON_LABEL = "Generate AI Insights";
+    public static final String AI_CHAT_BUTTON_LABEL = "AI Chat";
 
     private MainMenuState state = new MainMenuState();
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
