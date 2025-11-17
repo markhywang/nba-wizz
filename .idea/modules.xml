@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/nba-wizz.iml" filepath="$PROJECT_DIR$/.idea/nba-wizz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nba-wizz.iml" filepath="$PROJECT_DIR$/nba-wizz.iml" />
     </modules>
   </component>
 </project>
