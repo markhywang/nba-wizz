@@ -4,22 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a797fb5-7780-4352-a6ff-b2e6ef62e01a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortPresenter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortViewModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/SortPlayersView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+    <list default="true" id="9a797fb5-7780-4352-a6ff-b2e6ef62e01a" name="Changes" comment="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional">
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInputBoundary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInputData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInteractor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortOutputBoundary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortOutputData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/app/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/main_menu/MainMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/main_menu/MainMenuController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort/StatSorter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/MainMenuView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/MainMenuView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,8 +61,10 @@
     "Application.Main.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "git-widget-placeholder": "b2",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -118,7 +111,20 @@
       <updated>1762826540930</updated>
       <workItem from="1762826541885" duration="5000" />
     </task>
+    <task id="LOCAL-00001" summary="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional">
+      <option name="closed" value="true" />
+      <created>1763336895166</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763336895166</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
