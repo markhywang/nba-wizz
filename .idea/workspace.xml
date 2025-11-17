@@ -4,17 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a797fb5-7780-4352-a6ff-b2e6ef62e01a" name="Changes" comment="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional">
-      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersPresenter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersViewModel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInputData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInteractor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersOutputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersOutputData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/view/FilterPlayersView.java" afterDir="false" />
+    <list default="true" id="9a797fb5-7780-4352-a6ff-b2e6ef62e01a" name="Changes" comment="Finish Compare Use Case, Except for the Listener on the main menu">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/app/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Main.java" afterDir="false" />
     </list>
@@ -71,7 +62,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "filterings",
+    "git-widget-placeholder": "compare__fixed",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
@@ -152,5 +143,12 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/nba_wizz$Main.ic" NAME="Main Coverage Results" MODIFIED="1763270686917" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
   </component>
 </project>

@@ -121,15 +121,15 @@ public class Main {
 
 
         // Set up Compare
-        CompareViewModel compareViewModel = new CompareViewModel();
-        compareViewModel.setViewManagerModel(viewManagerModel);
+        // CompareViewModel compareViewModel = new CompareViewModel();
+        // compareViewModel.setViewManagerModel(viewManagerModel);
 
-        CompareOutputBoundary comparePresenter = new ComparePresenter(compareViewModel);
-        CompareInputBoundary compareInteractor = new CompareInteractor(playerDataAccessObject, teamDataAccessObject, comparePresenter);
-        CompareController compareController = new CompareController(compareInteractor);
-        CompareView compareView = new CompareView(compareController, compareViewModel);
+        // CompareOutputBoundary comparePresenter = new ComparePresenter(compareViewModel);
+        // CompareInputBoundary compareInteractor = new CompareInteractor(playerDataAccessObject, teamDataAccessObject, comparePresenter);
+        // CompareController compareController = new CompareController(compareInteractor);
+        JPanel compareView = CompareFactory.createCompareView(viewManagerModel);
 
-        views.add(compareView, compareView.viewName);
+        views.add(compareView, "compare");
 
 
         /*Search Player Feature Setup*/
@@ -198,6 +198,7 @@ public class Main {
         ComparePlayersPresenter comparePlayersPresenter = new ComparePlayersPresenter(comparePlayersViewModel, viewManagerModel);
         ComparePlayersInputBoundary comparePlayersInteractor = new ComparePlayersInteractor(geminiDataAccessObject, comparePlayersPresenter);
         ComparePlayersController comparePlayersController = new ComparePlayersController(comparePlayersInteractor);
+
 
         ChatView chatView = new ChatView(askQuestionViewModel, askQuestionController, comparePlayersViewModel, comparePlayersController, viewManagerModel);
         views.add(chatView, chatView.viewName);
