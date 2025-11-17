@@ -29,22 +29,32 @@ public class AuthView extends JPanel implements ActionListener, PropertyChangeLi
         authViewModel.addPropertyChangeListener(this);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(40, 60, 40, 60));
+        setBorder(BorderFactory.createEmptyBorder(50, 80, 50, 80));
 
         JLabel title = new JLabel(AuthViewModel.TITLE);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
+        title.setFont(new Font("Arial", Font.BOLD, 30));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(15, 15, 15, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        Font labelFont = new Font("Arial", Font.PLAIN, 16);
+        Font fieldFont = new Font("Arial", Font.PLAIN, 16);
+        Font buttonFont = new Font("Arial", Font.BOLD, 16);
+
         JLabel usernameLabel = new JLabel("Username");
+        usernameLabel.setFont(labelFont);
         JLabel passwordLabel = new JLabel("Password");
+        passwordLabel.setFont(labelFont);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         feedbackLabel.setForeground(Color.RED);
+        feedbackLabel.setFont(labelFont);
+
+        usernameField.setFont(fieldFont);
+        passwordField.setFont(fieldFont);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -59,18 +69,22 @@ public class AuthView extends JPanel implements ActionListener, PropertyChangeLi
         formPanel.add(passwordField, gbc);
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 0));
         loginButton.addActionListener(this);
         signupButton.addActionListener(this);
+        loginButton.setFont(buttonFont);
+        signupButton.setFont(buttonFont);
+        loginButton.setPreferredSize(new Dimension(120, 40));
+        signupButton.setPreferredSize(new Dimension(120, 40));
         buttonPanel.add(loginButton);
         buttonPanel.add(signupButton);
 
         add(title);
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        add(Box.createRigidArea(new Dimension(0, 30)));
         add(formPanel);
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        add(Box.createRigidArea(new Dimension(0, 30)));
         add(buttonPanel);
-        add(Box.createRigidArea(new Dimension(0, 20)));
+        add(Box.createRigidArea(new Dimension(0, 30)));
         add(feedbackLabel);
     }
 
