@@ -1,36 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="9a797fb5-7780-4352-a6ff-b2e6ef62e01a" name="Changes" comment="" />
+    <list default="true" id="9a797fb5-7780-4352-a6ff-b2e6ef62e01a" name="Changes" comment="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional">
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInputBoundary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInputData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInteractor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortOutputBoundary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortOutputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 8
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "gqjlygz"
+  }
 }]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/markhywang/nba-wizz.git",
+    "accountId": "1ff2698c-5e41-4c94-9584-d9ce40ad3a3e"
+  }
+}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="35JSAY7MKhNTqqhNuqccRw3LxVg" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.Main.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "b2",
+    "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
+    "settings.editor.selected.configurable": "project.propVCSSupport.Mappings",
+    "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="app.Main" />
+      <module name="nba-wizz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="app.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
         <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
@@ -43,6 +111,30 @@
       <updated>1762826540930</updated>
       <workItem from="1762826541885" duration="5000" />
     </task>
+    <task id="LOCAL-00001" summary="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional">
+      <option name="closed" value="true" />
+      <created>1763336895166</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763336895166</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/app/Main.java</url>
+          <line>90</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

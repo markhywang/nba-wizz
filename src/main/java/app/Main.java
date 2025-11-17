@@ -52,6 +52,14 @@ import view.compare.CompareView;
 import javax.swing.*;
 import java.awt.*;
 
+import interface_adapter.sort_players.SortViewModel;
+import interface_adapter.sort_players.SortController;
+import interface_adapter.sort_players.SortPresenter;
+import use_case.sort.SortInputBoundary;
+import use_case.sort.SortInteractor;
+import use_case.sort.SortOutputBoundary;
+import view.SortPlayersView;
+
 /*Run this file to run NBA Wizz*/
 public class Main {
     public static void main(String[] args) {
@@ -124,6 +132,26 @@ public class Main {
                 new SearchPlayerView(searchPlayerController, searchPlayerViewModel);
 
         views.add(searchPlayerView, searchPlayerView.viewName);
+
+
+        // Sort Players Feature Setup
+        SortViewModel sortViewModel = new SortViewModel();
+        sortViewModel.setViewManagerModel(viewManagerModel);
+
+        SortOutputBoundary sortPresenter =
+                new SortPresenter(sortViewModel, viewManagerModel);
+
+        SortInputBoundary sortInteractor =
+                new SortInteractor(sortPresenter);
+
+        SortController sortController =
+                new SortController(sortInteractor, sortViewModel);
+
+        SortPlayersView sortPlayersView =
+                new SortPlayersView(sortController, sortViewModel);
+
+        views.add(sortPlayersView, sortPlayersView.viewName);
+
 
         AskQuestionPresenter askQuestionPresenter = new AskQuestionPresenter(askQuestionViewModel, viewManagerModel);
         AskQuestionInputBoundary askQuestionInteractor = new AskQuestionInteractor(geminiDataAccessObject, askQuestionPresenter);
