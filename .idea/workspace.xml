@@ -5,12 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9a797fb5-7780-4352-a6ff-b2e6ef62e01a" name="Changes" comment="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional">
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInputData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInteractor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortOutputBoundary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/sort/SortOutputData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersPresenter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersState.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersViewModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInputBoundary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInputData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInteractor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersOutputBoundary.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersOutputData.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/view/FilterPlayersView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,18 +38,18 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "gqjlygz"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;gqjlygz&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/markhywang/nba-wizz.git",
-    "accountId": "1ff2698c-5e41-4c94-9584-d9ce40ad3a3e"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/markhywang/nba-wizz.git&quot;,
+    &quot;accountId&quot;: &quot;1ff2698c-5e41-4c94-9584-d9ce40ad3a3e&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 8
@@ -65,9 +71,14 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "b2",
+    "git-widget-placeholder": "filterings",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "project.propVCSSupport.Mappings",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
@@ -99,6 +110,7 @@
     <attachedChunks>
       <set>
         <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
@@ -110,6 +122,7 @@
       <option name="presentableId" value="Default" />
       <updated>1762826540930</updated>
       <workItem from="1762826541885" duration="5000" />
+      <workItem from="1763396194490" duration="3228000" />
     </task>
     <task id="LOCAL-00001" summary="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional">
       <option name="closed" value="true" />
@@ -122,6 +135,9 @@
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional" />
     <option name="LAST_COMMIT_MESSAGE" value="Add Filter &amp; Sort feature (sorting UI + use case integration)&#10;&#10;- Implement Sort use case (controller, presenter, state, viewmodel)&#10;- Add SortPlayersView with full 17-column table and header-click sorting&#10;- Connect “Filter &amp; Sort” button in MainMenuView&#10;- Register sort view in Main.java (wiring controller + presenter + view)&#10;- Fix CsvTeamDataAccessObject default CSV loading&#10;- Basic navigation to sort_players page now functional" />
@@ -131,7 +147,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/app/Main.java</url>
-          <line>90</line>
+          <line>107</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
