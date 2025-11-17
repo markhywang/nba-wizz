@@ -2,12 +2,16 @@ package app;
 
 import data_access.CsvPlayerDataAccessObject;
 import data_access.CsvTeamDataAccessObject;
+import data_access.FavouriteDataAccessObject;
 import data_access.PlayerDataAccessInterface;
 import data_access.TeamDataAccessInterface;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.compare.CompareController;
 import interface_adapter.compare.ComparePresenter;
 import interface_adapter.compare.CompareViewModel;
+import interface_adapter.favourite.FavouriteController;
+import interface_adapter.favourite.FavouritePresenter;
+import interface_adapter.favourite.FavouriteViewModel;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuPresenter;
 import interface_adapter.main_menu.MainMenuViewModel;
@@ -17,6 +21,9 @@ import use_case.compare.CompareOutputBoundary;
 import interface_adapter.search_player.SearchPlayerController;
 import interface_adapter.search_player.SearchPlayerPresenter;
 import interface_adapter.search_player.SearchPlayerViewModel;
+import use_case.favourite.FavouriteDataAccessInterface;
+import use_case.favourite.FavouriteInputBoundary;
+import use_case.favourite.FavouriteInteractor;
 import use_case.main_menu.MainMenuInputBoundary;
 import use_case.main_menu.MainMenuInteractor;
 import use_case.main_menu.MainMenuOutputBoundary;
@@ -69,6 +76,13 @@ public class Main {
         CardLayout cardLayout = new CardLayout();
         JPanel views = new JPanel(cardLayout);
         application.add(views);
+
+        // Favourites
+        FavouriteViewModel favouriteViewModel = new FavouriteViewModel();
+        FavouritePresenter favouritePresenter = new FavouritePresenter(favouriteViewModel);
+        FavouriteDataAccessInterface favouriteDataAccessInterface = new FavouriteDataAccessObject();
+        FavouriteInputBoundary favouriteInputBoundary = new FavouriteInteractor(favouritePresenter, favouriteDataAccessInterface);
+        FavouriteController favouriteController = new FavouriteController(favouriteInputBoundary);
 
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout, viewManagerModel);
@@ -129,7 +143,8 @@ public class Main {
                 new SearchPlayerController(searchPlayerInteractor);
 
         SearchPlayerView searchPlayerView =
-                new SearchPlayerView(searchPlayerController, searchPlayerViewModel);
+                new SearchPlayerView(searchPlayerController, searchPlayerViewModel,
+                                    favouriteController, favouriteViewModel);
 
         views.add(searchPlayerView, searchPlayerView.viewName);
 
