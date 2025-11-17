@@ -3,9 +3,13 @@ package app;
 import data_access.CsvPlayerDataAccessObject;
 import data_access.CsvTeamDataAccessObject;
 import data_access.FavouriteDataAccessObject;
+import data_access.FileUserDataAccessObject;
 import data_access.PlayerDataAccessInterface;
 import data_access.TeamDataAccessInterface;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.auth.AuthController;
+import interface_adapter.auth.AuthPresenter;
+import interface_adapter.auth.AuthViewModel;
 import interface_adapter.compare.CompareController;
 import interface_adapter.compare.ComparePresenter;
 import interface_adapter.compare.CompareViewModel;
@@ -15,6 +19,11 @@ import interface_adapter.favourite.FavouriteViewModel;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuPresenter;
 import interface_adapter.main_menu.MainMenuViewModel;
+import use_case.authentication.UserDataAccessInterface;
+import use_case.authentication.login.LoginInputBoundary;
+import use_case.authentication.login.LoginInteractor;
+import use_case.authentication.signup.SignupInputBoundary;
+import use_case.authentication.signup.SignupInteractor;
 import use_case.compare.CompareInputBoundary;
 import use_case.compare.CompareInteractor;
 import use_case.compare.CompareOutputBoundary;
@@ -30,6 +39,7 @@ import use_case.main_menu.MainMenuOutputBoundary;
 import use_case.search_player.SearchPlayerInputBoundary;
 import use_case.search_player.SearchPlayerInteractor;
 import use_case.search_player.SearchPlayerOutputBoundary;
+import view.AuthView;
 import view.MainMenuView;
 import view.SearchPlayerView;
 import view.ViewManager;
@@ -94,6 +104,7 @@ public class Main {
         GenerateInsightsViewModel generateInsightsViewModel = new GenerateInsightsViewModel();
         AskQuestionViewModel askQuestionViewModel = new AskQuestionViewModel();
         ComparePlayersViewModel comparePlayersViewModel = new ComparePlayersViewModel();
+        AuthViewModel authViewModel = new AuthViewModel();
 
 
         // The data access object.
@@ -101,6 +112,14 @@ public class Main {
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
         GeminiDataAccessObject geminiDataAccessObject = new GeminiDataAccessObject();
         TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("TeamStatsDataset.csv");
+
+        UserDataAccessInterface userDataAccessInterface = new FileUserDataAccessObject("src/main/java/data/users.csv");
+        AuthPresenter authPresenter = new AuthPresenter(authViewModel, viewManagerModel, mainMenuViewModel);
+        LoginInputBoundary loginInputBoundary = new LoginInteractor(userDataAccessInterface, authPresenter);
+        SignupInputBoundary signupInputBoundary = new SignupInteractor(userDataAccessInterface, authPresenter);
+        AuthController authController = new AuthController(loginInputBoundary, signupInputBoundary);
+        AuthView authView = new AuthView(authViewModel, authController);
+        views.add(authView, authView.viewName);
 
         MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
         MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuPresenter);
@@ -116,7 +135,7 @@ public class Main {
         views.add(generateInsightsView, generateInsightsView.viewName);
 
 
-        viewManagerModel.setActiveView(mainMenuView.viewName);
+        viewManagerModel.setActiveView(authView.viewName);
         viewManagerModel.firePropertyChanged();
 
 
