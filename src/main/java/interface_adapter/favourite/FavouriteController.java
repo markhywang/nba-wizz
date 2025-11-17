@@ -11,7 +11,7 @@ public class FavouriteController {
     }
 
     public void favouriteToggle(String playerName) {
-        this.favouriteInputBoundary.toggle(new FavouriteInputData(playerName));
+        this.favouriteInputBoundary.toggle(new FavouriteInputData(playerName.toLowerCase()));
     }
 
     public boolean isFavourite(String playerName) {

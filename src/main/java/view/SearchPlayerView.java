@@ -23,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import use_case.search_player.SearchPlayerOutputBoundary;
 
 /**
  * The SearchPlayerView is the UI where users can search for NBA players and
@@ -45,8 +46,9 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     private final DefaultTableModel tableModel;
     private final JButton homeButton;
     private final JButton clearButton;
-    private JButton favouriteButton;
+    private final JButton favouriteButton;
     private boolean isFavourite = false;
+    private String selected = null;
 
 
     private LineChart<Number, Number> lineChart;
@@ -60,9 +62,6 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         this.viewModel.addPropertyChangeListener(this);
         favouriteViewModel.addPropertyChangeListener(this);
         this.favouriteController = favouriteController;
-
-        // test
-        favouriteController.favouriteToggle("test1");
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -83,13 +82,8 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_empty.png")));
 
         favouriteButton.addActionListener(e -> {
-            String name = playerNameField.getText().trim();
-            if (!name.isEmpty()) {
-                favouriteController.favouriteToggle(name);  // <-- triggers your state update
-
-                // Toggle UI view instantly
-                isFavourite = !isFavourite;
-                updateStarIcon();
+            if (selected != null) {
+                favouriteController.favouriteToggle(selected);  // <-- triggers your state update
             }
         });
 
@@ -224,15 +218,14 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getNewValue() instanceof FavouriteState) {
-            if (playerNameField == null) {
+            if (selected == null) {
                 return;
             }
             FavouriteState fs = (FavouriteState) evt.getNewValue();
-            System.out.println(fs.getFavourites());
 
-            // Update star state if the name matches
-            String currentName = playerNameField.getText().trim();
-            isFavourite = fs.getFavourites().contains(currentName);
+            String currentName = selected;
+            isFavourite = fs.getFavourites().contains(currentName.toLowerCase());
+            System.out.println("Now " + selected + " is isFavourite:" + isFavourite);
             updateStarIcon();
             return;
         }
@@ -249,6 +242,11 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
                 );
                 return;
             }
+
+            selected = playerNameField.getText().trim();
+            isFavourite = favouriteController.isFavourite(selected.toLowerCase());
+            updateStarIcon();
+            System.out.println(selected + " " + isFavourite);
 
             tableModel.setRowCount(0);
             for (String[] row : state.getResultsTableData()) {
