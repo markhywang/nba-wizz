@@ -33,6 +33,7 @@ import interface_adapter.search_player.SearchPlayerViewModel;
 import use_case.favourite.FavouriteDataAccessInterface;
 import use_case.favourite.FavouriteInputBoundary;
 import use_case.favourite.FavouriteInteractor;
+import use_case.favourite.FavouriteOutputData;
 import use_case.main_menu.MainMenuInputBoundary;
 import use_case.main_menu.MainMenuInteractor;
 import use_case.main_menu.MainMenuOutputBoundary;
@@ -52,6 +53,7 @@ import use_case.generate_insights.GenerateInsightsInputBoundary;
 import use_case.generate_insights.GenerateInsightsInteractor;
 import use_case.generate_insights.GenerateInsightsOutputBoundary;
 import view.GenerateInsightsView;
+import view.FavoritedPlayersView;
 import interface_adapter.ask_question.AskQuestionController;
 import interface_adapter.ask_question.AskQuestionPresenter;
 import interface_adapter.ask_question.AskQuestionViewModel;
@@ -96,6 +98,8 @@ public class Main {
         FavouriteDataAccessInterface favouriteDataAccessInterface = new FavouriteDataAccessObject();
         FavouriteInputBoundary favouriteInputBoundary = new FavouriteInteractor(favouritePresenter, favouriteDataAccessInterface);
         FavouriteController favouriteController = new FavouriteController(favouriteInputBoundary);
+        // Initialize the favourite view model with existing favourites from storage
+        favouritePresenter.addFavourite(new FavouriteOutputData(true, favouriteInputBoundary.getFavourites()));
 
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout, viewManagerModel);
@@ -123,7 +127,8 @@ public class Main {
 
         MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
         MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuPresenter);
-        MainMenuController mainMenuController = new MainMenuController(mainMenuInteractor, viewManagerModel);
+        // Pass the favouriteController to MainMenuController so it can provide favorited players
+        MainMenuController mainMenuController = new MainMenuController(mainMenuInteractor, viewManagerModel, favouriteController);
         MainMenuView mainMenuView = new MainMenuView(mainMenuViewModel, mainMenuController);
         views.add(mainMenuView, mainMenuView.viewName);
 
@@ -133,6 +138,10 @@ public class Main {
 
         GenerateInsightsView generateInsightsView = new GenerateInsightsView(generateInsightsViewModel, generateInsightsController);
         views.add(generateInsightsView, generateInsightsView.viewName);
+
+        // Favorited players view (added as a card so it replaces the main view when shown)
+        FavoritedPlayersView favoritedPlayersView = new FavoritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel);
+        views.add(favoritedPlayersView, favoritedPlayersView.viewName);
 
 
         viewManagerModel.setActiveView(authView.viewName);

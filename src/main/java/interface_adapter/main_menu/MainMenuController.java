@@ -1,17 +1,23 @@
 package interface_adapter.main_menu;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.favourite.FavouriteController;
 import use_case.main_menu.MainMenuInputBoundary;
 import use_case.main_menu.MainMenuInputData;
+
+import java.util.List;
 
 public class MainMenuController {
     private final MainMenuInputBoundary interactor;
     private final ViewManagerModel viewManagerModel;
+    private final FavouriteController favouriteController;
 
     public MainMenuController(MainMenuInputBoundary interactor,
-                              ViewManagerModel viewManagerModel) {
+                              ViewManagerModel viewManagerModel,
+                              FavouriteController favouriteController) {
         this.interactor = interactor;
         this.viewManagerModel = viewManagerModel;
+        this.favouriteController = favouriteController;
     }
 
     public void onSearchPlayerPressed() {
@@ -36,4 +42,12 @@ public class MainMenuController {
         viewManagerModel.firePropertyChanged();
     }
 
+    public void onViewFavoritedPlayersPressed() {
+        viewManagerModel.setActiveView("favorited_players");
+        viewManagerModel.firePropertyChanged();
+    }
+
+    public List<String> getFavoritedPlayers() {
+        return favouriteController.getFavourites();
+    }
 }

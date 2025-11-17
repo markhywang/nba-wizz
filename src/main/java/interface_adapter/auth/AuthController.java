@@ -22,6 +22,7 @@ public class AuthController {
     public void signup(String username, String password) {
         signupInputBoundary.execute(new SignupInputData(username, password));
     }
+
 }
 
 
