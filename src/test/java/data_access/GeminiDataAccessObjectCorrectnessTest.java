@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class GeminiDataAccessObjectCorrectnessTest {
 
@@ -56,10 +58,12 @@ public class GeminiDataAccessObjectCorrectnessTest {
     // }
 
     @Test
-    void testPlayerComparison_SpecificCriteria() throws IOException {
+    void testPlayerComparison_SpecificCriteria() throws IOException, ExecutionException, InterruptedException {
         String question = "Who averaged more assists in the 2021 season, Chris Paul or Russell Westbrook?";
         String context = dataAccessObject.getDatasetContent();
-        String answer = dataAccessObject.getAnswer(question, context);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        dataAccessObject.getAnswer(question, context, future::complete, () -> {}, future::completeExceptionally);
+        String answer = future.join();
 
         assertNotNull(answer, "The answer should not be null.");
         assertFalse(answer.toLowerCase().contains("cannot answer"), "The AI should be able to answer the question as the 2021 data is in the dataset.");
@@ -67,32 +71,38 @@ public class GeminiDataAccessObjectCorrectnessTest {
     }
 
     @Test
-    void testAskQuestion_TeamPerformance() throws IOException {
+    void testAskQuestion_TeamPerformance() throws IOException, ExecutionException, InterruptedException {
         String question = "How many wins did the Golden State Warriors have in the 2016 season?";
         String context = dataAccessObject.getDatasetContent();
-        String answer = dataAccessObject.getAnswer(question, context);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        dataAccessObject.getAnswer(question, context, future::complete, () -> {}, future::completeExceptionally);
+        String answer = future.join();
 
         assertNotNull(answer, "The answer should not be null.");
         assertTrue(answer.toLowerCase().contains("cannot answer") && answer.toLowerCase().contains("dataset"), "The AI should not be able to answer the question.");
     }
 
     @Test
-    void testAskQuestion_NonExistentPlayer() throws IOException {
+    void testAskQuestion_NonExistentPlayer() throws IOException, ExecutionException, InterruptedException {
         String question = "What are the stats for the player John Doe?";
         String context = dataAccessObject.getDatasetContent();
-        String answer = dataAccessObject.getAnswer(question, context);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        dataAccessObject.getAnswer(question, context, future::complete, () -> {}, future::completeExceptionally);
+        String answer = future.join();
 
         assertNotNull(answer, "The answer should not be null.");
         assertTrue(answer.toLowerCase().contains("cannot answer") && answer.toLowerCase().contains("dataset"), "The AI should indicate that the player does not exist.");
     }
 
     @Test
-    void testAskQuestion_IncorrectButPlausibleAnswer() throws IOException {
+    void testAskQuestion_IncorrectButPlausibleAnswer() throws IOException, ExecutionException, InterruptedException {
         // This tests if the AI hallucinates a wrong but plausible answer if the context is misleading or insufficient.
         // For example, asking for a stat that is not directly in the dataset but could be inferred incorrectly.
         String question = "What was Stephen Curry's highest 3-point percentage in a single season?";
         String context = dataAccessObject.getDatasetContent();
-        String answer = dataAccessObject.getAnswer(question, context);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        dataAccessObject.getAnswer(question, context, future::complete, () -> {}, future::completeExceptionally);
+        String answer = future.join();
 
         assertNotNull(answer, "The answer should not be null.");
         // Assuming the dataset does not explicitly state 'highest 3-point percentage' but has season-by-season stats.
@@ -106,20 +116,24 @@ public class GeminiDataAccessObjectCorrectnessTest {
     }
 
     @Test
-    void testAskQuestion_OutOfContextQuestion() throws IOException {
+    void testAskQuestion_OutOfContextQuestion() throws IOException, ExecutionException, InterruptedException {
         String question = "What is the capital of France?";
         String context = dataAccessObject.getDatasetContent();
-        String answer = dataAccessObject.getAnswer(question, context);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        dataAccessObject.getAnswer(question, context, future::complete, () -> {}, future::completeExceptionally);
+        String answer = future.join();
 
         assertNotNull(answer, "The answer should not be null.");
         assertTrue(answer.toLowerCase().contains("cannot answer") && answer.toLowerCase().contains("dataset"), "The AI should indicate it cannot answer out-of-context questions.");
     }
 
     @Test
-    void testAskQuestion_AmbiguousQuestion() throws IOException {
+    void testAskQuestion_AmbiguousQuestion() throws IOException, ExecutionException, InterruptedException {
         String question = "Who is the best player?";
         String context = dataAccessObject.getDatasetContent();
-        String answer = dataAccessObject.getAnswer(question, context);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        dataAccessObject.getAnswer(question, context, future::complete, () -> {}, future::completeExceptionally);
+        String answer = future.join();
 
         assertNotNull(answer, "The answer should not be null.");
         // For ambiguous questions, the AI should ideally ask for clarification or state that 'best' is subjective.

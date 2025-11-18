@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterface, AskQuestionDataAccessInterface, ComparePlayersDataAccessInterface {
 
@@ -104,14 +106,37 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
     @Override
     public String getAiInsight(String prompt) {
         LOGGER.info("Prompt sent to Gemini: " + prompt);
-        return callGeminiApi(prompt);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        StringBuilder responseBuilder = new StringBuilder();
+        callGeminiApi(prompt, 
+            responseBuilder::append, // Accumulate each chunk
+            () -> future.complete(responseBuilder.toString()), // Complete with full response when done
+            future::completeExceptionally);
+        return future.join();
     }
 
     @Override
-    public String getAnswer(String question, String context) {
+    public void getAnswer(String question, String context, Consumer<String> onData, Runnable onComplete, Consumer<Exception> onError) {
         String prompt = createQuestionPrompt(question, context);
         LOGGER.info("Prompt sent to Gemini: " + prompt);
-        return callGeminiApi(prompt);
+        callGeminiApi(prompt, onData, onComplete, onError);
+    }
+
+    @Override
+    public String getAnswerSync(String question, String context) throws IOException {
+        String prompt = createQuestionPrompt(question, context);
+        LOGGER.info("Prompt sent to Gemini: " + prompt);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        StringBuilder responseBuilder = new StringBuilder();
+        callGeminiApi(prompt, 
+            responseBuilder::append, // Accumulate each chunk
+            () -> future.complete(responseBuilder.toString()), // Complete with full response when done
+            (Exception e) -> future.completeExceptionally(new IOException("Error getting answer: " + e.getMessage())));
+        try {
+            return future.join();
+        } catch (Exception e) {
+            throw new IOException("Error getting answer: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -131,7 +156,13 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
     public String getPlayerComparison(Player player1, Player player2) {
         String prompt = createPlayerComparisonPrompt(player1, player2);
         LOGGER.info("Prompt sent to Gemini: " + prompt);
-        return callGeminiApi(prompt);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        StringBuilder responseBuilder = new StringBuilder();
+        callGeminiApi(prompt, 
+            responseBuilder::append, // Accumulate each chunk
+            () -> future.complete(responseBuilder.toString()), // Complete with full response when done
+            future::completeExceptionally);
+        return future.join();
     }
 
     private String createQuestionPrompt(String question, String context) {
@@ -170,39 +201,41 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
         return stats.toString();
     }
 
-    private String callGeminiApi(String prompt) {
-        Dotenv dotenv = Dotenv.load();
-        String apiKey = dotenv.get("GEMINI_API_KEY");
+    private void callGeminiApi(String prompt, Consumer<String> onData, Runnable onComplete, Consumer<Exception> onError) {
+        new Thread(() -> {
+            Dotenv dotenv = Dotenv.load();
+            String apiKey = dotenv.get("GEMINI_API_KEY");
 
-        if (apiKey == null || apiKey.isEmpty()) {
-            apiKey = System.getenv("GEMINI_API_KEY");
             if (apiKey == null || apiKey.isEmpty()) {
-                apiKey = System.getenv("GOOGLE_API_KEY");
+                apiKey = System.getenv("GEMINI_API_KEY");
+                if (apiKey == null || apiKey.isEmpty()) {
+                    apiKey = System.getenv("GOOGLE_API_KEY");
+                }
             }
-        }
 
-        if (apiKey == null || apiKey.isEmpty()) {
-            LOGGER.severe("API key not set. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable or in .env file.");
-            return "Error: API key not set.";
-        }
-
-        try {
-            Client client = Client.builder().apiKey(apiKey).build();
-            ResponseStream<GenerateContentResponse> responseStream =
-                    client.models.generateContentStream("gemini-2.5-flash", prompt, null);
-
-            StringBuilder insight = new StringBuilder();
-            for (GenerateContentResponse response : responseStream) {
-                insight.append(response.text());
+            if (apiKey == null || apiKey.isEmpty()) {
+                LOGGER.severe("API key not set. Please set GOOGLE_API_KEY or GEMINI_API_KEY environment variable or in .env file.");
+                onError.accept(new Exception("Error: API key not set."));
+                return;
             }
-            responseStream.close();
-            return insight.toString();
-        } catch (NoSuchElementException e) {
-            LOGGER.severe("Gemini API returned no content: " + e.getMessage());
-            return "Error: AI returned no content.";
-        } catch (Exception e) {
-            LOGGER.severe("Gemini API error: " + e.getMessage());
-            return "Error generating AI insight: " + e.getMessage();
-        }
+
+            try {
+                Client client = Client.builder().apiKey(apiKey).build();
+                ResponseStream<GenerateContentResponse> responseStream =
+                        client.models.generateContentStream("gemini-2.5-flash", prompt, null);
+
+                for (GenerateContentResponse response : responseStream) {
+                    onData.accept(response.text());
+                }
+                responseStream.close();
+                onComplete.run();
+            } catch (NoSuchElementException e) {
+                LOGGER.severe("Gemini API returned no content: " + e.getMessage());
+                onError.accept(new Exception("Error: AI returned no content."));
+            } catch (Exception e) {
+                LOGGER.severe("Gemini API error: " + e.getMessage());
+                onError.accept(new Exception("Error generating AI insight: " + e.getMessage()));
+            }
+        }).start();
     }
 }

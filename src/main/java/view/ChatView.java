@@ -1,6 +1,8 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.ask_question.AskQuestionController;
+import interface_adapter.ask_question.AskQuestionState;
 import interface_adapter.ask_question.AskQuestionViewModel;
 import interface_adapter.compare_players.ComparePlayersController;
 import interface_adapter.compare_players.ComparePlayersViewModel;
@@ -19,13 +21,16 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     private final AskQuestionController askQuestionController;
     private final ComparePlayersViewModel comparePlayersViewModel;
     private final ComparePlayersController comparePlayersController;
+    private final ViewManagerModel viewManagerModel;
 
     private final DefaultListModel<ChatMessage> chatModel;
     private final JList<ChatMessage> chatList;
     private final JTextField inputField;
     private final JButton sendButton;
+    private final JButton homeButton;
     private final JRadioButton askQuestionRadioButton;
     private final JRadioButton comparePlayersRadioButton;
+    private final JLabel loadingIndicator;
     private static final Font INPUT_FONT = new Font("Arial", Font.PLAIN, 16);
 
 
@@ -39,16 +44,32 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     public ChatView(AskQuestionViewModel askQuestionViewModel,
                     AskQuestionController askQuestionController,
                     ComparePlayersViewModel comparePlayersViewModel,
-                    ComparePlayersController comparePlayersController) {
+                    ComparePlayersController comparePlayersController,
+                    ViewManagerModel viewManagerModel) {
         this.askQuestionViewModel = askQuestionViewModel;
         this.askQuestionController = askQuestionController;
         this.comparePlayersViewModel = comparePlayersViewModel;
         this.comparePlayersController = comparePlayersController;
+        this.viewManagerModel = viewManagerModel;
 
         askQuestionViewModel.addPropertyChangeListener(this);
         comparePlayersViewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout());
+
+        // Top panel for Home button and loading indicator
+        JPanel topPanel = new JPanel(new BorderLayout());
+        homeButton = new JButton("Home");
+        homeButton.setFont(INPUT_FONT);
+        homeButton.addActionListener(this);
+        topPanel.add(homeButton, BorderLayout.WEST);
+
+        loadingIndicator = new JLabel("Loading...", SwingConstants.CENTER);
+        loadingIndicator.setFont(INPUT_FONT);
+        loadingIndicator.setVisible(false);
+        topPanel.add(loadingIndicator, BorderLayout.CENTER);
+        add(topPanel, BorderLayout.NORTH);
+
 
         chatModel = new DefaultListModel<>();
         chatList = new JList<>(chatModel);
@@ -107,6 +128,13 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
             if (currentMode == Mode.ASK_QUESTION) {
                                     chatModel.addElement(new ChatMessage(inputText, ChatMessage.Sender.USER));
                                     chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+
+                                    AskQuestionState currentState = askQuestionViewModel.getState();
+                                    currentState.setAnswer(""); // Clear the old answer before starting a new question
+                                    currentState.setError(null); // Clear any previous errors
+                                    currentState.setLoading(true);
+                                    askQuestionViewModel.firePropertyChanged();
+
                                     askQuestionController.execute(inputText);            } else {
                 String[] playerNames = inputText.split(",");
                 if (playerNames.length == 2) {
@@ -118,6 +146,9 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
                 }
             }
             inputField.setText("");
+        } else if (e.getSource() == homeButton) {
+            viewManagerModel.setActiveView("main_menu");
+            viewManagerModel.firePropertyChanged();
         }
     }
 
@@ -125,12 +156,26 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
             if (evt.getSource() == askQuestionViewModel) {
-                String answer = askQuestionViewModel.getState().getAnswer();
-                if (answer != null && !answer.isEmpty()) {
-                    chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
+                AskQuestionState state = askQuestionViewModel.getState();
+                loadingIndicator.setVisible(state.isLoading());
+
+                String answer = state.getAnswer();
+                // Only display the answer when loading is complete (non-streaming)
+                if (answer != null && !answer.isEmpty() && !state.isLoading()) {
+                    // If the last message is from the user, create a new AI message bubble
+                    // Otherwise, update the existing AI message
+                    if (chatModel.isEmpty() || chatModel.lastElement().getSender() == ChatMessage.Sender.USER) {
+                        chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
+                    } else {
+                        // Last element is an AI message, update it
+                        chatModel.lastElement().setText(answer);
+                    }
                     chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                    chatList.repaint();
                 }
-                String error = askQuestionViewModel.getState().getError();
+
+
+                String error = state.getError();
                 if (error != null) {
                     chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
                     chatList.ensureIndexIsVisible(chatModel.getSize() - 1);

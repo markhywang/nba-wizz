@@ -1,5 +1,8 @@
 package view;
 
+import interface_adapter.favourite.FavouriteController;
+import interface_adapter.favourite.FavouriteState;
+import interface_adapter.favourite.FavouriteViewModel;
 import interface_adapter.search_player.SearchPlayerController;
 import interface_adapter.search_player.SearchPlayerViewModel;
 import interface_adapter.search_player.SearchPlayerState;
@@ -20,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import use_case.search_player.SearchPlayerOutputBoundary;
 
 /**
  * The SearchPlayerView is the UI where users can search for NBA players and
@@ -31,6 +35,7 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
 
     private final SearchPlayerController controller;
     private final SearchPlayerViewModel viewModel;
+    private final FavouriteController favouriteController;
 
     private final JTextField playerNameField;
     private final JTextField startSeasonField;
@@ -41,14 +46,22 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     private final DefaultTableModel tableModel;
     private final JButton homeButton;
     private final JButton clearButton;
+    private final JButton favouriteButton;
+    private boolean isFavourite = false;
+    private String selected = null;
+
 
     private LineChart<Number, Number> lineChart;
 
     public SearchPlayerView(SearchPlayerController controller,
-                            SearchPlayerViewModel viewModel) {
+                            SearchPlayerViewModel viewModel,
+                            FavouriteController favouriteController,
+                            FavouriteViewModel favouriteViewModel) {
         this.controller = controller;
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this);
+        favouriteViewModel.addPropertyChangeListener(this);
+        this.favouriteController = favouriteController;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -61,9 +74,29 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         playerNameField = new JTextField();
         startSeasonField = new JTextField();
         endSeasonField = new JTextField();
+        favouriteButton = new JButton();
+        favouriteButton.setPreferredSize(new Dimension(50, 50));
+        favouriteButton.setBorderPainted(false);
+        favouriteButton.setContentAreaFilled(false);
+        favouriteButton.setFocusPainted(false);
+        favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_empty.png")));
+
+        favouriteButton.addActionListener(e -> {
+            if (selected != null) {
+                favouriteController.favouriteToggle(selected);  // <-- triggers your state update
+            }
+        });
+
 
         inputPanel.add(new JLabel("Player Name:"));
-        inputPanel.add(playerNameField);
+
+        // A mini panel to hold the text field + star
+        JPanel namePanel = new JPanel(new BorderLayout());
+        namePanel.add(playerNameField, BorderLayout.CENTER);
+        namePanel.add(favouriteButton, BorderLayout.EAST);
+
+        inputPanel.add(namePanel);
+
         inputPanel.add(new JLabel("Start Season:"));
         inputPanel.add(startSeasonField);
         inputPanel.add(new JLabel("End Season:"));
@@ -184,42 +217,70 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        SearchPlayerState state = (SearchPlayerState) evt.getNewValue();
+        if (evt.getNewValue() instanceof FavouriteState) {
+            if (selected == null) {
+                return;
+            }
+            FavouriteState fs = (FavouriteState) evt.getNewValue();
 
-        // Handle error from presenter/interactor
-        if (state.getErrorMessage() != null && !state.getErrorMessage().isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    state.getErrorMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            String currentName = selected;
+            isFavourite = fs.getFavourites().contains(currentName.toLowerCase());
+            System.out.println("Now " + selected + " is isFavourite:" + isFavourite);
+            updateStarIcon();
             return;
         }
+        else {
+            SearchPlayerState state = (SearchPlayerState) evt.getNewValue();
 
-        tableModel.setRowCount(0);
-        for (String[] row : state.getResultsTableData()) {
-            tableModel.addRow(row);
+            // Handle error from presenter/interactor
+            if (state.getErrorMessage() != null && !state.getErrorMessage().isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        state.getErrorMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
+            selected = playerNameField.getText().trim();
+            isFavourite = favouriteController.isFavourite(selected.toLowerCase());
+            updateStarIcon();
+            System.out.println(selected + " " + isFavourite);
+
+            tableModel.setRowCount(0);
+            for (String[] row : state.getResultsTableData()) {
+                tableModel.addRow(row);
+            }
+
+            Platform.runLater(() -> {
+                lineChart.getData().clear();
+
+                Map<String, Map<Integer, Double>> graphData = state.getGraphData();
+                if (graphData == null) return;
+
+                for (String statName : graphData.keySet()) {
+                    XYChart.Series<Number, Number> series = new XYChart.Series<>();
+                    series.setName(statName);
+
+                    for (var entry : graphData.get(statName).entrySet()) {
+                        int season = entry.getKey();
+                        double value = entry.getValue();
+                        series.getData().add(new XYChart.Data<>(season, value));
+                    }
+
+                    lineChart.getData().add(series);
+                }
+            });
         }
 
-        Platform.runLater(() -> {
-            lineChart.getData().clear();
-
-            Map<String, Map<Integer, Double>> graphData = state.getGraphData();
-            if (graphData == null) return;
-
-            for (String statName : graphData.keySet()) {
-                XYChart.Series<Number, Number> series = new XYChart.Series<>();
-                series.setName(statName);
-
-                for (var entry : graphData.get(statName).entrySet()) {
-                    int season = entry.getKey();
-                    double value = entry.getValue();
-                    series.getData().add(new XYChart.Data<>(season, value));
-                }
-
-                lineChart.getData().add(series);
-            }
-        });
     }
+    private void updateStarIcon() {
+        if (isFavourite) {
+            favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_filled.png")));
+        } else {
+            favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_empty.png")));
+        }
+    }
+
 }

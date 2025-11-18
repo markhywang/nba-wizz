@@ -1,8 +1,10 @@
 package use_case.ask_question;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public interface AskQuestionDataAccessInterface {
-    String getAnswer(String question, String context) throws IOException;
+    void getAnswer(String question, String context, Consumer<String> onData, Runnable onComplete, Consumer<Exception> onError) throws IOException;
+    String getAnswerSync(String question, String context) throws IOException;
     String getDatasetContent() throws IOException;
 }

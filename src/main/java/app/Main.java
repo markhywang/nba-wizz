@@ -2,27 +2,44 @@ package app;
 
 import data_access.CsvPlayerDataAccessObject;
 import data_access.CsvTeamDataAccessObject;
+import data_access.FavouriteDataAccessObject;
+import data_access.FileUserDataAccessObject;
 import data_access.PlayerDataAccessInterface;
 import data_access.TeamDataAccessInterface;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.auth.AuthController;
+import interface_adapter.auth.AuthPresenter;
+import interface_adapter.auth.AuthViewModel;
 import interface_adapter.compare.CompareController;
 import interface_adapter.compare.ComparePresenter;
 import interface_adapter.compare.CompareViewModel;
+import interface_adapter.favourite.FavouriteController;
+import interface_adapter.favourite.FavouritePresenter;
+import interface_adapter.favourite.FavouriteViewModel;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuPresenter;
 import interface_adapter.main_menu.MainMenuViewModel;
+import use_case.authentication.UserDataAccessInterface;
+import use_case.authentication.login.LoginInputBoundary;
+import use_case.authentication.login.LoginInteractor;
+import use_case.authentication.signup.SignupInputBoundary;
+import use_case.authentication.signup.SignupInteractor;
 import use_case.compare.CompareInputBoundary;
 import use_case.compare.CompareInteractor;
 import use_case.compare.CompareOutputBoundary;
 import interface_adapter.search_player.SearchPlayerController;
 import interface_adapter.search_player.SearchPlayerPresenter;
 import interface_adapter.search_player.SearchPlayerViewModel;
+import use_case.favourite.FavouriteDataAccessInterface;
+import use_case.favourite.FavouriteInputBoundary;
+import use_case.favourite.FavouriteInteractor;
 import use_case.main_menu.MainMenuInputBoundary;
 import use_case.main_menu.MainMenuInteractor;
 import use_case.main_menu.MainMenuOutputBoundary;
 import use_case.search_player.SearchPlayerInputBoundary;
 import use_case.search_player.SearchPlayerInteractor;
 import use_case.search_player.SearchPlayerOutputBoundary;
+import view.AuthView;
 import view.MainMenuView;
 import view.SearchPlayerView;
 import view.ViewManager;
@@ -59,6 +76,9 @@ import use_case.sort.SortInputBoundary;
 import use_case.sort.SortInteractor;
 import use_case.sort.SortOutputBoundary;
 import view.SortPlayersView;
+import interface_adapter.filter_players.*;
+import use_case.filter_players.*;
+import view.FilterPlayersView;
 
 /*Run this file to run NBA Wizz*/
 public class Main {
@@ -70,6 +90,13 @@ public class Main {
         JPanel views = new JPanel(cardLayout);
         application.add(views);
 
+        // Favourites
+        FavouriteViewModel favouriteViewModel = new FavouriteViewModel();
+        FavouritePresenter favouritePresenter = new FavouritePresenter(favouriteViewModel);
+        FavouriteDataAccessInterface favouriteDataAccessInterface = new FavouriteDataAccessObject();
+        FavouriteInputBoundary favouriteInputBoundary = new FavouriteInteractor(favouritePresenter, favouriteDataAccessInterface);
+        FavouriteController favouriteController = new FavouriteController(favouriteInputBoundary);
+
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout, viewManagerModel);
 
@@ -77,6 +104,7 @@ public class Main {
         GenerateInsightsViewModel generateInsightsViewModel = new GenerateInsightsViewModel();
         AskQuestionViewModel askQuestionViewModel = new AskQuestionViewModel();
         ComparePlayersViewModel comparePlayersViewModel = new ComparePlayersViewModel();
+        AuthViewModel authViewModel = new AuthViewModel();
 
 
         // The data access object.
@@ -84,6 +112,14 @@ public class Main {
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
         GeminiDataAccessObject geminiDataAccessObject = new GeminiDataAccessObject();
         TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("TeamStatsDataset.csv");
+
+        UserDataAccessInterface userDataAccessInterface = new FileUserDataAccessObject("src/main/java/data/users.csv");
+        AuthPresenter authPresenter = new AuthPresenter(authViewModel, viewManagerModel, mainMenuViewModel);
+        LoginInputBoundary loginInputBoundary = new LoginInteractor(userDataAccessInterface, authPresenter);
+        SignupInputBoundary signupInputBoundary = new SignupInteractor(userDataAccessInterface, authPresenter);
+        AuthController authController = new AuthController(loginInputBoundary, signupInputBoundary);
+        AuthView authView = new AuthView(authViewModel, authController);
+        views.add(authView, authView.viewName);
 
         MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
         MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuPresenter);
@@ -99,20 +135,20 @@ public class Main {
         views.add(generateInsightsView, generateInsightsView.viewName);
 
 
-        viewManagerModel.setActiveView(mainMenuView.viewName);
+        viewManagerModel.setActiveView(authView.viewName);
         viewManagerModel.firePropertyChanged();
 
 
         // Set up Compare
-        CompareViewModel compareViewModel = new CompareViewModel();
-        compareViewModel.setViewManagerModel(viewManagerModel);
+        // CompareViewModel compareViewModel = new CompareViewModel();
+        // compareViewModel.setViewManagerModel(viewManagerModel);
 
-        CompareOutputBoundary comparePresenter = new ComparePresenter(compareViewModel);
-        CompareInputBoundary compareInteractor = new CompareInteractor(playerDataAccessObject, teamDataAccessObject, comparePresenter);
-        CompareController compareController = new CompareController(compareInteractor);
-        CompareView compareView = new CompareView(compareController, compareViewModel);
+        // CompareOutputBoundary comparePresenter = new ComparePresenter(compareViewModel);
+        // CompareInputBoundary compareInteractor = new CompareInteractor(playerDataAccessObject, teamDataAccessObject, comparePresenter);
+        // CompareController compareController = new CompareController(compareInteractor);
+        JPanel compareView = CompareFactory.createCompareView(viewManagerModel);
 
-        views.add(compareView, compareView.viewName);
+        views.add(compareView, "compare");
 
 
         /*Search Player Feature Setup*/
@@ -129,7 +165,8 @@ public class Main {
                 new SearchPlayerController(searchPlayerInteractor);
 
         SearchPlayerView searchPlayerView =
-                new SearchPlayerView(searchPlayerController, searchPlayerViewModel);
+                new SearchPlayerView(searchPlayerController, searchPlayerViewModel,
+                                    favouriteController, favouriteViewModel);
 
         views.add(searchPlayerView, searchPlayerView.viewName);
 
@@ -153,6 +190,26 @@ public class Main {
         views.add(sortPlayersView, sortPlayersView.viewName);
 
 
+        java.util.Set<String> allTeams = new java.util.HashSet<>();
+        java.util.Set<String> allPositions = new java.util.HashSet<>();
+        for (var p : playerDataAccessObject.findAll()) {
+            if (p.getTeam() != null && p.getTeam().getName() != null && !p.getTeam().getName().isBlank()) {
+                allTeams.add(p.getTeam().getName());
+            }
+            if (p.getPosition() != null && !p.getPosition().isBlank()) {
+                allPositions.add(p.getPosition());
+            }
+        }
+
+        FilterPlayersViewModel filterVM = new FilterPlayersViewModel(allTeams, allPositions);
+        FilterPlayersPresenter filterPresenter = new FilterPlayersPresenter(filterVM);
+        FilterPlayersInputBoundary filterInteractor =
+                new FilterPlayersInteractor(playerDataAccessObject, filterPresenter);
+        FilterPlayersController filterController = new FilterPlayersController(filterInteractor);
+        FilterPlayersView filterPlayersView = new FilterPlayersView(filterVM, filterController);
+
+        views.add(filterPlayersView, filterPlayersView.viewName);
+
         AskQuestionPresenter askQuestionPresenter = new AskQuestionPresenter(askQuestionViewModel, viewManagerModel);
         AskQuestionInputBoundary askQuestionInteractor = new AskQuestionInteractor(geminiDataAccessObject, askQuestionPresenter);
         AskQuestionController askQuestionController = new AskQuestionController(askQuestionInteractor);
@@ -161,10 +218,12 @@ public class Main {
         ComparePlayersInputBoundary comparePlayersInteractor = new ComparePlayersInteractor(geminiDataAccessObject, comparePlayersPresenter);
         ComparePlayersController comparePlayersController = new ComparePlayersController(comparePlayersInteractor);
 
-        ChatView chatView = new ChatView(askQuestionViewModel, askQuestionController, comparePlayersViewModel, comparePlayersController);
+
+        ChatView chatView = new ChatView(askQuestionViewModel, askQuestionController, comparePlayersViewModel, comparePlayersController, viewManagerModel);
         views.add(chatView, chatView.viewName);
 
         application.pack();
+        application.setExtendedState(JFrame.MAXIMIZED_BOTH);
         application.setVisible(true);
     }
 }
