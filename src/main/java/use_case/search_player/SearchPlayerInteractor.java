@@ -24,6 +24,14 @@ public class SearchPlayerInteractor implements SearchPlayerInputBoundary {
             return;
         }
 
+        String startStr = inputData.getStartSeason();
+        String endStr   = inputData.getEndSeason();
+
+        if (!startStr.matches("\\d+") || !endStr.matches("\\d+")) {
+            presenter.presentPlayerNotFound("Season fields must be numbers only.");
+            return;
+        }
+
         int start = Integer.parseInt(inputData.getStartSeason());
         int end = Integer.parseInt(inputData.getEndSeason());
 
