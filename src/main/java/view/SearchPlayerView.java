@@ -264,7 +264,6 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         else {
             SearchPlayerState state = (SearchPlayerState) evt.getNewValue();
 
-            // Handle error from presenter/interactor
             if (state.getErrorMessage() != null && !state.getErrorMessage().isEmpty()) {
                 JOptionPane.showMessageDialog(
                         this,
