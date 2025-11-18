@@ -107,7 +107,11 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
     public String getAiInsight(String prompt) {
         LOGGER.info("Prompt sent to Gemini: " + prompt);
         CompletableFuture<String> future = new CompletableFuture<>();
-        callGeminiApi(prompt, future::complete, () -> {}, future::completeExceptionally);
+        StringBuilder responseBuilder = new StringBuilder();
+        callGeminiApi(prompt, 
+            responseBuilder::append, // Accumulate each chunk
+            () -> future.complete(responseBuilder.toString()), // Complete with full response when done
+            future::completeExceptionally);
         return future.join();
     }
 
@@ -116,6 +120,23 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
         String prompt = createQuestionPrompt(question, context);
         LOGGER.info("Prompt sent to Gemini: " + prompt);
         callGeminiApi(prompt, onData, onComplete, onError);
+    }
+
+    @Override
+    public String getAnswerSync(String question, String context) throws IOException {
+        String prompt = createQuestionPrompt(question, context);
+        LOGGER.info("Prompt sent to Gemini: " + prompt);
+        CompletableFuture<String> future = new CompletableFuture<>();
+        StringBuilder responseBuilder = new StringBuilder();
+        callGeminiApi(prompt, 
+            responseBuilder::append, // Accumulate each chunk
+            () -> future.complete(responseBuilder.toString()), // Complete with full response when done
+            (Exception e) -> future.completeExceptionally(new IOException("Error getting answer: " + e.getMessage())));
+        try {
+            return future.join();
+        } catch (Exception e) {
+            throw new IOException("Error getting answer: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -136,7 +157,11 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
         String prompt = createPlayerComparisonPrompt(player1, player2);
         LOGGER.info("Prompt sent to Gemini: " + prompt);
         CompletableFuture<String> future = new CompletableFuture<>();
-        callGeminiApi(prompt, future::complete, () -> {}, future::completeExceptionally);
+        StringBuilder responseBuilder = new StringBuilder();
+        callGeminiApi(prompt, 
+            responseBuilder::append, // Accumulate each chunk
+            () -> future.complete(responseBuilder.toString()), // Complete with full response when done
+            future::completeExceptionally);
         return future.join();
     }
 

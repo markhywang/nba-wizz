@@ -130,6 +130,8 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
                                     chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
 
                                     AskQuestionState currentState = askQuestionViewModel.getState();
+                                    currentState.setAnswer(""); // Clear the old answer before starting a new question
+                                    currentState.setError(null); // Clear any previous errors
                                     currentState.setLoading(true);
                                     askQuestionViewModel.firePropertyChanged();
 
@@ -158,11 +160,15 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
                 loadingIndicator.setVisible(state.isLoading());
 
                 String answer = state.getAnswer();
-                if (answer != null && !answer.isEmpty()) {
-                    if (!chatModel.isEmpty() && chatModel.lastElement().getSender() == ChatMessage.Sender.AI) {
-                        chatModel.lastElement().setText(answer);
-                    } else {
+                // Only display the answer when loading is complete (non-streaming)
+                if (answer != null && !answer.isEmpty() && !state.isLoading()) {
+                    // If the last message is from the user, create a new AI message bubble
+                    // Otherwise, update the existing AI message
+                    if (chatModel.isEmpty() || chatModel.lastElement().getSender() == ChatMessage.Sender.USER) {
                         chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
+                    } else {
+                        // Last element is an AI message, update it
+                        chatModel.lastElement().setText(answer);
                     }
                     chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
                     chatList.repaint();

@@ -5,5 +5,6 @@ import java.util.function.Consumer;
 
 public interface AskQuestionDataAccessInterface {
     void getAnswer(String question, String context, Consumer<String> onData, Runnable onComplete, Consumer<Exception> onError) throws IOException;
+    String getAnswerSync(String question, String context) throws IOException;
     String getDatasetContent() throws IOException;
 }
