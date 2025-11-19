@@ -14,8 +14,11 @@ public class ChatMessagePanel extends JPanel {
     private static final Color AI_BUBBLE_COLOR = new Color(229, 229, 234); // Light Gray
     private static final Font MESSAGE_FONT = new Font("Arial", Font.PLAIN, 16);
 
-    public ChatMessagePanel(ChatMessage message) {
+    private final int parentWidth;
+
+    public ChatMessagePanel(ChatMessage message, int parentWidth) {
         this.sender = message.getSender();
+        this.parentWidth = parentWidth;
         setOpaque(false); // Make the panel transparent
 
         messageArea = new JTextArea(message.getMessage().trim()); // Trim to remove trailing whitespace
@@ -62,34 +65,28 @@ public class ChatMessagePanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        // Create a temporary dummy component to calculate the preferred size
+        // Determine the maximum width for the bubble
+        int maxWidth;
+        if (parentWidth > 0) {
+            maxWidth = (int) (parentWidth * 0.65);
+        } else {
+            maxWidth = 350; // Fallback
+        }
+
+        // Calculate the size needed for the text
         JTextArea dummy = new JTextArea(messageArea.getText());
         dummy.setLineWrap(true);
         dummy.setWrapStyleWord(true);
         dummy.setFont(MESSAGE_FONT);
         dummy.setMargin(new Insets(10, 10, 10, 10));
-
-        // Determine the maximum width for the bubble
-        int maxWidth;
-        if (getParent() != null && getParent().getWidth() > 0) {
-            maxWidth = (int) (getParent().getWidth() * 0.65); // Slightly wider bubble
-        } else {
-            maxWidth = 350;
-        }
-
-        // Accurately calculate height given a fixed width
-        dummy.setSize(new Dimension(maxWidth, Short.MAX_VALUE));
+        
+        // Force the width to trigger correct height calculation for wrapped text
+        dummy.setSize(new Dimension(maxWidth, Short.MAX_VALUE)); 
+        
         Dimension preferredSize = dummy.getPreferredSize();
         
-        // Ensure the calculated width doesn't exceed maxWidth but respects content
-        // The dummy.getPreferredSize() returns the size needed for the text
-        // We need to add the padding (margin) back if getPreferredSize didn't fully account for border layout wrappers
-        // In this specific manual calculation, we trust dummy's calculation for text area.
-        // We just need to account for any outer padding we want around the bubble itself if any (none here, controlled by renderer)
-        
-        // Using the View to calculate precise height for wrapped text is more accurate than dummy component sometimes,
-        // but dummy with setSize is usually fine for JTextArea.
-        
+        // Return constrained width and calculated height
+        // Adding a small buffer to height can sometimes help if borders are cut off, but explicit margin covers it.
         return new Dimension(Math.min(preferredSize.width, maxWidth), preferredSize.height);
     }
 }
