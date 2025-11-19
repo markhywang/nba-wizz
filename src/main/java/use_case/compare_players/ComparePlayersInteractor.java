@@ -22,26 +22,30 @@ public class ComparePlayersInteractor implements ComparePlayersInputBoundary {
             return;
         }
 
-        Optional<Player> player1Optional = dataAccess.getPlayerByName(inputData.getPlayer1Name());
-        Optional<Player> player2Optional = dataAccess.getPlayerByName(inputData.getPlayer2Name());
+        presenter.prepareLoadingView();
 
-        if (player1Optional.isEmpty()) {
-            presenter.prepareFailView("Player 1 not found.");
-            return;
-        }
+        new Thread(() -> {
+            Optional<Player> player1Optional = dataAccess.getPlayerByName(inputData.getPlayer1Name());
+            Optional<Player> player2Optional = dataAccess.getPlayerByName(inputData.getPlayer2Name());
 
-        if (player2Optional.isEmpty()) {
-            presenter.prepareFailView("Player 2 not found.");
-            return;
-        }
+            if (player1Optional.isEmpty()) {
+                presenter.prepareFailView("Player 1 not found.");
+                return;
+            }
 
-        try {
-            String comparisonText = dataAccess.getPlayerComparison(player1Optional.get(), player2Optional.get());
-            Answer comparison = new Answer(comparisonText);
-            ComparePlayersOutputData outputData = new ComparePlayersOutputData(comparison, false);
-            presenter.prepareSuccessView(outputData);
-        } catch (Exception e) {
-            presenter.prepareFailView("An unexpected error occurred: " + e.getMessage());
-        }
+            if (player2Optional.isEmpty()) {
+                presenter.prepareFailView("Player 2 not found.");
+                return;
+            }
+
+            try {
+                String comparisonText = dataAccess.getPlayerComparison(player1Optional.get(), player2Optional.get());
+                Answer comparison = new Answer(comparisonText);
+                ComparePlayersOutputData outputData = new ComparePlayersOutputData(comparison, false);
+                presenter.prepareSuccessView(outputData);
+            } catch (Exception e) {
+                presenter.prepareFailView("An unexpected error occurred: " + e.getMessage());
+            }
+        }).start();
     }
 }

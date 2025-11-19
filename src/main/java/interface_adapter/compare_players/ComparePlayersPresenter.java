@@ -17,6 +17,7 @@ public class ComparePlayersPresenter implements ComparePlayersOutputBoundary {
     public void prepareSuccessView(ComparePlayersOutputData outputData) {
         ComparePlayersState state = comparePlayersViewModel.getState();
         state.setComparison(outputData.getComparison().getResponse());
+        state.setLoading(false);
         comparePlayersViewModel.setState(state);
         comparePlayersViewModel.firePropertyChanged();
     }
@@ -25,6 +26,17 @@ public class ComparePlayersPresenter implements ComparePlayersOutputBoundary {
     public void prepareFailView(String error) {
         ComparePlayersState state = comparePlayersViewModel.getState();
         state.setError(error);
+        state.setLoading(false);
+        comparePlayersViewModel.setState(state);
+        comparePlayersViewModel.firePropertyChanged();
+    }
+
+    @Override
+    public void prepareLoadingView() {
+        ComparePlayersState state = comparePlayersViewModel.getState();
+        state.setLoading(true);
+        state.setComparison("");
+        state.setError(null);
         comparePlayersViewModel.setState(state);
         comparePlayersViewModel.firePropertyChanged();
     }

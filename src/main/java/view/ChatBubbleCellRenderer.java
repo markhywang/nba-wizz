@@ -14,6 +14,8 @@ public class ChatBubbleCellRenderer implements ListCellRenderer<ChatMessage> {
 
         if (value.getSender() == ChatMessage.Sender.USER) {
             wrapperPanel.add(chatMessagePanel, BorderLayout.EAST);
+        } else if (value.getSender() == ChatMessage.Sender.LOADING) {
+            wrapperPanel.add(new LoadingPanel(), BorderLayout.WEST);
         } else {
             wrapperPanel.add(chatMessagePanel, BorderLayout.WEST);
         }
