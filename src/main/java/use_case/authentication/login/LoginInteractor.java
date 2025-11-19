@@ -47,6 +47,11 @@ public class LoginInteractor implements LoginInputBoundary {
 
         loginOutputBoundary.prepareSuccessView(new LoginOutputData(user.getUsername()));
     }
+
+    @Override
+    public void switchToSignup() {
+        loginOutputBoundary.prepareSignupView();
+    }
 }
 
 
