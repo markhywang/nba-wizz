@@ -23,13 +23,12 @@ public interface PlayerDataAccessInterface extends DataAccessInterface<Player> {
             Normalization normalization,
             List<String> metrics
     );
-
-    Map<String, Double> getAggregateMetrics(
-            String playerName,
-            int seasonStartInclusive,
-            int seasonEndInclusive,
-            Normalization normalization,
-            List<String> metrics);
+    // Map<String, Double> getAggregateMetrics(
+            // String playerName,
+            // int seasonStartInclusive,
+            //int seasonEndInclusive,
+            //Normalization normalization,
+            //List<String> metrics);
 }
 
 

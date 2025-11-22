@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface TeamDataAccessInterface extends DataAccessInterface<Team> {
+    Team getTeamByName(String teamName);
+
     List<Team> findByConference(String conference);
 
     Map<String, Double> getAggregatedMetrics (
