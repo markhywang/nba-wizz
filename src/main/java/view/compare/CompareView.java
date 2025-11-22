@@ -14,12 +14,19 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
 public class CompareView extends JPanel implements PropertyChangeListener {
 
     public final String viewName = "Compare";
 
     private final CompareViewModel viewModel;
     private final CompareController compareController;
+
+    private CompareState currentState;
 
     private final JRadioButton playersButton = new JRadioButton("Players", true);
     private final JRadioButton teamsButton = new JRadioButton("Teams");
@@ -138,7 +145,7 @@ public class CompareView extends JPanel implements PropertyChangeListener {
             model.addColumn(name);
         }
 
-        for (CompareState.RowVM row: state.table) {
+        for (CompareState.RowVM row : state.table) {
             List<Object> cells = new ArrayList<>();
             cells.add(row.metric);
             cells.addAll(row.cells);
@@ -146,9 +153,28 @@ public class CompareView extends JPanel implements PropertyChangeListener {
         }
         table.setModel(model);
 
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    c.setBackground(Color.WHITE);
+                    c.setFont(table.getFont());
+                }
+                if (!isSelected && currentState != null && column > 0 && row >= 0 && row < currentState.table.size()) {
+                    CompareState.RowVM rowVM = currentState.table.get(row);
+                    Integer bestIdx = rowVM.bestIndex;
+                    if (bestIdx != null && column - 1 == bestIdx) {
+                        c.setBackground(new Color(255, 2, 200));
+                        c.setFont(c.getFont().deriveFont(Font.BOLD));
+                    }
+                }
+
+                return c;
+            }
+        });
         seasonLabel.setText("Season(s): " + state.seasonLabel);
         noticesArea.setText(String.join("\n", state.notices));
         insightArea.setText(state.insight == null ? "" : state.insight);
-
     }
 }

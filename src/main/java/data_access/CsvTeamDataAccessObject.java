@@ -51,7 +51,7 @@ public class CsvTeamDataAccessObject implements TeamDataAccessInterface {
                 String[] data = line.split(split);
                 if (data.length < 4) continue;
 
-                String teamName = data[3].trim(); // Team column
+                String teamName = data[3].trim().toLowerCase(); // Team column
 
                 if (!teamMap.containsKey(teamName)) {
                     Team team = new Team(nextTeamId++, teamName,
@@ -95,6 +95,12 @@ public class CsvTeamDataAccessObject implements TeamDataAccessInterface {
         teamMap.remove(entity.getName());
     }
 
+    @Override
+    public Team getTeamByName(String teamName) {
+        if (teamMap == null) return null;
+        return teamMap.get(teamName.trim().toLowerCase());
+    }
+
     // ---------- TeamDataAccessInterface methods ----------
 
     @Override
@@ -104,7 +110,6 @@ public class CsvTeamDataAccessObject implements TeamDataAccessInterface {
         return new ArrayList<>(teams);
     }
 
-
     @Override
     public Map<String, Double> getAggregatedMetrics(
             String teamName,
@@ -112,6 +117,10 @@ public class CsvTeamDataAccessObject implements TeamDataAccessInterface {
             int seasonEndInclusive,
             Normalization normalization,
             List<String> metrics) {
+
+        if(teamName != null) {
+            teamName = teamName.trim().toUpperCase();
+        }
 
         Map<String, Double> sums = new HashMap<>();
         Map<String, Integer> counts = new HashMap<>();
