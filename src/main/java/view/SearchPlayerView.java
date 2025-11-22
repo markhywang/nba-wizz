@@ -242,7 +242,7 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
             fgBox.setSelected(false);
 
             tableModel.setRowCount(0);
-            
+
             // Reset selection
             selected = null;
             isFavourite = false;
@@ -343,4 +343,18 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
             favouriteButton.setIcon(starEmpty);
         }
     }
+
+    /**
+     * Prefill the player name field and update favourite/star UI.
+     * This is used when another view (e.g. FavoritedPlayersView) wants to programmatically
+     * set which player is being searched before invoking a search.
+     */
+    public void setPlayerNameForSearch(String playerName) {
+        if (playerName == null) return;
+        playerNameField.setText(playerName);
+        selected = playerName;
+        isFavourite = favouriteController.isFavourite(selected.toLowerCase());
+        updateStarIcon();
+    }
+
 }
