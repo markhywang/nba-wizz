@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6da040ef-dc9d-4ccb-a947-e5c25a971a9c" name="Changes" comment="Added Unit Tests for Search Player Use Case Interactor">
+    <list default="true" id="6da040ef-dc9d-4ccb-a947-e5c25a971a9c" name="Changes" comment="Updated Search Player View Graph Legend Position">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/SearchPlayerView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/SearchPlayerView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,11 +110,20 @@
       <option name="presentableId" value="Default" />
       <updated>1763520592518</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Updated Search Player View Graph Legend Position">
+      <option name="closed" value="true" />
+      <created>1763778864575</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763778864575</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added Unit Tests for Search Player Use Case Interactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Unit Tests for Search Player Use Case Interactor" />
+    <MESSAGE value="Updated Search Player View Graph Legend Position" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Search Player View Graph Legend Position" />
   </component>
 </project>

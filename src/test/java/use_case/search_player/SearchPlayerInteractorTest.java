@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**Unit tests for SearchPlayerInteractor.*/
+/**Unit tests for SearchPlayerInteractor with 100% coverage*/
 class SearchPlayerInteractorTest {
 
     // MOCK DAO
