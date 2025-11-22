@@ -134,13 +134,13 @@ public class CsvPlayerDataAccessObject implements PlayerDataAccessInterface {
         return new ArrayList<>();
     }
 
-    @Override
-    public Map<String, Double> getAggregatedMetrics(String playerName, int seasonStartInclusive, int seasonEndInclusive, Normalization normalization, List<String> metrics) {
-        return Map.of();
-    }
+    // @Override
+    // public Map<String, Double> getAggregatedMetrics(String playerName, int seasonStartInclusive, int seasonEndInclusive, Normalization normalization, List<String> metrics) {
+        // return Map.of();
+    // }
 
     @Override
-    public Map<String, Double> getAggregateMetrics(
+    public Map<String, Double> getAggregatedMetrics(
             String playerName,
             int seasonStartInclusive,
             int seasonEndInclusive,
@@ -188,7 +188,7 @@ public class CsvPlayerDataAccessObject implements PlayerDataAccessInterface {
             metricIndex.put("PF", PF_IDX);
             metricIndex.put("TOV", TOV_IDX);
             metricIndex.put("3P%", THREE_IDX);
-            metricIndex.put("FT", FT_IDX);
+            metricIndex.put("FT%", FT_IDX);
             metricIndex.put("FG%", FG_IDX);
 
             while ((line = bufferedReader.readLine()) != null) {
@@ -201,7 +201,7 @@ public class CsvPlayerDataAccessObject implements PlayerDataAccessInterface {
                 }
 
                 String name = data[NAME_IDX].trim();
-                if (!name.equals(playerName)) {
+                if (!name.equalsIgnoreCase(playerName)) {
                     continue;
                 }
 
