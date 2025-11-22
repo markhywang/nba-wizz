@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c53af388-bb0a-4a95-83d2-b25884c45ddf" name="Changes" comment="delete .idea">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/data/favourites.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/favourites.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/data/users.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/users.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/data_access/FavouriteDataAccessObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data_access/FavouriteDataAccessObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/login/LoginPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/login/LoginPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/favourite/FavouriteDataAccessInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/favourite/FavouriteDataAccessInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/use_case/ask_question/AskQuestionInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/use_case/ask_question/AskQuestionInteractorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/use_case/compare_players/ComparePlayersInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/use_case/compare_players/ComparePlayersInteractorTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Vizxe&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/markhywang/nba-wizz&quot;,
+    &quot;accountId&quot;: &quot;c7075287-0e4f-4a4e-81dd-77e3d01ed6d2&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="35qNglHuOSXSRRAw9T4QcvLhtOj" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+    <option name="showScratchesAndConsoles" value="false" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.Unnamed.executor": "Run",
+    "JUnit.FavouriteInteractorTest.executor": "Run",
+    "JUnit.FavouritePresenterTest.addFavourite_updatesViewModel.executor": "Run",
+    "JUnit.FavouritePresenterTest.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "favourite-list",
+    "kotlin-language-version-configured": "true",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
+  <component name="RunManager" selected="JUnit.FavouriteInteractorTest">
+    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="app.Main" />
+      <module name="nba-wizz" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="com.soywiz.korge.intellij.UpdateResourceBeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration name="FavouriteInteractorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="nba-wizz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="use_case.favourite.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="use_case.favourite" />
+      <option name="MAIN_CLASS_NAME" value="use_case.favourite.FavouriteInteractorTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="com.soywiz.korge.intellij.UpdateResourceBeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration name="FavouritePresenterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="nba-wizz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="interface_adapter.favourite.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="interface_adapter.favourite" />
+      <option name="MAIN_CLASS_NAME" value="interface_adapter.favourite.FavouritePresenterTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="com.soywiz.korge.intellij.UpdateResourceBeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration name="FavouritePresenterTest.addFavourite_updatesViewModel" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="nba-wizz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="interface_adapter.favourite.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="interface_adapter.favourite" />
+      <option name="MAIN_CLASS_NAME" value="interface_adapter.favourite.FavouritePresenterTest" />
+      <option name="METHOD_NAME" value="addFavourite_updatesViewModel" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="com.soywiz.korge.intellij.UpdateResourceBeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.FavouriteInteractorTest" />
+        <item itemvalue="JUnit.FavouritePresenterTest" />
+        <item itemvalue="JUnit.FavouritePresenterTest.addFavourite_updatesViewModel" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task id="LOCAL-00001" summary="add .idea to git ignore">
+      <option name="closed" value="true" />
+      <created>1763832991069</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1763832991069</updated>
+    </task>
+    <task id="LOCAL-00002" summary="delete .idea">
+      <option name="closed" value="true" />
+      <created>1763833016678</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763833016678</updated>
+    </task>
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c53af388-bb0a-4a95-83d2-b25884c45ddf" name="Changes" comment="delete .idea" />
+      <created>1763833755675</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1763833755675</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Finish Compare Use Case, Except for the Listener on the main menu" />
+    <MESSAGE value="add .idea to git ignore" />
+    <MESSAGE value="delete .idea" />
+    <option name="LAST_COMMIT_MESSAGE" value="delete .idea" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/interface_adapter/favourite/FavouritePresenterTest.java</url>
+          <line>10</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

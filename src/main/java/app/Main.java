@@ -125,7 +125,7 @@ public class Main {
 
         UserDataAccessInterface userDataAccessInterface = new FileUserDataAccessObject("src/main/java/data/users.csv");
         
-        LoginPresenter loginPresenter = new LoginPresenter(viewManagerModel, mainMenuViewModel, loginViewModel, signupViewModel);
+        LoginPresenter loginPresenter = new LoginPresenter(viewManagerModel, mainMenuViewModel, loginViewModel, signupViewModel, favouriteDataAccessInterface);
         SignupPresenter signupPresenter = new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
         
         LoginInputBoundary loginInputBoundary = new LoginInteractor(userDataAccessInterface, loginPresenter);

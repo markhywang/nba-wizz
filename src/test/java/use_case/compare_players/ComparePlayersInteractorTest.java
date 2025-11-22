@@ -114,6 +114,11 @@ class ComparePlayersInteractorTest {
             this.error = error;
         }
 
+        @Override
+        public void prepareLoadingView() {
+
+        }
+
         public boolean isSuccess() {
             return success;
         }

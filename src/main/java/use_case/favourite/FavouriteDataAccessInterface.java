@@ -8,4 +8,5 @@ public interface FavouriteDataAccessInterface {
     boolean isFavourite(String playerName);
     ArrayList<String> getFavourites();
     void save();
+    void setCurrentUser(String username);
 }
