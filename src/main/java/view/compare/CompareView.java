@@ -33,6 +33,7 @@ public class CompareView extends JPanel implements PropertyChangeListener {
     private final JComboBox<Normalization> normBox = new JComboBox<>(new Normalization[]{Normalization.PER_GAME, Normalization.PER_36});
 
     private final JButton compareButton = new JButton("Compare");
+    private final JButton homeButton = new JButton("Home");
 
     private final JLabel seasonLabel = new JLabel("Season(s): -");
     private final JTable table = new JTable();
@@ -73,6 +74,7 @@ public class CompareView extends JPanel implements PropertyChangeListener {
 
         JPanel r3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         r3.add(compareButton);
+        r3.add(homeButton);
         top.add(r3);
 
         add(top, BorderLayout.NORTH);
@@ -91,6 +93,7 @@ public class CompareView extends JPanel implements PropertyChangeListener {
         add(bottom, BorderLayout.SOUTH);
 
         compareButton.addActionListener(e -> onCompareClicked());
+        homeButton.addActionListener(e -> compareController.switchToMainMenu());
     }
 
     private void onCompareClicked() {

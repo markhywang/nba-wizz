@@ -22,25 +22,17 @@ public class AskQuestionInteractor implements AskQuestionInputBoundary {
 
         presenter.presentLoading();
 
-        try {
-            String context = dataAccess.getDatasetContent();
-            dataAccess.getAnswer(
-                    inputData.getQuestion(),
-                    context,
-                    (String partialResponse) -> {
-                        Answer answer = new Answer(partialResponse);
-                        AskQuestionOutputData outputData = new AskQuestionOutputData(answer, inputData.getQuestion(), false);
-                        presenter.presentPartialResponse(outputData);
-                    },
-                    () -> {
-                        presenter.presentStreamingComplete();
-                    },
-                    (Exception e) -> {
-                        presenter.prepareFailView(e.getMessage());
-                    }
-            );
-        } catch (IOException e) {
-            presenter.prepareFailView("Error reading dataset: " + e.getMessage());
-        }
+        // Run the API call in a background thread to avoid blocking the UI
+        new Thread(() -> {
+            try {
+                String context = dataAccess.getDatasetContent();
+                String fullAnswer = dataAccess.getAnswerSync(inputData.getQuestion(), context);
+                Answer answer = new Answer(fullAnswer);
+                AskQuestionOutputData outputData = new AskQuestionOutputData(answer, inputData.getQuestion(), false);
+                presenter.prepareSuccessView(outputData);
+            } catch (IOException e) {
+                presenter.prepareFailView("Error getting answer: " + e.getMessage());
+            }
+        }).start();
     }
 }

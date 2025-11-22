@@ -10,10 +10,12 @@ public class ChatBubbleCellRenderer implements ListCellRenderer<ChatMessage> {
         wrapperPanel.setOpaque(false); // Make wrapper panel transparent
         wrapperPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Add vertical spacing and horizontal padding
 
-        ChatMessagePanel chatMessagePanel = new ChatMessagePanel(value);
+        ChatMessagePanel chatMessagePanel = new ChatMessagePanel(value, list.getWidth());
 
         if (value.getSender() == ChatMessage.Sender.USER) {
             wrapperPanel.add(chatMessagePanel, BorderLayout.EAST);
+        } else if (value.getSender() == ChatMessage.Sender.LOADING) {
+            wrapperPanel.add(new LoadingPanel(), BorderLayout.WEST);
         } else {
             wrapperPanel.add(chatMessagePanel, BorderLayout.WEST);
         }

@@ -8,6 +8,7 @@ import interface_adapter.search_player.SearchPlayerViewModel;
 import interface_adapter.search_player.SearchPlayerState;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -49,7 +50,8 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     private final JButton favouriteButton;
     private boolean isFavourite = false;
     private String selected = null;
-
+    private final ImageIcon starEmpty;
+    private final ImageIcon starFilled;
 
     private LineChart<Number, Number> lineChart;
 
@@ -63,46 +65,71 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         favouriteViewModel.addPropertyChangeListener(this);
         this.favouriteController = favouriteController;
 
+        // Load and resize icons
+        starEmpty = resizeIcon("/icons/star_empty.png", 30, 30);
+        starFilled = resizeIcon("/icons/star_filled.png", 30, 30);
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        setBorder(new EmptyBorder(20, 30, 20, 30));
 
         JLabel title = new JLabel("Search for Player");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         title.setFont(new Font("SansSerif", Font.BOLD, 22));
 
-        JPanel inputPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         playerNameField = new JTextField();
         startSeasonField = new JTextField();
         endSeasonField = new JTextField();
+
+        playerNameField.setPreferredSize(new Dimension(120, 25));
+        startSeasonField.setPreferredSize(new Dimension(80, 25));
+        endSeasonField.setPreferredSize(new Dimension(80, 25));
+
         favouriteButton = new JButton();
-        favouriteButton.setPreferredSize(new Dimension(50, 50));
+        favouriteButton.setPreferredSize(new Dimension(40, 40));
         favouriteButton.setBorderPainted(false);
         favouriteButton.setContentAreaFilled(false);
         favouriteButton.setFocusPainted(false);
-        favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_empty.png")));
+        favouriteButton.setIcon(starEmpty);
+        favouriteButton.setEnabled(false); // Disabled until search
 
         favouriteButton.addActionListener(e -> {
             if (selected != null) {
-                favouriteController.favouriteToggle(selected);  // <-- triggers your state update
+                favouriteController.favouriteToggle(selected);
             }
         });
 
+        gbc.gridx = 0; gbc.gridy = 0;
+        inputPanel.add(new JLabel("Player Name:"), gbc);
 
-        inputPanel.add(new JLabel("Player Name:"));
+        JPanel nameRow = new JPanel(new BorderLayout());
+        nameRow.add(playerNameField, BorderLayout.CENTER);
+        nameRow.add(favouriteButton, BorderLayout.EAST);
 
-        // A mini panel to hold the text field + star
-        JPanel namePanel = new JPanel(new BorderLayout());
-        namePanel.add(playerNameField, BorderLayout.CENTER);
-        namePanel.add(favouriteButton, BorderLayout.EAST);
+        gbc.gridx = 1;
+        inputPanel.add(nameRow, gbc);
 
-        inputPanel.add(namePanel);
+        // Removed duplicate addition of favouriteButton at gridx=2
 
-        inputPanel.add(new JLabel("Start Season:"));
-        inputPanel.add(startSeasonField);
-        inputPanel.add(new JLabel("End Season:"));
-        inputPanel.add(endSeasonField);
+        gbc.gridx = 0; gbc.gridy = 1;
+        inputPanel.add(new JLabel("Start Season:"), gbc);
 
-        // ---- Stat selection panel ----
+        gbc.gridx = 1;
+        inputPanel.add(startSeasonField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        inputPanel.add(new JLabel("End Season:"), gbc);
+
+        gbc.gridx = 1;
+        inputPanel.add(endSeasonField, gbc);
+
+
         JPanel statPanel = new JPanel(new FlowLayout());
         statPanel.add(new JLabel("Select Stats:"));
 
@@ -116,42 +143,28 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         statPanel.add(rpgBox);
         statPanel.add(fgBox);
 
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
+
         searchButton = new JButton("Search");
-        searchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        searchButton.addActionListener(this);
-
-        homeButton = new JButton("Home");
-        homeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         clearButton = new JButton("Clear");
-        clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        homeButton = new JButton("Home");
 
-        homeButton.addActionListener(this);
+        searchButton.addActionListener(this);
         clearButton.addActionListener(this);
+        homeButton.addActionListener(this);
+
+        buttonRow.add(searchButton);
+        buttonRow.add(clearButton);
+        buttonRow.add(homeButton);
 
         String[] columnNames = {"Season", "PPG", "APG", "RPG", "FG%"};
         tableModel = new DefaultTableModel(columnNames, 0);
         resultTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(resultTable);
 
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(title);
-        add(Box.createRigidArea(new Dimension(0, 20)));
-        add(inputPanel);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(statPanel);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(searchButton);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(homeButton);
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(clearButton);
-        add(Box.createRigidArea(new Dimension(0, 15)));
-        add(scrollPane);
 
         JFXPanel fxPanel = new JFXPanel();
         fxPanel.setPreferredSize(new Dimension(600, 300));
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(fxPanel);
 
         Platform.runLater(() -> {
             NumberAxis xAxis = new NumberAxis();
@@ -159,15 +172,56 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
             xAxis.setLowerBound(1980);
             xAxis.setUpperBound(2024);
             xAxis.setTickUnit(1);
-            NumberAxis yAxis = new NumberAxis();
             xAxis.setLabel("Season");
+
+            xAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(xAxis) {
+                @Override
+                public String toString(Number object) {
+                    return String.valueOf(object.intValue());
+                }
+            });
+
+            NumberAxis yAxis = new NumberAxis();
             yAxis.setLabel("Stat Value");
 
             lineChart = new LineChart<>(xAxis, yAxis);
             lineChart.setTitle("Performance Over Seasons");
+            lineChart.setLegendVisible(true);
+            lineChart.setLegendSide(javafx.geometry.Side.BOTTOM);
+            lineChart.setAnimated(false);
 
             fxPanel.setScene(new Scene(lineChart, 600, 300));
         });
+
+        add(title);
+        add(Box.createRigidArea(new Dimension(0, 15)));
+        add(inputPanel);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(statPanel);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(buttonRow);
+        add(Box.createRigidArea(new Dimension(0, 15)));
+        add(scrollPane);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+        add(fxPanel);
+    }
+
+    private ImageIcon resizeIcon(String path, int width, int height) {
+        try {
+            java.net.URL imgURL = getClass().getResource(path);
+            if (imgURL != null) {
+                ImageIcon icon = new ImageIcon(imgURL);
+                Image img = icon.getImage();
+                Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                return new ImageIcon(newImg);
+            } else {
+                System.err.println("Couldn't find file: " + path);
+                return null;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -189,7 +243,14 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
 
             tableModel.setRowCount(0);
 
+            // Reset selection
+            selected = null;
+            isFavourite = false;
+            favouriteButton.setEnabled(false);
+            updateStarIcon();
+
             Platform.runLater(() -> lineChart.getData().clear());
+            return;
         }
 
         if (e.getSource() == searchButton) {
@@ -232,7 +293,6 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         else {
             SearchPlayerState state = (SearchPlayerState) evt.getNewValue();
 
-            // Handle error from presenter/interactor
             if (state.getErrorMessage() != null && !state.getErrorMessage().isEmpty()) {
                 JOptionPane.showMessageDialog(
                         this,
@@ -245,6 +305,7 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
 
             selected = playerNameField.getText().trim();
             isFavourite = favouriteController.isFavourite(selected.toLowerCase());
+            favouriteButton.setEnabled(true); // Enable button
             updateStarIcon();
             System.out.println(selected + " " + isFavourite);
 
@@ -277,9 +338,9 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     }
     private void updateStarIcon() {
         if (isFavourite) {
-            favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_filled.png")));
+            favouriteButton.setIcon(starFilled);
         } else {
-            favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_empty.png")));
+            favouriteButton.setIcon(starEmpty);
         }
     }
 

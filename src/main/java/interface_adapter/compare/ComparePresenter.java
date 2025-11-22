@@ -1,5 +1,6 @@
 package interface_adapter.compare;
 
+import interface_adapter.ViewManagerModel;
 import use_case.compare.CompareOutputBoundary;
 import use_case.compare.CompareOutputData;
 
@@ -10,9 +11,11 @@ import java.util.ArrayList;
 public class ComparePresenter implements CompareOutputBoundary {
 
     private final CompareViewModel viewModel;
+    private final ViewManagerModel viewManagerModel;
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
-    public ComparePresenter(CompareViewModel viewModel) {
+    public ComparePresenter(ViewManagerModel viewManagerModel, CompareViewModel viewModel) {
+        this.viewManagerModel = viewManagerModel;
         this.viewModel = viewModel;
     }
 
@@ -42,5 +45,11 @@ public class ComparePresenter implements CompareOutputBoundary {
         CompareState state = new CompareState();
         state.error = errorMessage;
         viewModel.setState(state);
+    }
+
+    @Override
+    public void switchToMainMenu() {
+        viewManagerModel.setActiveView("main_menu");
+        viewManagerModel.firePropertyChanged();
     }
 }

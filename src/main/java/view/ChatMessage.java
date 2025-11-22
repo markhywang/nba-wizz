@@ -5,7 +5,7 @@ public class ChatMessage {
     private final Sender sender;
 
     public enum Sender {
-        USER, AI
+        USER, AI, LOADING
     }
 
     public ChatMessage(String message, Sender sender) {

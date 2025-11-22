@@ -7,9 +7,12 @@ import data_access.FileUserDataAccessObject;
 import data_access.PlayerDataAccessInterface;
 import data_access.TeamDataAccessInterface;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.auth.AuthController;
-import interface_adapter.auth.AuthPresenter;
-import interface_adapter.auth.AuthViewModel;
+import interface_adapter.login.LoginController;
+import interface_adapter.login.LoginPresenter;
+import interface_adapter.login.LoginViewModel;
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupPresenter;
+import interface_adapter.signup.SignupViewModel;
 import interface_adapter.compare.CompareController;
 import interface_adapter.compare.ComparePresenter;
 import interface_adapter.compare.CompareViewModel;
@@ -40,7 +43,8 @@ import use_case.main_menu.MainMenuOutputBoundary;
 import use_case.search_player.SearchPlayerInputBoundary;
 import use_case.search_player.SearchPlayerInteractor;
 import use_case.search_player.SearchPlayerOutputBoundary;
-import view.AuthView;
+import view.LoginView;
+import view.SignupView;
 import view.MainMenuView;
 import view.SearchPlayerView;
 import view.ViewManager;
@@ -108,7 +112,9 @@ public class Main {
         GenerateInsightsViewModel generateInsightsViewModel = new GenerateInsightsViewModel();
         AskQuestionViewModel askQuestionViewModel = new AskQuestionViewModel();
         ComparePlayersViewModel comparePlayersViewModel = new ComparePlayersViewModel();
-        AuthViewModel authViewModel = new AuthViewModel();
+        
+        LoginViewModel loginViewModel = new LoginViewModel();
+        SignupViewModel signupViewModel = new SignupViewModel();
 
 
         // The data access object.
@@ -118,12 +124,21 @@ public class Main {
         TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("TeamStatsDataset.csv");
 
         UserDataAccessInterface userDataAccessInterface = new FileUserDataAccessObject("src/main/java/data/users.csv");
-        AuthPresenter authPresenter = new AuthPresenter(authViewModel, viewManagerModel, mainMenuViewModel);
-        LoginInputBoundary loginInputBoundary = new LoginInteractor(userDataAccessInterface, authPresenter);
-        SignupInputBoundary signupInputBoundary = new SignupInteractor(userDataAccessInterface, authPresenter);
-        AuthController authController = new AuthController(loginInputBoundary, signupInputBoundary);
-        AuthView authView = new AuthView(authViewModel, authController);
-        views.add(authView, authView.viewName);
+        
+        LoginPresenter loginPresenter = new LoginPresenter(viewManagerModel, mainMenuViewModel, loginViewModel, signupViewModel);
+        SignupPresenter signupPresenter = new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
+        
+        LoginInputBoundary loginInputBoundary = new LoginInteractor(userDataAccessInterface, loginPresenter);
+        SignupInputBoundary signupInputBoundary = new SignupInteractor(userDataAccessInterface, signupPresenter);
+        
+        LoginController loginController = new LoginController(loginInputBoundary);
+        SignupController signupController = new SignupController(signupInputBoundary);
+        
+        LoginView loginView = new LoginView(loginViewModel, loginController);
+        views.add(loginView, loginView.viewName);
+        
+        SignupView signupView = new SignupView(signupController, signupViewModel);
+        views.add(signupView, signupView.viewName);
 
         MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
         MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuPresenter);
@@ -142,7 +157,7 @@ public class Main {
         // (FavoritedPlayersView will be registered later after SearchPlayerController exists)
 
 
-        viewManagerModel.setActiveView(authView.viewName);
+        viewManagerModel.setActiveView(loginView.viewName);
         viewManagerModel.firePropertyChanged();
 
 

@@ -32,7 +32,7 @@ public class CompareFactory {
         CompareViewModel viewModel = new CompareViewModel();
 
         // Presenter & Interactor
-        CompareOutputBoundary presenter = new ComparePresenter(viewModel);
+        CompareOutputBoundary presenter = new ComparePresenter(viewManagerModel, viewModel);
         CompareInputBoundary interactor =
                 new CompareInteractor(playerDAO, teamDAO, presenter);
 

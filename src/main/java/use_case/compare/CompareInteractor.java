@@ -106,4 +106,9 @@ public class CompareInteractor implements CompareInputBoundary {
 
         presenter.present(out);
     }
+
+    @Override
+    public void switchToMainMenu() {
+        presenter.switchToMainMenu();
+    }
 }

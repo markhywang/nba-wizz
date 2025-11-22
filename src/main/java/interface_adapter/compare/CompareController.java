@@ -22,4 +22,8 @@ public class CompareController {
         compareInputBoundary.execute(new CompareInputData(CompareInputData.EntityType.TEAM, teams, start, end, preset, norm));
     }
 
+    public void switchToMainMenu() {
+        compareInputBoundary.switchToMainMenu();
+    }
+
 }

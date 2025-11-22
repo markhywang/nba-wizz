@@ -18,6 +18,7 @@ public class AskQuestionPresenter implements AskQuestionOutputBoundary {
         AskQuestionState state = askQuestionViewModel.getState();
         state.setAnswer(outputData.getAnswer().getResponse());
         state.setQuestion(outputData.getQuestion());
+        state.setLoading(false); // Mark loading as complete
         askQuestionViewModel.setState(state);
         askQuestionViewModel.firePropertyChanged();
     }

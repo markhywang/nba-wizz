@@ -9,6 +9,9 @@ import entity.SeasonStats;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary {
     private final GenerateInsightsDataAccessInterface dataAccess;
     private final GenerateInsightsOutputBoundary presenter;
@@ -24,6 +27,8 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
             presenter.prepareFailView("Player or team name cannot be empty.");
             return;
         }
+
+        presenter.prepareLoadingView();
 
         if ("Player".equalsIgnoreCase(inputData.getEntityType())) {
             Optional<Player> playerOptional = dataAccess.getPlayerByName(inputData.getEntityName());
@@ -60,19 +65,23 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
 
     private String createPlayerPrompt(Player player) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("You are a basketball analyst. Provide a concise insight into the strengths and weaknesses of the following player based on their recent season statistics. ");
-        prompt.append("Keep your analysis to a maximum of three sentences.\n\n");
+        prompt.append("You are a basketball analyst. Provide a detailed insight (2-3 paragraphs) into the strengths, weaknesses, and playstyle of the following player. ");
+        prompt.append("Use the provided statistics from all available seasons as a foundation, but also incorporate your own basketball knowledge about the player's career, impact, and reputation.\n\n");
         prompt.append("Player: ").append(player.getName()).append("\n");
         prompt.append("Position: ").append(player.getPosition()).append("\n");
 
         if (player.getCareerStats() != null && !player.getCareerStats().isEmpty()) {
-            SeasonStats lastSeason = player.getCareerStats().get(player.getCareerStats().size() - 1);
-            prompt.append("Season: ").append(lastSeason.getSeasonYear()).append("\n");
-            prompt.append(String.format("Points per game: %.2f\n", lastSeason.getPointsPerGame()));
-            prompt.append(String.format("Assists per game: %.2f\n", lastSeason.getAssistsPerGame()));
-            prompt.append(String.format("Rebounds per game: %.2f\n", lastSeason.getReboundsPerGame()));
-            prompt.append(String.format("Field goal percentage: %.2f%%\n", lastSeason.getFieldGoalPercentage()));
-            prompt.append(String.format("Three-point percentage: %.2f%%\n", lastSeason.getThreePointPercentage()));
+            prompt.append("Career Statistics (Season by Season):\n");
+            for (SeasonStats stats : player.getCareerStats()) {
+                prompt.append("- Season ").append(stats.getSeasonYear()).append(": ");
+                prompt.append(String.format("PTS: %.1f, AST: %.1f, TRB: %.1f, FG%%: %.1f%%, 3P%%: %.1f%%, GP: %d\n",
+                        stats.getPointsPerGame(),
+                        stats.getAssistsPerGame(),
+                        stats.getReboundsPerGame(),
+                        stats.getFieldGoalPercentage(),
+                        stats.getThreePointPercentage(),
+                        stats.getGamesPlayed()));
+            }
         }
 
         prompt.append("\nAnalysis:");
@@ -81,14 +90,27 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
 
     private String createTeamPrompt(Team team) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("You are a basketball analyst. Provide a concise insight into the strengths and weaknesses of the following team based on its roster. ");
-        prompt.append("Keep your analysis to a maximum of three sentences.\n\n");
+        prompt.append("You are a basketball analyst. Provide a detailed insight (2-3 paragraphs) into the strengths and weaknesses of the following team based on its roster. ");
+        prompt.append("Use the provided roster as a foundation, but also incorporate your own basketball knowledge about the team's performance, coaching, and history.\n\n");
         prompt.append("Team: ").append(team.getName()).append("\n");
         prompt.append("Roster:\n");
 
         if (team.getPlayers() != null && !team.getPlayers().isEmpty()) {
+            Set<Integer> processedPlayerIds = new HashSet<>();
             for (Player player : team.getPlayers()) {
-                prompt.append("- ").append(player.getName()).append(" (").append(player.getPosition()).append(")\n");
+                if (processedPlayerIds.contains(player.getPlayerID())) {
+                    continue;
+                }
+                processedPlayerIds.add(player.getPlayerID());
+                
+                prompt.append("- ").append(player.getName()).append(" (").append(player.getPosition()).append(")");
+                // Add current/latest stats for the player if available to give more context
+                if (player.getCareerStats() != null && !player.getCareerStats().isEmpty()) {
+                    SeasonStats lastSeason = player.getCareerStats().get(player.getCareerStats().size() - 1);
+                    prompt.append(String.format(" - Last Season: PTS: %.1f, AST: %.1f, TRB: %.1f",
+                            lastSeason.getPointsPerGame(), lastSeason.getAssistsPerGame(), lastSeason.getReboundsPerGame()));
+                }
+                prompt.append("\n");
             }
         }
 
