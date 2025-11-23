@@ -87,6 +87,11 @@ class AskQuestionInteractorTest {
         }
 
         @Override
+        public String getAnswerSync(String question, String context) throws IOException {
+            return "";
+        }
+
+        @Override
         public String getDatasetContent() throws IOException {
             return "CSV,Data,Here";
         }

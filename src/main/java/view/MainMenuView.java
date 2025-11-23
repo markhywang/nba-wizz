@@ -1,8 +1,8 @@
 package view;
 
 import interface_adapter.main_menu.MainMenuController;
-import interface_adapter.main_menu.MainMenuViewModel;
 import interface_adapter.main_menu.MainMenuState;
+import interface_adapter.main_menu.MainMenuViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,23 +10,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 public class MainMenuView extends JPanel implements ActionListener, PropertyChangeListener {
     public final String viewName = "main_menu";
-    private final MainMenuViewModel mainMenuViewModel;
     private final MainMenuController mainMenuController;
+    private final MainMenuViewModel mainMenuViewModel; // Restored field
     private final JButton searchForPlayer;
     private final JButton filterAndSort;
     private final JButton compare;
     private final JButton aiInsights;
+    private final JButton viewFavoritedPlayers; // New button for favorited players
     private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 24);
     private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 18);
 
 
     public MainMenuView(MainMenuViewModel mainMenuViewModel, MainMenuController controller) {
+        this.mainMenuViewModel = mainMenuViewModel; // Initialize the field
+        mainMenuViewModel.addPropertyChangeListener(this); // Restore listener setup
         this.mainMenuController = controller;
-        this.mainMenuViewModel = mainMenuViewModel;
-        mainMenuViewModel.addPropertyChangeListener(this);
 
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -63,6 +65,12 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         aiInsights.setMaximumSize(buttonSize);
         aiInsights.setPreferredSize(buttonSize);
 
+        viewFavoritedPlayers = new JButton("View Favorited Players");
+        viewFavoritedPlayers.setFont(BUTTON_FONT);
+        viewFavoritedPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
+        viewFavoritedPlayers.setMaximumSize(buttonSize);
+        viewFavoritedPlayers.setPreferredSize(buttonSize);
+
         JButton aiChat = new JButton(MainMenuViewModel.AI_CHAT_BUTTON_LABEL);
         aiChat.setFont(BUTTON_FONT);
         aiChat.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -77,14 +85,16 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         buttons.add(Box.createRigidArea(new Dimension(0, 20)));
         buttons.add(aiInsights);
         buttons.add(Box.createRigidArea(new Dimension(0, 20)));
+        buttons.add(viewFavoritedPlayers);
+        buttons.add(Box.createRigidArea(new Dimension(0, 20)));
         buttons.add(aiChat);
 
         searchForPlayer.addActionListener(this);
         filterAndSort.addActionListener(this);
         aiInsights.addActionListener(this);
         aiChat.addActionListener(this);
-
         compare.addActionListener(this);
+        viewFavoritedPlayers.addActionListener(this);
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(title);
@@ -104,6 +114,9 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
             mainMenuController.switchToChat();
         } else if (e.getSource().equals(compare)) {
             mainMenuController.onCompareButtonClicked();
+        } else if (e.getSource().equals(viewFavoritedPlayers)) {
+            // Switch to the favorited players card in the main CardLayout
+            mainMenuController.onViewFavoritedPlayersPressed();
         }
     }
 
@@ -113,5 +126,6 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(this, state.getError());
         }
+        // No action needed here for view switching; ViewManager listens to ViewManagerModel
     }
 }

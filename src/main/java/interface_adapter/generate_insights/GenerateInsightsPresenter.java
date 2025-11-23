@@ -17,6 +17,7 @@ public class GenerateInsightsPresenter implements GenerateInsightsOutputBoundary
     public void prepareSuccessView(GenerateInsightsOutputData outputData) {
         GenerateInsightsState state = generateInsightsViewModel.getState();
         state.setInsight(outputData.getInsight().getSummaryText());
+        state.setLoading(false);
         generateInsightsViewModel.setState(state);
         generateInsightsViewModel.firePropertyChanged();
     }
@@ -25,6 +26,16 @@ public class GenerateInsightsPresenter implements GenerateInsightsOutputBoundary
     public void prepareFailView(String error) {
         GenerateInsightsState state = generateInsightsViewModel.getState();
         state.setError(error);
+        state.setLoading(false);
+        generateInsightsViewModel.setState(state);
+        generateInsightsViewModel.firePropertyChanged();
+    }
+
+    @Override
+    public void prepareLoadingView() {
+        GenerateInsightsState state = generateInsightsViewModel.getState();
+        state.setLoading(true);
+        state.setError(null); // Clear previous errors
         generateInsightsViewModel.setState(state);
         generateInsightsViewModel.firePropertyChanged();
     }

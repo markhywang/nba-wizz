@@ -7,9 +7,12 @@ import data_access.FileUserDataAccessObject;
 import data_access.PlayerDataAccessInterface;
 import data_access.TeamDataAccessInterface;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.auth.AuthController;
-import interface_adapter.auth.AuthPresenter;
-import interface_adapter.auth.AuthViewModel;
+import interface_adapter.login.LoginController;
+import interface_adapter.login.LoginPresenter;
+import interface_adapter.login.LoginViewModel;
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupPresenter;
+import interface_adapter.signup.SignupViewModel;
 import interface_adapter.compare.CompareController;
 import interface_adapter.compare.ComparePresenter;
 import interface_adapter.compare.CompareViewModel;
@@ -33,13 +36,15 @@ import interface_adapter.search_player.SearchPlayerViewModel;
 import use_case.favourite.FavouriteDataAccessInterface;
 import use_case.favourite.FavouriteInputBoundary;
 import use_case.favourite.FavouriteInteractor;
+import use_case.favourite.FavouriteOutputData;
 import use_case.main_menu.MainMenuInputBoundary;
 import use_case.main_menu.MainMenuInteractor;
 import use_case.main_menu.MainMenuOutputBoundary;
 import use_case.search_player.SearchPlayerInputBoundary;
 import use_case.search_player.SearchPlayerInteractor;
 import use_case.search_player.SearchPlayerOutputBoundary;
-import view.AuthView;
+import view.LoginView;
+import view.SignupView;
 import view.MainMenuView;
 import view.SearchPlayerView;
 import view.ViewManager;
@@ -52,6 +57,7 @@ import use_case.generate_insights.GenerateInsightsInputBoundary;
 import use_case.generate_insights.GenerateInsightsInteractor;
 import use_case.generate_insights.GenerateInsightsOutputBoundary;
 import view.GenerateInsightsView;
+import view.FavoritedPlayersView;
 import interface_adapter.ask_question.AskQuestionController;
 import interface_adapter.ask_question.AskQuestionPresenter;
 import interface_adapter.ask_question.AskQuestionViewModel;
@@ -96,6 +102,8 @@ public class Main {
         FavouriteDataAccessInterface favouriteDataAccessInterface = new FavouriteDataAccessObject();
         FavouriteInputBoundary favouriteInputBoundary = new FavouriteInteractor(favouritePresenter, favouriteDataAccessInterface);
         FavouriteController favouriteController = new FavouriteController(favouriteInputBoundary);
+        // Initialize the favourite view model with existing favourites from storage
+        favouritePresenter.addFavourite(new FavouriteOutputData(true, favouriteInputBoundary.getFavourites()));
 
         ViewManagerModel viewManagerModel = new ViewManagerModel();
         new ViewManager(views, cardLayout, viewManagerModel);
@@ -104,7 +112,9 @@ public class Main {
         GenerateInsightsViewModel generateInsightsViewModel = new GenerateInsightsViewModel();
         AskQuestionViewModel askQuestionViewModel = new AskQuestionViewModel();
         ComparePlayersViewModel comparePlayersViewModel = new ComparePlayersViewModel();
-        AuthViewModel authViewModel = new AuthViewModel();
+        
+        LoginViewModel loginViewModel = new LoginViewModel();
+        SignupViewModel signupViewModel = new SignupViewModel();
 
 
         // The data access object.
@@ -114,16 +124,26 @@ public class Main {
         TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("TeamStatsDataset.csv");
 
         UserDataAccessInterface userDataAccessInterface = new FileUserDataAccessObject("src/main/java/data/users.csv");
-        AuthPresenter authPresenter = new AuthPresenter(authViewModel, viewManagerModel, mainMenuViewModel);
-        LoginInputBoundary loginInputBoundary = new LoginInteractor(userDataAccessInterface, authPresenter);
-        SignupInputBoundary signupInputBoundary = new SignupInteractor(userDataAccessInterface, authPresenter);
-        AuthController authController = new AuthController(loginInputBoundary, signupInputBoundary);
-        AuthView authView = new AuthView(authViewModel, authController);
-        views.add(authView, authView.viewName);
+        
+        LoginPresenter loginPresenter = new LoginPresenter(viewManagerModel, mainMenuViewModel, loginViewModel, signupViewModel, favouriteDataAccessInterface, favouritePresenter);
+        SignupPresenter signupPresenter = new SignupPresenter(viewManagerModel, signupViewModel, loginViewModel);
+        
+        LoginInputBoundary loginInputBoundary = new LoginInteractor(userDataAccessInterface, loginPresenter);
+        SignupInputBoundary signupInputBoundary = new SignupInteractor(userDataAccessInterface, signupPresenter);
+        
+        LoginController loginController = new LoginController(loginInputBoundary);
+        SignupController signupController = new SignupController(signupInputBoundary);
+        
+        LoginView loginView = new LoginView(loginViewModel, loginController);
+        views.add(loginView, loginView.viewName);
+        
+        SignupView signupView = new SignupView(signupController, signupViewModel);
+        views.add(signupView, signupView.viewName);
 
         MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
         MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuPresenter);
-        MainMenuController mainMenuController = new MainMenuController(mainMenuInteractor, viewManagerModel);
+        // Pass the favouriteController to MainMenuController so it can provide favorited players
+        MainMenuController mainMenuController = new MainMenuController(mainMenuInteractor, viewManagerModel, favouriteController);
         MainMenuView mainMenuView = new MainMenuView(mainMenuViewModel, mainMenuController);
         views.add(mainMenuView, mainMenuView.viewName);
 
@@ -134,8 +154,10 @@ public class Main {
         GenerateInsightsView generateInsightsView = new GenerateInsightsView(generateInsightsViewModel, generateInsightsController);
         views.add(generateInsightsView, generateInsightsView.viewName);
 
+        // (FavoritedPlayersView will be registered later after SearchPlayerController exists)
 
-        viewManagerModel.setActiveView(authView.viewName);
+
+        viewManagerModel.setActiveView(loginView.viewName);
         viewManagerModel.firePropertyChanged();
 
 
@@ -169,6 +191,10 @@ public class Main {
                                     favouriteController, favouriteViewModel);
 
         views.add(searchPlayerView, searchPlayerView.viewName);
+
+        // Now that SearchPlayerController and SearchPlayerView exist, register the favorited players card with them
+        FavoritedPlayersView favoritedPlayersView = new FavoritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
+        views.add(favoritedPlayersView, favoritedPlayersView.viewName);
 
 
         // Sort Players Feature Setup

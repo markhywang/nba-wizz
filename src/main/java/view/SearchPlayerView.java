@@ -51,6 +51,8 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     private final JButton favouriteButton;
     private boolean isFavourite = false;
     private String selected = null;
+    private final ImageIcon starEmpty;
+    private final ImageIcon starFilled;
 
     private LineChart<Number, Number> lineChart;
 
@@ -63,6 +65,10 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         this.viewModel.addPropertyChangeListener(this);
         favouriteViewModel.addPropertyChangeListener(this);
         this.favouriteController = favouriteController;
+
+        // Load and resize icons
+        starEmpty = resizeIcon("/icons/star_empty.png", 30, 30);
+        starFilled = resizeIcon("/icons/star_filled.png", 30, 30);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -87,15 +93,16 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         endSeasonField.setPreferredSize(new Dimension(80, 25));
 
         favouriteButton = new JButton();
-        favouriteButton.setPreferredSize(new Dimension(30, 30));
+        favouriteButton.setPreferredSize(new Dimension(40, 40));
         favouriteButton.setBorderPainted(false);
         favouriteButton.setContentAreaFilled(false);
         favouriteButton.setFocusPainted(false);
-        favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_empty.png")));
+        favouriteButton.setIcon(starEmpty);
+        favouriteButton.setEnabled(false); // Disabled until search
 
         favouriteButton.addActionListener(e -> {
             if (selected != null) {
-                favouriteController.favouriteToggle(selected);  // <-- triggers your state update
+                favouriteController.favouriteToggle(selected);
             }
         });
 
@@ -109,9 +116,7 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         gbc.gridx = 1;
         inputPanel.add(nameRow, gbc);
 
-        gbc.gridx = 2;
-        inputPanel.add(favouriteButton, gbc);
-        gbc.insets = new Insets(5, 5, 5, 10);
+        // Removed duplicate addition of favouriteButton at gridx=2
 
         gbc.gridx = 0; gbc.gridy = 1;
         inputPanel.add(new JLabel("Start Season:"), gbc);
@@ -202,6 +207,24 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
         add(fxPanel);
     }
 
+    private ImageIcon resizeIcon(String path, int width, int height) {
+        try {
+            java.net.URL imgURL = getClass().getResource(path);
+            if (imgURL != null) {
+                ImageIcon icon = new ImageIcon(imgURL);
+                Image img = icon.getImage();
+                Image newImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                return new ImageIcon(newImg);
+            } else {
+                System.err.println("Couldn't find file: " + path);
+                return null;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == homeButton) {
@@ -220,6 +243,12 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
             fgBox.setSelected(false);
 
             tableModel.setRowCount(0);
+
+            // Reset selection
+            selected = null;
+            isFavourite = false;
+            favouriteButton.setEnabled(false);
+            updateStarIcon();
 
             Platform.runLater(() -> lineChart.getData().clear());
             return;
@@ -277,6 +306,7 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
 
             selected = playerNameField.getText().trim();
             isFavourite = favouriteController.isFavourite(selected.toLowerCase());
+            favouriteButton.setEnabled(true); // Enable button
             updateStarIcon();
             System.out.println(selected + " " + isFavourite);
 
@@ -309,9 +339,23 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     }
     private void updateStarIcon() {
         if (isFavourite) {
-            favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_filled.png")));
+            favouriteButton.setIcon(starFilled);
         } else {
-            favouriteButton.setIcon(new ImageIcon(getClass().getResource("/icons/star_empty.png")));
+            favouriteButton.setIcon(starEmpty);
         }
     }
+
+    /**
+     * Prefill the player name field and update favourite/star UI.
+     * This is used when another view (e.g. FavoritedPlayersView) wants to programmatically
+     * set which player is being searched before invoking a search.
+     */
+    public void setPlayerNameForSearch(String playerName) {
+        if (playerName == null) return;
+        playerNameField.setText(playerName);
+        selected = playerName;
+        isFavourite = favouriteController.isFavourite(selected.toLowerCase());
+        updateStarIcon();
+    }
+
 }

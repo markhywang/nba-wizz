@@ -5,6 +5,7 @@ import interface_adapter.ask_question.AskQuestionController;
 import interface_adapter.ask_question.AskQuestionState;
 import interface_adapter.ask_question.AskQuestionViewModel;
 import interface_adapter.compare_players.ComparePlayersController;
+import interface_adapter.compare_players.ComparePlayersState;
 import interface_adapter.compare_players.ComparePlayersViewModel;
 
 import javax.swing.*;
@@ -30,9 +31,8 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     private final JButton homeButton;
     private final JRadioButton askQuestionRadioButton;
     private final JRadioButton comparePlayersRadioButton;
-    private final JLabel loadingIndicator;
     private static final Font INPUT_FONT = new Font("Arial", Font.PLAIN, 16);
-
+    private final Timer loadingTimer; // Timer to animate loading bubble
 
     private enum Mode {
         ASK_QUESTION,
@@ -64,10 +64,7 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         homeButton.addActionListener(this);
         topPanel.add(homeButton, BorderLayout.WEST);
 
-        loadingIndicator = new JLabel("Loading...", SwingConstants.CENTER);
-        loadingIndicator.setFont(INPUT_FONT);
-        loadingIndicator.setVisible(false);
-        topPanel.add(loadingIndicator, BorderLayout.CENTER);
+        // Removed static loading indicator
         add(topPanel, BorderLayout.NORTH);
 
 
@@ -76,6 +73,9 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
         chatList.setCellRenderer(new ChatBubbleCellRenderer());
         JScrollPane scrollPane = new JScrollPane(chatList);
         add(scrollPane, BorderLayout.CENTER);
+        
+        // Timer for 60 FPS animation of loading bubble
+        loadingTimer = new Timer(16, e -> chatList.repaint());
 
         JPanel inputPanel = new JPanel(new BorderLayout(5, 5));
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -154,44 +154,103 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if ("state".equals(evt.getPropertyName())) {
-            if (evt.getSource() == askQuestionViewModel) {
-                AskQuestionState state = askQuestionViewModel.getState();
-                loadingIndicator.setVisible(state.isLoading());
+        SwingUtilities.invokeLater(() -> {
+            if ("state".equals(evt.getPropertyName())) {
+                if (evt.getSource() == askQuestionViewModel) {
+                    AskQuestionState state = askQuestionViewModel.getState();
 
-                String answer = state.getAnswer();
-                // Only display the answer when loading is complete (non-streaming)
-                if (answer != null && !answer.isEmpty() && !state.isLoading()) {
-                    // If the last message is from the user, create a new AI message bubble
-                    // Otherwise, update the existing AI message
-                    if (chatModel.isEmpty() || chatModel.lastElement().getSender() == ChatMessage.Sender.USER) {
-                        chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
+                    // Handle loading state
+                    if (state.isLoading()) {
+                        if (!loadingTimer.isRunning()) loadingTimer.start();
+                        // Disable input while loading
+                        inputField.setEnabled(false);
+                        sendButton.setEnabled(false);
+
+                        // Add loading bubble if not already present
+                        if (chatModel.isEmpty() || chatModel.lastElement().getSender() != ChatMessage.Sender.LOADING) {
+                            chatModel.addElement(new ChatMessage("", ChatMessage.Sender.LOADING));
+                            chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                        }
                     } else {
-                        // Last element is an AI message, update it
-                        chatModel.lastElement().setText(answer);
+                        if (loadingTimer.isRunning()) loadingTimer.stop();
+                        // Re-enable input
+                        inputField.setEnabled(true);
+                        sendButton.setEnabled(true);
+                        inputField.requestFocusInWindow();
+
+                        // Remove ALL loading bubbles (iterate backwards)
+                        for (int i = chatModel.getSize() - 1; i >= 0; i--) {
+                            if (chatModel.get(i).getSender() == ChatMessage.Sender.LOADING) {
+                                chatModel.removeElementAt(i);
+                            }
+                        }
                     }
-                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                    chatList.repaint();
-                }
+
+                    String answer = state.getAnswer();
+                    // Only display the answer when loading is complete (non-streaming)
+                    if (answer != null && !answer.isEmpty() && !state.isLoading()) {
+                        // If the last message is from the user, create a new AI message bubble
+                        // Otherwise, update the existing AI message
+                        if (chatModel.isEmpty() || chatModel.lastElement().getSender() == ChatMessage.Sender.USER) {
+                            chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
+                        } else {
+                             // This case might happen if we removed loading and now adding answer
+                            chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
+                        }
+                        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                        chatList.repaint();
+                    }
 
 
-                String error = state.getError();
-                if (error != null) {
-                    chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
-                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                }
-            } else if (evt.getSource() == comparePlayersViewModel) {
-                String comparison = comparePlayersViewModel.getState().getComparison();
-                if (comparison != null && !comparison.isEmpty()) {
-                    chatModel.addElement(new ChatMessage(comparison, ChatMessage.Sender.AI));
-                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                }
-                String error = comparePlayersViewModel.getState().getError();
-                if (error != null) {
-                    chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
-                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                    String error = state.getError();
+                    if (error != null) {
+                        // Loading bubbles already removed above
+                        chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
+                        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                    }
+                } else if (evt.getSource() == comparePlayersViewModel) {
+                    ComparePlayersState state = comparePlayersViewModel.getState();
+
+                    // Handle loading state
+                    if (state.isLoading()) {
+                        if (!loadingTimer.isRunning()) loadingTimer.start();
+                        // Disable input while loading
+                        inputField.setEnabled(false);
+                        sendButton.setEnabled(false);
+
+                        // Add loading bubble if not already present
+                        if (chatModel.isEmpty() || chatModel.lastElement().getSender() != ChatMessage.Sender.LOADING) {
+                            chatModel.addElement(new ChatMessage("", ChatMessage.Sender.LOADING));
+                            chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                        }
+                    } else {
+                        if (loadingTimer.isRunning()) loadingTimer.stop();
+                        // Re-enable input
+                        inputField.setEnabled(true);
+                        sendButton.setEnabled(true);
+                        inputField.requestFocusInWindow();
+
+                        // Remove ALL loading bubbles (iterate backwards)
+                        for (int i = chatModel.getSize() - 1; i >= 0; i--) {
+                            if (chatModel.get(i).getSender() == ChatMessage.Sender.LOADING) {
+                                chatModel.removeElementAt(i);
+                            }
+                        }
+                    }
+
+                    String comparison = state.getComparison();
+                    if (comparison != null && !comparison.isEmpty() && !state.isLoading()) {
+                        chatModel.addElement(new ChatMessage(comparison, ChatMessage.Sender.AI));
+                        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                    }
+                    String error = state.getError();
+                    if (error != null) {
+                        // Note: Loading bubbles already removed above
+                        chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
+                        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                    }
                 }
             }
-        }
+        });
     }
 }

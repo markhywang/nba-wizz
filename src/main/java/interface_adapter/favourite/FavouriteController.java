@@ -3,6 +3,8 @@ package interface_adapter.favourite;
 import use_case.favourite.FavouriteInputBoundary;
 import use_case.favourite.FavouriteInputData;
 
+import java.util.List;
+
 public class FavouriteController {
     private final FavouriteInputBoundary favouriteInputBoundary;
 
@@ -16,5 +18,9 @@ public class FavouriteController {
 
     public boolean isFavourite(String playerName) {
         return this.favouriteInputBoundary.isFavourite(new FavouriteInputData(playerName));
+    }
+
+    public List<String> getFavourites() {
+        return favouriteInputBoundary.getFavourites();
     }
 }

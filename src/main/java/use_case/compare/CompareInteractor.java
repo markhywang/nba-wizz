@@ -42,6 +42,24 @@ public class CompareInteractor implements CompareInputBoundary {
             return;
         }
 
+        // CHeck that each entered name exits
+        if (in.getEntityType() == CompareInputData.EntityType.PLAYER) {
+            for (String name : names) {
+                // case-insensitive
+                if (playerDAO.getPlayerByName(name) == null) {
+                    presenter.presentError("Player " + name + " not found.");
+                    return;
+                }
+            }
+        } else { // Team
+            for (String name : names) {
+                if (teamDAO.getTeamByName(name) == null) {
+                    presenter.presentError("Team " + name + " not found.");
+                    return;
+                }
+            }
+        }
+
         List<String> metrics =
                 PRESETS.getOrDefault(in.getStatPreset(), PRESETS.get("Basic"));
 
@@ -105,5 +123,10 @@ public class CompareInteractor implements CompareInputBoundary {
                 names, seasonLabel, rows, notices, null);
 
         presenter.present(out);
+    }
+
+    @Override
+    public void switchToMainMenu() {
+        presenter.switchToMainMenu();
     }
 }

@@ -5,15 +5,25 @@ public class GenerateInsightsState {
     private String entityType = "Player";
     private String insight = "";
     private String error = null;
+    private boolean isLoading = false;
 
     public GenerateInsightsState(GenerateInsightsState copy) {
         this.entityName = copy.entityName;
         this.entityType = copy.entityType;
         this.insight = copy.insight;
         this.error = copy.error;
+        this.isLoading = copy.isLoading;
     }
 
     public GenerateInsightsState() {}
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+    }
 
     public String getEntityName() {
         return entityName;

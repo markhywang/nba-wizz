@@ -19,6 +19,7 @@ public class SignupInteractor implements SignupInputBoundary {
     public void execute(SignupInputData inputData) {
         String username = inputData.getUsername();
         String password = inputData.getPassword();
+        String repeatPassword = inputData.getRepeatPassword();
 
         if (username == null || username.trim().isEmpty()) {
             signupOutputBoundary.prepareSignupFail("Username is required.");
@@ -27,6 +28,11 @@ public class SignupInteractor implements SignupInputBoundary {
 
         if (password == null || password.length() < 4) {
             signupOutputBoundary.prepareSignupFail("Password must be at least 4 characters.");
+            return;
+        }
+
+        if (!password.equals(repeatPassword)) {
+            signupOutputBoundary.prepareSignupFail("Passwords do not match.");
             return;
         }
 
@@ -40,6 +46,11 @@ public class SignupInteractor implements SignupInputBoundary {
         userDataAccessInterface.save(user);
 
         signupOutputBoundary.prepareSuccessView(new SignupOutputData(user.getUsername()));
+    }
+
+    @Override
+    public void switchToLogin() {
+        signupOutputBoundary.prepareLoginView();
     }
 }
 

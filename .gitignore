@@ -1,5 +1,4 @@
 .env
 venv/
 target/
-/.idea
-*.iml
+.idea
