@@ -52,15 +52,15 @@ class SearchPlayerInteractorTest {
             return Map.of();
         }
 
-        @Override
-        public Map<String, Double> getAggregateMetrics(
-                String playerName,
-                int seasonStartInclusive,
-                int seasonEndInclusive,
-                Normalization normalization,
-                List<String> metrics) {
-            return Map.of();
-        }
+//        @Override
+//        public Map<String, Double> getAggregateMetrics(
+//                String playerName,
+//                int seasonStartInclusive,
+//                int seasonEndInclusive,
+//                Normalization normalization,
+//                List<String> metrics) {
+//            return Map.of();
+//        }
 
         @Override
         public void save(Player entity) {
