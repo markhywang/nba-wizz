@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.application.Platform;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -187,7 +188,7 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
             lineChart = new LineChart<>(xAxis, yAxis);
             lineChart.setTitle("Performance Over Seasons");
             lineChart.setLegendVisible(true);
-            lineChart.setLegendSide(javafx.geometry.Side.BOTTOM);
+            lineChart.setLegendSide(Side.LEFT);
             lineChart.setAnimated(false);
 
             fxPanel.setScene(new Scene(lineChart, 600, 300));
