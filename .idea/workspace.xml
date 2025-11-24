@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Finish Compare Use Case, Except for the Listener on the main menu">
+      <change afterPath="$PROJECT_DIR$/src.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/data/users.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/users.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInteractor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/FilterPlayersView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/FilterPlayersView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,7 +74,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1763995825298</updated>
-      <workItem from="1763995826608" duration="1888000" />
+      <workItem from="1763995826608" duration="2197000" />
     </task>
     <servers />
   </component>
