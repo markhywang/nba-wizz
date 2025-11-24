@@ -1,77 +1,84 @@
 package use_case.filter_players;
 
 import data_access.PlayerDataAccessInterface;
-import entity.Player;
-import entity.SeasonStats;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
 
-    // Hard cap to avoid flooding the table.
     private static final int PAGE_LIMIT = 200;
+    private static final String CSV_RESOURCE = "/data/PlayerStatsDataset.csv";
 
-    private final PlayerDataAccessInterface playerDAO;
+    @SuppressWarnings("unused")
+    private final PlayerDataAccessInterface playerDAO; // kept to respect constructor signature
     private final FilterPlayersOutputBoundary presenter;
+
+    // Cached rows from CSV. Each row has length 17, same order as the header.
+    private final List<String[]> allRows;
 
     public FilterPlayersInteractor(PlayerDataAccessInterface playerDAO,
                                    FilterPlayersOutputBoundary presenter) {
         this.playerDAO = playerDAO;
         this.presenter = presenter;
+        this.allRows = loadAllRows();
     }
 
     @Override
     public void execute(FilterPlayersInputData inputData) {
-        List<Player> allPlayers = playerDAO.findAll();
+        if (allRows.isEmpty()) {
+            presenter.presentError("Player stats data is not available.");
+            return;
+        }
 
         Set<String> teams = inputData.getTeams();
         Set<String> positions = inputData.getPositions();
         Optional<Integer> seasonMin = inputData.getSeasonMin();
         Optional<Integer> seasonMax = inputData.getSeasonMax();
 
-        List<String[]> rows = new ArrayList<>();
+        List<String[]> result = new ArrayList<>();
 
-        for (Player player : allPlayers) {
-            if (!matchesTeam(player, teams)) {
-                continue;
-            }
-            if (!matchesPosition(player, positions)) {
-                continue;
-            }
-            if (!matchesSeasonRange(player, seasonMin, seasonMax)) {
+        for (String[] row : allRows) {
+            if (row == null || row.length < 17) {
                 continue;
             }
 
-            // Build the season range string for this player.
-            Set<Integer> years = player.getCareerStats().stream()
-                    .map(SeasonStats::getSeasonYear)
-                    .collect(Collectors.toSet());
+            String team = row[3];   // Team column
+            String pos = row[1];    // Pos column
+            String seasonStr = row[4]; // Season column
 
-            String teamName = player.getTeam() != null ? player.getTeam().getName() : "";
-            String seasonText = compressYears(years);
+            int seasonYear = tryParseInt(seasonStr);
 
-            rows.add(new String[]{
-                    player.getName(),
-                    player.getPosition(),
-                    teamName,
-                    seasonText
-            });
+            if (!matchesTeam(team, teams)) {
+                continue;
+            }
+            if (!matchesPosition(pos, positions)) {
+                continue;
+            }
+            if (!matchesSeason(seasonYear, seasonMin, seasonMax)) {
+                continue;
+            }
 
-            if (rows.size() >= PAGE_LIMIT) {
+            // Keep the full 17-column row as-is
+            result.add(Arrays.copyOf(row, 17));
+
+            if (result.size() >= PAGE_LIMIT) {
                 break;
             }
         }
 
-        if (rows.isEmpty()) {
+        if (result.isEmpty()) {
             presenter.presentEmptyState("No players match the selected filters.");
-        } else if (rows.size() >= PAGE_LIMIT) {
+        } else if (result.size() >= PAGE_LIMIT) {
             presenter.presentLargeResultNotice(
-                    new FilterPlayersOutputData(rows),
-                    "Showing first " + rows.size() + " matching players."
+                    new FilterPlayersOutputData(result),
+                    "Showing first " + result.size() + " matching rows."
             );
         } else {
-            presenter.present(new FilterPlayersOutputData(rows));
+            presenter.present(new FilterPlayersOutputData(result));
         }
     }
 
@@ -80,93 +87,95 @@ public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
         presenter.cleared();
     }
 
-    private boolean matchesTeam(Player player, Set<String> teams) {
+    // ---------- Helpers ----------
+
+    private List<String[]> loadAllRows() {
+        List<String[]> rows = new ArrayList<>();
+
+        try (InputStream inputStream = getClass().getResourceAsStream(CSV_RESOURCE)) {
+            if (inputStream == null) {
+                presenter.presentError("Could not find CSV resource: " + CSV_RESOURCE);
+                return Collections.emptyList();
+            }
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+                String line;
+                // Skip header
+                br.readLine();
+
+                while ((line = br.readLine()) != null) {
+                    // Simple CSV split; dataset does not contain commas inside fields.
+                    String[] tokens = line.split(",", -1);
+                    if (tokens.length < 17) {
+                        continue;
+                    }
+                    rows.add(Arrays.copyOf(tokens, 17));
+                }
+            }
+        } catch (IOException e) {
+            presenter.presentError("Failed to load player stats data.");
+            return Collections.emptyList();
+        }
+
+        return rows;
+    }
+
+    private boolean matchesTeam(String team, Set<String> teams) {
         if (teams == null || teams.isEmpty()) {
             return true;
         }
-        if (player.getTeam() == null) {
+        if (team == null) {
             return false;
         }
-        String teamName = player.getTeam().getName();
         for (String t : teams) {
-            if (teamName != null && teamName.equalsIgnoreCase(t)) {
+            if (t != null && !t.isEmpty() && team.equalsIgnoreCase(t)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean matchesPosition(Player player, Set<String> positions) {
+    private boolean matchesPosition(String pos, Set<String> positions) {
         if (positions == null || positions.isEmpty()) {
             return true;
         }
-        String pos = player.getPosition();
         if (pos == null) {
             return false;
         }
         for (String p : positions) {
-            if (pos.equalsIgnoreCase(p)) {
+            if (p != null && !p.isEmpty() && pos.equalsIgnoreCase(p)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean matchesSeasonRange(Player player,
-                                       Optional<Integer> seasonMin,
-                                       Optional<Integer> seasonMax) {
+    private boolean matchesSeason(int seasonYear,
+                                  Optional<Integer> seasonMin,
+                                  Optional<Integer> seasonMax) {
         if (!seasonMin.isPresent() && !seasonMax.isPresent()) {
             return true;
         }
-        if (player.getCareerStats() == null) {
+        if (seasonYear == Integer.MIN_VALUE) {
             return false;
         }
-
-        for (SeasonStats stats : player.getCareerStats()) {
-            int year = stats.getSeasonYear();
-            if (seasonMin.isPresent() && year < seasonMin.get()) {
-                continue;
-            }
-            if (seasonMax.isPresent() && year > seasonMax.get()) {
-                continue;
-            }
-            // At least one season is within the range.
-            return true;
+        if (seasonMin.isPresent() && seasonYear < seasonMin.get()) {
+            return false;
         }
-        return false;
+        if (seasonMax.isPresent() && seasonYear > seasonMax.get()) {
+            return false;
+        }
+        return true;
     }
 
-    private static String compressYears(Collection<Integer> years) {
-        if (years == null || years.isEmpty()) {
-            return "";
+    private int tryParseInt(String value) {
+        if (value == null || value.isEmpty()) {
+            return Integer.MIN_VALUE;
         }
-        List<Integer> ys = years.stream()
-                .filter(Objects::nonNull)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-        if (ys.isEmpty()) {
-            return "";
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return Integer.MIN_VALUE;
         }
-
-        List<String> parts = new ArrayList<>();
-        int start = ys.get(0);
-        int prev = ys.get(0);
-
-        for (int i = 1; i < ys.size(); i++) {
-            int y = ys.get(i);
-            if (y == prev + 1) {
-                prev = y;
-            } else {
-                parts.add(rangeStr(start, prev));
-                start = prev = y;
-            }
-        }
-        parts.add(rangeStr(start, prev));
-        return String.join(", ", parts);
-    }
-
-    private static String rangeStr(int a, int b) {
-        return (a == b) ? String.valueOf(a) : (a + "–" + b);
     }
 }
