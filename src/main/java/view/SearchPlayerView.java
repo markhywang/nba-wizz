@@ -25,7 +25,6 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import use_case.search_player.SearchPlayerOutputBoundary;
 
 /**
  * The SearchPlayerView is the UI where users can search for NBA players and
@@ -106,17 +105,25 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
             }
         });
 
-        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
         inputPanel.add(new JLabel("Player Name:"), gbc);
 
-        JPanel nameRow = new JPanel(new BorderLayout());
-        nameRow.add(playerNameField, BorderLayout.CENTER);
-        nameRow.add(favouriteButton, BorderLayout.EAST);
+        JPanel nameRow = new JPanel();
+        nameRow.setLayout(new BoxLayout(nameRow, BoxLayout.X_AXIS));
+
+        playerNameField.setPreferredSize(new Dimension(200, 28));
+        playerNameField.setMaximumSize(new Dimension(250, 28));
+        playerNameField.setMinimumSize(new Dimension(200, 28));
+
+        nameRow.add(playerNameField);
+        nameRow.add(Box.createRigidArea(new Dimension(10, 0)));   // spacing
+        nameRow.add(favouriteButton);
 
         gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         inputPanel.add(nameRow, gbc);
-
-        // Removed duplicate addition of favouriteButton at gridx=2
 
         gbc.gridx = 0; gbc.gridy = 1;
         inputPanel.add(new JLabel("Start Season:"), gbc);

@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="278190ef-353f-45aa-aace-b8c3d34d143a" name="Changes" comment="">
+    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Finish Compare Use Case, Except for the Listener on the main menu">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/app/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/login/LoginPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/login/LoginPresenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/data/favourites.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/favourites.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/SearchPlayerView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/SearchPlayerView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,14 +24,10 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "favourite-list"
+    "git-widget-placeholder": "useCase1ExtraFeatures"
   }
 }]]></component>
   <component name="TaskManager">
     <servers />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
 </project>
