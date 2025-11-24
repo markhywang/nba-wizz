@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class SortPlayersView extends JPanel implements PropertyChangeListener {
+public class FilterSortPlayersView extends JPanel implements PropertyChangeListener {
 
     public final String viewName = "sort_players";
 
@@ -48,10 +48,10 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
             "TRB", "AST", "TOV", "STL", "BLK", "PF", "PTS"
     };
 
-    public SortPlayersView(SortController sortController,
-                           SortViewModel sortViewModel,
-                           FilterPlayersController filterController,
-                           FilterPlayersViewModel filterViewModel) {
+    public FilterSortPlayersView(SortController sortController,
+                                 SortViewModel sortViewModel,
+                                 FilterPlayersController filterController,
+                                 FilterPlayersViewModel filterViewModel) {
         this.sortController = sortController;
         this.sortViewModel = sortViewModel;
         this.filterController = filterController;
