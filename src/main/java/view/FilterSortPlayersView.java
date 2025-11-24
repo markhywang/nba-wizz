@@ -15,11 +15,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class FilterSortPlayersView extends JPanel implements PropertyChangeListener {
 
@@ -35,9 +32,9 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
     private final DefaultTableModel tableModel;
 
     private final JComboBox<String> positionComboBox;
-    private final JTextField teamField;
-    private final JTextField seasonFromField;
-    private final JTextField seasonToField;
+    private final JComboBox<String> teamComboBox;
+    private final JComboBox<String> seasonFromComboBox;
+    private final JComboBox<String> seasonToComboBox;
 
     private final JLabel bannerLabel;
 
@@ -62,7 +59,7 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
 
         setLayout(new BorderLayout());
 
-        // ---------- Top panel: title + banner + filter controls ----------
+        // ---------- Top panel ----------
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         topPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 10, 30));
@@ -87,7 +84,7 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
         gbc.insets = new Insets(5, 10, 5, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Position dropdown
+        // Position
         gbc.gridx = 0;
         gbc.gridy = 0;
         filterPanel.add(new JLabel("Position:"), gbc);
@@ -98,28 +95,33 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
         gbc.gridx = 1;
         filterPanel.add(positionComboBox, gbc);
 
-        // Team field
+        // Team (editable combo)
         gbc.gridx = 2;
         filterPanel.add(new JLabel("Team:"), gbc);
 
-        teamField = new JTextField(5);
+        String[] teamOptions = buildTeamOptionsSafe();
+        teamComboBox = new JComboBox<>(teamOptions);
+        teamComboBox.setEditable(true);
         gbc.gridx = 3;
-        filterPanel.add(teamField, gbc);
+        filterPanel.add(teamComboBox, gbc);
 
-        // Season range
+        // Season range (editable combos)
         gbc.gridx = 4;
         filterPanel.add(new JLabel("Season from:"), gbc);
 
-        seasonFromField = new JTextField(4);
+        String[] seasonOptions = buildSeasonOptions();
+        seasonFromComboBox = new JComboBox<>(seasonOptions);
+        seasonFromComboBox.setEditable(true);
         gbc.gridx = 5;
-        filterPanel.add(seasonFromField, gbc);
+        filterPanel.add(seasonFromComboBox, gbc);
 
         gbc.gridx = 6;
         filterPanel.add(new JLabel("to:"), gbc);
 
-        seasonToField = new JTextField(4);
+        seasonToComboBox = new JComboBox<>(seasonOptions);
+        seasonToComboBox.setEditable(true);
         gbc.gridx = 7;
-        filterPanel.add(seasonToField, gbc);
+        filterPanel.add(seasonToComboBox, gbc);
 
         // Buttons
         JButton filterButton = new JButton("Filter");
@@ -156,7 +158,6 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
         };
 
         table = new JTable(tableModel);
-        // Do not auto-resize columns so that horizontal scroll bar appears when needed
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         JScrollPane scrollPane = new JScrollPane(
@@ -165,14 +166,12 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
 
-        // Center panel with padding so the table does not touch window edges
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 30, 20, 30));
         centerPanel.add(scrollPane, BorderLayout.CENTER);
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // Click header to sort
         JTableHeader header = table.getTableHeader();
         header.addMouseListener(new MouseAdapter() {
             @Override
@@ -183,11 +182,41 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
         });
     }
 
+    // Team options: safe against null viewModel / null set
+    private String[] buildTeamOptionsSafe() {
+        Set<String> allTeams = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        if (filterViewModel != null && filterViewModel.getAllTeams() != null) {
+            allTeams.addAll(filterViewModel.getAllTeams());
+        }
+        List<String> list = new ArrayList<>();
+        list.add(""); // empty option
+        list.addAll(allTeams);
+        return list.toArray(new String[0]);
+    }
+
+    // Simple year list; can adjust range later
+    private String[] buildSeasonOptions() {
+        int minYear = 1980;
+        int maxYear = 2024;
+        List<String> list = new ArrayList<>();
+        list.add("");
+        for (int y = maxYear; y >= minYear; y--) {
+            list.add(String.valueOf(y));
+        }
+        return list.toArray(new String[0]);
+    }
+
     private void onFilterClicked() {
         String pos = (String) positionComboBox.getSelectedItem();
-        String team = teamField.getText().trim();
-        String from = seasonFromField.getText().trim();
-        String to = seasonToField.getText().trim();
+
+        Object teamItem = teamComboBox.getEditor().getItem();
+        String team = teamItem == null ? "" : teamItem.toString().trim();
+
+        Object fromItem = seasonFromComboBox.getEditor().getItem();
+        String from = fromItem == null ? "" : fromItem.toString().trim();
+
+        Object toItem = seasonToComboBox.getEditor().getItem();
+        String to = toItem == null ? "" : toItem.toString().trim();
 
         Set<String> positions = new HashSet<>();
         if (pos != null && !pos.isEmpty()) {
@@ -202,17 +231,26 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
         Optional<Integer> seasonMin = parseSeason(from);
         Optional<Integer> seasonMax = parseSeason(to);
 
+        // New validation: start season cannot be greater than end season
+        if (seasonMin.isPresent() && seasonMax.isPresent()
+                && seasonMin.get() > seasonMax.get()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Start season cannot be greater than end season."
+            );
+            return;
+        }
+
         filterController.apply(teams, positions, seasonMin, seasonMax);
     }
 
+
     private void onClearClicked() {
         positionComboBox.setSelectedIndex(0);
-        teamField.setText("");
-        seasonFromField.setText("");
-        seasonToField.setText("");
+        teamComboBox.setSelectedItem("");
+        seasonFromComboBox.setSelectedItem("");
+        seasonToComboBox.setSelectedItem("");
 
-        // Clear filter use case; the presenter will set tableRows to empty
-        // and SortPlayersView will rebuild an empty table.
         filterController.clear();
     }
 
@@ -266,11 +304,8 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
             rows = new ArrayList<>();
         }
 
-        // Update table to show filtered rows
         reloadTableFromRows(rows);
 
-        // Sync current rows into SortState so that column-click sorting
-        // uses the filtered result instead of an empty list.
         SortState sortState = sortViewModel.getState();
         sortState.setTableData(rows);
 
@@ -283,7 +318,6 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
         sortState.setAscending(true);
         sortState.setErrorMessage(state.errorMessage);
 
-        // Update banner and error message in the UI
         if (state.bannerMessage != null) {
             bannerLabel.setText(state.bannerMessage);
         } else {
