@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Rename the package">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/FilterSortPlayersView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/FilterSortPlayersView.java" afterDir="false" />
-    </list>
+    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Improve the Filter UI 2" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -138,7 +135,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764011073199</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Improve the Filter UI 2">
+      <option name="closed" value="true" />
+      <created>1764012487261</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1764012487261</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -148,6 +153,7 @@
     <MESSAGE value="filter and sort and clear UI finished" />
     <MESSAGE value="improve the filter and sort UI" />
     <MESSAGE value="Rename the package" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rename the package" />
+    <MESSAGE value="Improve the Filter UI 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve the Filter UI 2" />
   </component>
 </project>

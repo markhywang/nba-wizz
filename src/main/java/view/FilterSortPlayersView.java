@@ -231,8 +231,19 @@ public class FilterSortPlayersView extends JPanel implements PropertyChangeListe
         Optional<Integer> seasonMin = parseSeason(from);
         Optional<Integer> seasonMax = parseSeason(to);
 
+        // New validation: start season cannot be greater than end season
+        if (seasonMin.isPresent() && seasonMax.isPresent()
+                && seasonMin.get() > seasonMax.get()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Start season cannot be greater than end season."
+            );
+            return;
+        }
+
         filterController.apply(teams, positions, seasonMin, seasonMax);
     }
+
 
     private void onClearClicked() {
         positionComboBox.setSelectedIndex(0);
