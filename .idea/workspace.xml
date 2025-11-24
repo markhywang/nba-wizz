@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="improve the filter and sort UI">
+    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Rename the package">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/app/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortInputBoundary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort/SortInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort/SortOutputBoundary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortOutputBoundary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort/SortOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortOutputData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/FilterSortPlayersView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/FilterSortPlayersView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764010165591</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Rename the package">
+      <option name="closed" value="true" />
+      <created>1764011073199</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1764011073199</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -146,6 +147,7 @@
     <MESSAGE value="filter but no clear" />
     <MESSAGE value="filter and sort and clear UI finished" />
     <MESSAGE value="improve the filter and sort UI" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve the filter and sort UI" />
+    <MESSAGE value="Rename the package" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rename the package" />
   </component>
 </project>
