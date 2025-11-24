@@ -54,7 +54,7 @@ public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
             return;
         }
 
-        // Build table rows
+        // Build full table rows (no paging here)
         List<String[]> rows = filtered.stream()
                 .map(p -> new String[]{
                         safeName(p),
@@ -64,15 +64,7 @@ public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
                 })
                 .collect(Collectors.toList());
 
-        // Large result notice
-        if (rows.size() > PAGE_LIMIT) {
-            presenter.presentLargeResultNotice(
-                    new FilterPlayersOutputData(rows.subList(0, PAGE_LIMIT)),
-                    "Displaying first " + PAGE_LIMIT + " of " + rows.size() + " players."
-            );
-        } else {
-            presenter.present(new FilterPlayersOutputData(rows));
-        }
+        presenter.present(new FilterPlayersOutputData(rows));
     }
 
     @Override
@@ -81,8 +73,12 @@ public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
         List<Player> all = playerDAO.findAll();
         List<String[]> rows = all.stream()
                 .map(p -> new String[]{
-                        safeName(p), safeTeamCode(p), safePos(p), compressSeasons(seasons(p))
-                }).collect(Collectors.toList());
+                        safeName(p),
+                        safeTeamCode(p),
+                        safePos(p),
+                        compressSeasons(seasons(p))
+                })
+                .collect(Collectors.toList());
         presenter.cleared();
         presenter.present(new FilterPlayersOutputData(rows));
     }
