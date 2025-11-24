@@ -198,8 +198,6 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
 
         // Clear filter use case
         filterController.clear();
-        // Let sort use case restore original full table if available
-        sortController.onClearFilters();
     }
 
     private Optional<Integer> parseSeason(String text) {
