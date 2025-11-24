@@ -1,8 +1,8 @@
 package interface_adapter.sort_players;
 
 import interface_adapter.ViewManagerModel;
-import use_case.sort.SortOutputBoundary;
-import use_case.sort.SortOutputData;
+import use_case.sort_players.SortOutputBoundary;
+import use_case.sort_players.SortOutputData;
 
 
 public class SortPresenter implements SortOutputBoundary {

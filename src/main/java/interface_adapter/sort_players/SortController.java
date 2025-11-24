@@ -1,7 +1,7 @@
 package interface_adapter.sort_players;
 
-import use_case.sort.SortInputBoundary;
-import use_case.sort.SortInputData;
+import use_case.sort_players.SortInputBoundary;
+import use_case.sort_players.SortInputData;
 
 import java.util.ArrayList;
 import java.util.List;
