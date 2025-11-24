@@ -13,9 +13,6 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
-import interface_adapter.compare.CompareController;
-import interface_adapter.compare.ComparePresenter;
-import interface_adapter.compare.CompareViewModel;
 import interface_adapter.favourite.FavouriteController;
 import interface_adapter.favourite.FavouritePresenter;
 import interface_adapter.favourite.FavouriteViewModel;
@@ -27,9 +24,6 @@ import use_case.authentication.login.LoginInputBoundary;
 import use_case.authentication.login.LoginInteractor;
 import use_case.authentication.signup.SignupInputBoundary;
 import use_case.authentication.signup.SignupInteractor;
-import use_case.compare.CompareInputBoundary;
-import use_case.compare.CompareInteractor;
-import use_case.compare.CompareOutputBoundary;
 import interface_adapter.search_player.SearchPlayerController;
 import interface_adapter.search_player.SearchPlayerPresenter;
 import interface_adapter.search_player.SearchPlayerViewModel;
@@ -52,12 +46,11 @@ import interface_adapter.generate_insights.GenerateInsightsViewModel;
 import interface_adapter.generate_insights.GenerateInsightsController;
 import interface_adapter.generate_insights.GenerateInsightsPresenter;
 import data_access.GeminiDataAccessObject;
-import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 import use_case.generate_insights.GenerateInsightsInputBoundary;
 import use_case.generate_insights.GenerateInsightsInteractor;
 import use_case.generate_insights.GenerateInsightsOutputBoundary;
 import view.GenerateInsightsView;
-import view.FavoritedPlayersView;
+import view.FavouritedPlayersView;
 import interface_adapter.ask_question.AskQuestionController;
 import interface_adapter.ask_question.AskQuestionPresenter;
 import interface_adapter.ask_question.AskQuestionViewModel;
@@ -69,8 +62,6 @@ import use_case.ask_question.AskQuestionInteractor;
 import use_case.compare_players.ComparePlayersInputBoundary;
 import use_case.compare_players.ComparePlayersInteractor;
 import view.ChatView;
-
-import view.compare.CompareView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -191,9 +182,9 @@ public class Main {
 
         views.add(searchPlayerView, searchPlayerView.viewName);
 
-        // Now that SearchPlayerController and SearchPlayerView exist, register the favorited players card with them
-        FavoritedPlayersView favoritedPlayersView = new FavoritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
-        views.add(favoritedPlayersView, favoritedPlayersView.viewName);
+        // Now that SearchPlayerController and SearchPlayerView exist, register the favourited players card with them
+        FavouritedPlayersView favouritedPlayersView = new FavouritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
+        views.add(favouritedPlayersView, favouritedPlayersView.viewName);
 
 
         // Sort Players Feature Setup
