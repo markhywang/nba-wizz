@@ -1,8 +1,11 @@
 package view;
 
 import interface_adapter.sort_players.SortController;
-import interface_adapter.sort_players.SortViewModel;
 import interface_adapter.sort_players.SortState;
+import interface_adapter.sort_players.SortViewModel;
+import interface_adapter.filter_players.FilterPlayersController;
+import interface_adapter.filter_players.FilterPlayersState;
+import interface_adapter.filter_players.FilterPlayersViewModel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,14 +15,21 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public class SortPlayersView extends JPanel implements PropertyChangeListener {
 
     public final String viewName = "sort_players";
 
-    private final SortController controller;
-    private final SortViewModel viewModel;
+    private final SortController sortController;
+    private final SortViewModel sortViewModel;
+
+    private final FilterPlayersController filterController;
+    private final FilterPlayersViewModel filterViewModel;
 
     private final JTable table;
     private final DefaultTableModel tableModel;
@@ -29,6 +39,8 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
     private final JTextField seasonFromField;
     private final JTextField seasonToField;
 
+    private final JLabel bannerLabel;
+
     // 17 columns, same order as CSV
     private static final String[] COLUMN_NAMES = {
             "Name", "Pos", "Age", "Team", "Season",
@@ -36,14 +48,21 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
             "TRB", "AST", "TOV", "STL", "BLK", "PF", "PTS"
     };
 
-    public SortPlayersView(SortController controller, SortViewModel viewModel) {
-        this.controller = controller;
-        this.viewModel = viewModel;
-        this.viewModel.addPropertyChangeListener(this);
+    public SortPlayersView(SortController sortController,
+                           SortViewModel sortViewModel,
+                           FilterPlayersController filterController,
+                           FilterPlayersViewModel filterViewModel) {
+        this.sortController = sortController;
+        this.sortViewModel = sortViewModel;
+        this.filterController = filterController;
+        this.filterViewModel = filterViewModel;
+
+        this.sortViewModel.addPropertyChangeListener(this);
+        this.filterViewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout());
 
-        // top: title + filter options
+        // ---------- Top panel: title + banner + filter controls ----------
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
@@ -54,6 +73,12 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         topPanel.add(Box.createVerticalStrut(10));
         topPanel.add(title);
         topPanel.add(Box.createVerticalStrut(10));
+
+        bannerLabel = new JLabel("");
+        bannerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        bannerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        topPanel.add(bannerLabel);
+        topPanel.add(Box.createVerticalStrut(5));
 
         JPanel filterPanel = new JPanel();
         filterPanel.setLayout(new GridBagLayout());
@@ -103,7 +128,7 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         clearButton.addActionListener(e -> onClearClicked());
 
         JButton homeButton = new JButton("Home");
-        homeButton.addActionListener(e -> controller.onHomeButtonClicked());
+        homeButton.addActionListener(e -> sortController.onHomeButtonClicked());
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -121,7 +146,7 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         topPanel.add(filterPanel);
         add(topPanel, BorderLayout.NORTH);
 
-        // table
+        // ---------- Table ----------
         tableModel = new DefaultTableModel(COLUMN_NAMES, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -132,23 +157,37 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         table = new JTable(tableModel);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        // click header to sort
+        // Click header to sort
         JTableHeader header = table.getTableHeader();
         header.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int columnIndex = header.columnAtPoint(e.getPoint());
-                controller.onColumnHeaderClicked(columnIndex);
+                sortController.onColumnHeaderClicked(columnIndex);
             }
         });
     }
 
     private void onFilterClicked() {
         String pos = (String) positionComboBox.getSelectedItem();
-        String team = teamField.getText();
-        String from = seasonFromField.getText();
-        String to = seasonToField.getText();
-        controller.onFilterButtonClicked(pos, team, from, to);
+        String team = teamField.getText().trim();
+        String from = seasonFromField.getText().trim();
+        String to = seasonToField.getText().trim();
+
+        Set<String> positions = new HashSet<>();
+        if (pos != null && !pos.isEmpty()) {
+            positions.add(pos);
+        }
+
+        Set<String> teams = new HashSet<>();
+        if (!team.isEmpty()) {
+            teams.add(team);
+        }
+
+        Optional<Integer> seasonMin = parseSeason(from);
+        Optional<Integer> seasonMax = parseSeason(to);
+
+        filterController.apply(teams, positions, seasonMin, seasonMax);
     }
 
     private void onClearClicked() {
@@ -156,32 +195,109 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         teamField.setText("");
         seasonFromField.setText("");
         seasonToField.setText("");
-        controller.onClearFilters();
+
+        // Clear filter use case
+        filterController.clear();
+    }
+
+    private Optional<Integer> parseSeason(String text) {
+        if (text == null || text.isEmpty()) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.of(Integer.parseInt(text));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Season year must be an integer.");
+            return Optional.empty();
+        }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        SortState state = viewModel.getState();
-        List<String[]> rows = state.getTableData();
-
-        tableModel.setRowCount(0);
-
-        if (rows != null) {
-            for (String[] row : rows) {
-                Object[] data = new Object[COLUMN_NAMES.length];
-                for (int i = 0; i < COLUMN_NAMES.length; i++) {
-                    if (row != null && i < row.length) {
-                        data[i] = row[i];
-                    } else {
-                        data[i] = "";
-                    }
-                }
-                tableModel.addRow(data);
-            }
+        if (!"state".equals(evt.getPropertyName())) {
+            return;
         }
 
+        Object source = evt.getSource();
+
+        if (source == sortViewModel) {
+            Object newValue = evt.getNewValue();
+            if (newValue instanceof SortState) {
+                updateFromSortState((SortState) newValue);
+            } else {
+                updateFromSortState(sortViewModel.getState());
+            }
+        } else if (source == filterViewModel) {
+            FilterPlayersState state = filterViewModel.getState();
+            updateFromFilterState(state);
+        }
+    }
+
+    private void updateFromSortState(SortState state) {
+        List<String[]> rows = state.getTableData();
+        reloadTableFromRows(rows);
+
+        // When sort updates, we only care about errors from sort use case
         if (state.getErrorMessage() != null) {
             JOptionPane.showMessageDialog(this, state.getErrorMessage());
+        }
+    }
+
+    private void updateFromFilterState(FilterPlayersState state) {
+        List<String[]> rows;
+        if (state.tableRows != null) {
+            rows = state.tableRows;
+        } else {
+            rows = new ArrayList<>();
+        }
+
+        // Update table to show filtered rows
+        reloadTableFromRows(rows);
+
+        // Sync current rows into SortState so that column-click sorting
+        // uses the filtered result instead of an empty list.
+        SortState sortState = sortViewModel.getState();
+        sortState.setTableData(rows);
+
+        // If originalTableData was never set, treat current rows as the base.
+        if (sortState.getOriginalTableData() == null ||
+                sortState.getOriginalTableData().isEmpty()) {
+            sortState.setOriginalTableData(new ArrayList<>(rows));
+        }
+
+        sortState.setSortedColumnIndex(-1);
+        sortState.setAscending(true);
+        sortState.setErrorMessage(state.errorMessage);
+
+        // Update banner and error message in the UI
+        if (state.bannerMessage != null) {
+            bannerLabel.setText(state.bannerMessage);
+        } else {
+            bannerLabel.setText("");
+        }
+
+        if (state.errorMessage != null && !state.errorMessage.isEmpty()) {
+            JOptionPane.showMessageDialog(this, state.errorMessage);
+        }
+    }
+
+    private void reloadTableFromRows(List<String[]> rows) {
+        tableModel.setRowCount(0);
+
+        if (rows == null) {
+            return;
+        }
+
+        for (String[] row : rows) {
+            Object[] data = new Object[COLUMN_NAMES.length];
+            for (int i = 0; i < COLUMN_NAMES.length; i++) {
+                if (row != null && i < row.length) {
+                    data[i] = row[i];
+                } else {
+                    data[i] = "";
+                }
+            }
+            tableModel.addRow(data);
         }
     }
 }

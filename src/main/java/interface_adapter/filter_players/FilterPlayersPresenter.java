@@ -3,51 +3,73 @@ package interface_adapter.filter_players;
 import use_case.filter_players.FilterPlayersOutputBoundary;
 import use_case.filter_players.FilterPlayersOutputData;
 
-public class FilterPlayersPresenter implements FilterPlayersOutputBoundary {
-    private final FilterPlayersViewModel vm;
+import java.util.Collections;
+import java.util.Optional;
 
-    public FilterPlayersPresenter(FilterPlayersViewModel vm) {
-        this.vm = vm;
+public class FilterPlayersPresenter implements FilterPlayersOutputBoundary {
+
+    private final FilterPlayersViewModel viewModel;
+
+    public FilterPlayersPresenter(FilterPlayersViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
+    private FilterPlayersState state() {
+        return viewModel.getState();
     }
 
     @Override
-    public void present(FilterPlayersOutputData out) {
-        vm.getState().tableRows = out.getRows();
-        vm.getState().bannerMessage = "";
-        vm.firePropertyChanged();
+    public void present(FilterPlayersOutputData outputData) {
+        FilterPlayersState s = state();
+        s.tableRows = outputData.getRows();
+        s.bannerMessage = "";
+        s.errorMessage = "";
+        viewModel.firePropertyChanged();
     }
 
     @Override
     public void presentEmptyState(String message) {
-        vm.getState().tableRows = java.util.List.of();
-        vm.getState().bannerMessage = message;
-        vm.firePropertyChanged();
+        FilterPlayersState s = state();
+        s.tableRows = Collections.emptyList();
+        s.bannerMessage = message;
+        s.errorMessage = "";
+        viewModel.firePropertyChanged();
     }
 
     @Override
     public void presentWarning(String message) {
-        vm.getState().bannerMessage = message; // non-blocking
-        vm.firePropertyChanged();
+        FilterPlayersState s = state();
+        s.bannerMessage = message;
+        // Do not clear table; just update the banner.
+        viewModel.firePropertyChanged();
     }
 
     @Override
     public void presentError(String message) {
-        vm.getState().bannerMessage = message;
-        vm.firePropertyChanged();
+        FilterPlayersState s = state();
+        s.errorMessage = message;
+        viewModel.firePropertyChanged();
     }
 
     @Override
-    public void presentLargeResultNotice(FilterPlayersOutputData out, String summary) {
-        vm.getState().tableRows = out.getRows();
-        vm.getState().bannerMessage = summary;
-        vm.firePropertyChanged();
+    public void presentLargeResultNotice(FilterPlayersOutputData outputData, String summary) {
+        FilterPlayersState s = state();
+        s.tableRows = outputData.getRows();
+        s.bannerMessage = summary;
+        s.errorMessage = "";
+        viewModel.firePropertyChanged();
     }
 
     @Override
     public void cleared() {
-        vm.getState().selectedTeams.clear();
-        vm.getState().selectedPositions.clear();
-        vm.getState().seasonMin = java.util.Optional.empty();
-        vm.getState().seasonMax = java.util.Optional.empty();
+        FilterPlayersState s = state();
+        s.selectedTeams.clear();
+        s.selectedPositions.clear();
+        s.seasonMin = Optional.empty();
+        s.seasonMax = Optional.empty();
+        s.tableRows = Collections.emptyList();
+        s.bannerMessage = "";
+        s.errorMessage = "";
+        viewModel.firePropertyChanged();
     }
 }

@@ -1,118 +1,181 @@
 package use_case.filter_players;
 
 import data_access.PlayerDataAccessInterface;
-import entity.Player;
-import entity.SeasonStats;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
-    private static final int PAGE_LIMIT = 100;
 
-    private final PlayerDataAccessInterface playerDAO;
+    private static final int PAGE_LIMIT = 200;
+    private static final String CSV_RESOURCE = "/data/PlayerStatsDataset.csv";
+
+    @SuppressWarnings("unused")
+    private final PlayerDataAccessInterface playerDAO; // kept to respect constructor signature
     private final FilterPlayersOutputBoundary presenter;
+
+    // Cached rows from CSV. Each row has length 17, same order as the header.
+    private final List<String[]> allRows;
 
     public FilterPlayersInteractor(PlayerDataAccessInterface playerDAO,
                                    FilterPlayersOutputBoundary presenter) {
         this.playerDAO = playerDAO;
         this.presenter = presenter;
+        this.allRows = loadAllRows();
     }
 
     @Override
-    public void execute(FilterPlayersInputData in) {
-        List<Player> all;
-        try {
-            all = playerDAO.findAll();
-        } catch (Exception e) {
-            presenter.presentError("Unable to load results. Please try again.");
+    public void execute(FilterPlayersInputData inputData) {
+        if (allRows.isEmpty()) {
+            presenter.presentError("Player stats data is not available.");
             return;
         }
 
-        // Validate seasons early (non-blocking warning if impossible combination)
-        if (in.getSeasonMin().isPresent() && in.getSeasonMax().isPresent()
-                && in.getSeasonMin().get() > in.getSeasonMax().get()) {
-            presenter.presentWarning("Season min is greater than max.");
+        Set<String> teams = inputData.getTeams();
+        Set<String> positions = inputData.getPositions();
+        Optional<Integer> seasonMin = inputData.getSeasonMin();
+        Optional<Integer> seasonMax = inputData.getSeasonMax();
+
+        List<String[]> result = new ArrayList<>();
+
+        for (String[] row : allRows) {
+            if (row == null || row.length < 17) {
+                continue;
+            }
+
+            String team = row[3];   // Team column
+            String pos = row[1];    // Pos column
+            String seasonStr = row[4]; // Season column
+
+            int seasonYear = tryParseInt(seasonStr);
+
+            if (!matchesTeam(team, teams)) {
+                continue;
+            }
+            if (!matchesPosition(pos, positions)) {
+                continue;
+            }
+            if (!matchesSeason(seasonYear, seasonMin, seasonMax)) {
+                continue;
+            }
+
+            // Keep the full 17-column row as-is
+            result.add(Arrays.copyOf(row, 17));
+
+            if (result.size() >= PAGE_LIMIT) {
+                break;
+            }
         }
 
-        final int min = in.getSeasonMin().orElse(Integer.MIN_VALUE);
-        final int max = in.getSeasonMax().orElse(Integer.MAX_VALUE);
-
-        // Filter pipeline
-        List<Player> filtered = all.stream()
-                .filter(p -> in.getTeams().isEmpty() || in.getTeams().contains(safeTeamCode(p)))
-                .filter(p -> in.getPositions().isEmpty() || in.getPositions().contains(safePos(p)))
-                .filter(p -> {
-                    if (!in.getSeasonMin().isPresent() && !in.getSeasonMax().isPresent()) return true;
-                    return seasons(p).stream().anyMatch(y -> y >= min && y <= max);
-                })
-                .collect(Collectors.toList());
-
-        // Empty result
-        if (filtered.isEmpty()) {
-            presenter.presentEmptyState("No players match your filters. Adjust filters and try again.");
-            return;
-        }
-
-        // Build table rows
-        List<String[]> rows = filtered.stream()
-                .map(p -> new String[]{
-                        safeName(p),
-                        safeTeamCode(p),
-                        safePos(p),
-                        compressSeasons(seasons(p)) // e.g., "2018–2020, 2022"
-                })
-                .collect(Collectors.toList());
-
-        // Large result notice
-        if (rows.size() > PAGE_LIMIT) {
+        if (result.isEmpty()) {
+            presenter.presentEmptyState("No players match the selected filters.");
+        } else if (result.size() >= PAGE_LIMIT) {
             presenter.presentLargeResultNotice(
-                    new FilterPlayersOutputData(rows.subList(0, PAGE_LIMIT)),
-                    "Displaying first " + PAGE_LIMIT + " of " + rows.size() + " players."
+                    new FilterPlayersOutputData(result),
+                    "Showing first " + result.size() + " matching rows."
             );
         } else {
-            presenter.present(new FilterPlayersOutputData(rows));
+            presenter.present(new FilterPlayersOutputData(result));
         }
     }
 
     @Override
     public void clear() {
-        // return full list by default
-        List<Player> all = playerDAO.findAll();
-        List<String[]> rows = all.stream()
-                .map(p -> new String[]{
-                        safeName(p), safeTeamCode(p), safePos(p), compressSeasons(seasons(p))
-                }).collect(Collectors.toList());
         presenter.cleared();
-        presenter.present(new FilterPlayersOutputData(rows));
     }
 
-    // Helpers
-    private static String safeName(Player p) { try { return p.getName(); } catch(Exception e){ return ""; } }
-    private static String safePos(Player p) { try { return p.getPosition(); } catch(Exception e){ return ""; } }
-    private static String safeTeamCode(Player p) {
-        try { return p.getTeam() != null ? p.getTeam().getName() : ""; } catch(Exception e){ return ""; }
-    }
-    private static List<Integer> seasons(Player p) {
-        try {
-            List<SeasonStats> cs = p.getCareerStats();
-            if (cs == null) return List.of();
-            return cs.stream().map(SeasonStats::getSeasonYear).collect(Collectors.toList());
-        } catch (Exception e) { return List.of(); }
-    }
-    private static String compressSeasons(List<Integer> years) {
-        if (years.isEmpty()) return "";
-        List<Integer> ys = years.stream().distinct().sorted().collect(Collectors.toList());
-        List<String> parts = new ArrayList<>();
-        int start = ys.get(0), prev = ys.get(0);
-        for (int i = 1; i < ys.size(); i++) {
-            int y = ys.get(i);
-            if (y == prev + 1) { prev = y; continue; }
-            parts.add(rangeStr(start, prev));
-            start = prev = y;
+    // ---------- Helpers ----------
+
+    private List<String[]> loadAllRows() {
+        List<String[]> rows = new ArrayList<>();
+
+        try (InputStream inputStream = getClass().getResourceAsStream(CSV_RESOURCE)) {
+            if (inputStream == null) {
+                presenter.presentError("Could not find CSV resource: " + CSV_RESOURCE);
+                return Collections.emptyList();
+            }
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+                String line;
+                // Skip header
+                br.readLine();
+
+                while ((line = br.readLine()) != null) {
+                    // Simple CSV split; dataset does not contain commas inside fields.
+                    String[] tokens = line.split(",", -1);
+                    if (tokens.length < 17) {
+                        continue;
+                    }
+                    rows.add(Arrays.copyOf(tokens, 17));
+                }
+            }
+        } catch (IOException e) {
+            presenter.presentError("Failed to load player stats data.");
+            return Collections.emptyList();
         }
-        parts.add(rangeStr(start, prev));
-        return String.join(", ", parts);
+
+        return rows;
     }
-    private static String rangeStr(int a, int b) { return a == b ? String.valueOf(a) : (a + "–" + b); }
+
+    private boolean matchesTeam(String team, Set<String> teams) {
+        if (teams == null || teams.isEmpty()) {
+            return true;
+        }
+        if (team == null) {
+            return false;
+        }
+        for (String t : teams) {
+            if (t != null && !t.isEmpty() && team.equalsIgnoreCase(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesPosition(String pos, Set<String> positions) {
+        if (positions == null || positions.isEmpty()) {
+            return true;
+        }
+        if (pos == null) {
+            return false;
+        }
+        for (String p : positions) {
+            if (p != null && !p.isEmpty() && pos.equalsIgnoreCase(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesSeason(int seasonYear,
+                                  Optional<Integer> seasonMin,
+                                  Optional<Integer> seasonMax) {
+        if (!seasonMin.isPresent() && !seasonMax.isPresent()) {
+            return true;
+        }
+        if (seasonYear == Integer.MIN_VALUE) {
+            return false;
+        }
+        if (seasonMin.isPresent() && seasonYear < seasonMin.get()) {
+            return false;
+        }
+        if (seasonMax.isPresent() && seasonYear > seasonMax.get()) {
+            return false;
+        }
+        return true;
+    }
+
+    private int tryParseInt(String value) {
+        if (value == null || value.isEmpty()) {
+            return Integer.MIN_VALUE;
+        }
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return Integer.MIN_VALUE;
+        }
+    }
 }
