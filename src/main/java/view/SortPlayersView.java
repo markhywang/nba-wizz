@@ -65,6 +65,7 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         // ---------- Top panel: title + banner + filter controls ----------
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 10, 30));
 
         JLabel title = new JLabel("Filter & Sort");
         title.setHorizontalAlignment(SwingConstants.CENTER);
@@ -155,7 +156,21 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         };
 
         table = new JTable(tableModel);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        // Do not auto-resize columns so that horizontal scroll bar appears when needed
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        JScrollPane scrollPane = new JScrollPane(
+                table,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+        );
+
+        // Center panel with padding so the table does not touch window edges
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 30, 20, 30));
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
+
+        add(centerPanel, BorderLayout.CENTER);
 
         // Click header to sort
         JTableHeader header = table.getTableHeader();
@@ -196,7 +211,8 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         seasonFromField.setText("");
         seasonToField.setText("");
 
-        // Clear filter use case
+        // Clear filter use case; the presenter will set tableRows to empty
+        // and SortPlayersView will rebuild an empty table.
         filterController.clear();
     }
 
@@ -237,7 +253,6 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         List<String[]> rows = state.getTableData();
         reloadTableFromRows(rows);
 
-        // When sort updates, we only care about errors from sort use case
         if (state.getErrorMessage() != null) {
             JOptionPane.showMessageDialog(this, state.getErrorMessage());
         }
@@ -259,7 +274,6 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         SortState sortState = sortViewModel.getState();
         sortState.setTableData(rows);
 
-        // If originalTableData was never set, treat current rows as the base.
         if (sortState.getOriginalTableData() == null ||
                 sortState.getOriginalTableData().isEmpty()) {
             sortState.setOriginalTableData(new ArrayList<>(rows));
