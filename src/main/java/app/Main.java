@@ -50,7 +50,7 @@ import use_case.generate_insights.GenerateInsightsInputBoundary;
 import use_case.generate_insights.GenerateInsightsInteractor;
 import use_case.generate_insights.GenerateInsightsOutputBoundary;
 import view.GenerateInsightsView;
-import view.FavoritedPlayersView;
+import view.FavouritedPlayersView;
 import interface_adapter.ask_question.AskQuestionController;
 import interface_adapter.ask_question.AskQuestionPresenter;
 import interface_adapter.ask_question.AskQuestionViewModel;
@@ -182,9 +182,9 @@ public class Main {
 
         views.add(searchPlayerView, searchPlayerView.viewName);
 
-        // Now that SearchPlayerController and SearchPlayerView exist, register the favorited players card with them
-        FavoritedPlayersView favoritedPlayersView = new FavoritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
-        views.add(favoritedPlayersView, favoritedPlayersView.viewName);
+        // Now that SearchPlayerController and SearchPlayerView exist, register the favourited players card with them
+        FavouritedPlayersView favouritedPlayersView = new FavouritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
+        views.add(favouritedPlayersView, favouritedPlayersView.viewName);
 
 
         // Sort Players Feature Setup
