@@ -18,6 +18,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class SortPlayersView extends JPanel implements PropertyChangeListener {
@@ -61,7 +62,7 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
 
         setLayout(new BorderLayout());
 
-        // top: title + banner + filter options
+        // ---------- Top panel: title + banner + filter controls ----------
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
@@ -145,7 +146,7 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         topPanel.add(filterPanel);
         add(topPanel, BorderLayout.NORTH);
 
-        // table
+        // ---------- Table ----------
         tableModel = new DefaultTableModel(COLUMN_NAMES, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -156,7 +157,7 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         table = new JTable(tableModel);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        // click header to sort
+        // Click header to sort
         JTableHeader header = table.getTableHeader();
         header.addMouseListener(new MouseAdapter() {
             @Override
@@ -183,8 +184,8 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
             teams.add(team);
         }
 
-        java.util.Optional<Integer> seasonMin = parseSeason(from);
-        java.util.Optional<Integer> seasonMax = parseSeason(to);
+        Optional<Integer> seasonMin = parseSeason(from);
+        Optional<Integer> seasonMax = parseSeason(to);
 
         filterController.apply(teams, positions, seasonMin, seasonMax);
     }
@@ -195,21 +196,21 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         seasonFromField.setText("");
         seasonToField.setText("");
 
-        // Clear filter state and table
+        // Clear filter use case
         filterController.clear();
-        // Also let sort use case restore the full list if it has that behavior
+        // Let sort use case restore original full table if available
         sortController.onClearFilters();
     }
 
-    private java.util.Optional<Integer> parseSeason(String text) {
+    private Optional<Integer> parseSeason(String text) {
         if (text == null || text.isEmpty()) {
-            return java.util.Optional.empty();
+            return Optional.empty();
         }
         try {
-            return java.util.Optional.of(Integer.parseInt(text));
+            return Optional.of(Integer.parseInt(text));
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Season year must be an integer.");
-            return java.util.Optional.empty();
+            return Optional.empty();
         }
     }
 
@@ -238,18 +239,39 @@ public class SortPlayersView extends JPanel implements PropertyChangeListener {
         List<String[]> rows = state.getTableData();
         reloadTableFromRows(rows);
 
+        // When sort updates, we only care about errors from sort use case
         if (state.getErrorMessage() != null) {
             JOptionPane.showMessageDialog(this, state.getErrorMessage());
         }
     }
 
     private void updateFromFilterState(FilterPlayersState state) {
-        List<String[]> rows = state.tableRows != null
-                ? state.tableRows
-                : new ArrayList<>();
+        List<String[]> rows;
+        if (state.tableRows != null) {
+            rows = state.tableRows;
+        } else {
+            rows = new ArrayList<>();
+        }
 
+        // Update table to show filtered rows
         reloadTableFromRows(rows);
 
+        // Sync current rows into SortState so that column-click sorting
+        // uses the filtered result instead of an empty list.
+        SortState sortState = sortViewModel.getState();
+        sortState.setTableData(rows);
+
+        // If originalTableData was never set, treat current rows as the base.
+        if (sortState.getOriginalTableData() == null ||
+                sortState.getOriginalTableData().isEmpty()) {
+            sortState.setOriginalTableData(new ArrayList<>(rows));
+        }
+
+        sortState.setSortedColumnIndex(-1);
+        sortState.setAscending(true);
+        sortState.setErrorMessage(state.errorMessage);
+
+        // Update banner and error message in the UI
         if (state.bannerMessage != null) {
             bannerLabel.setText(state.bannerMessage);
         } else {
