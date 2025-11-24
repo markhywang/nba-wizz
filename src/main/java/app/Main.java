@@ -84,7 +84,6 @@ import use_case.sort.SortOutputBoundary;
 import view.SortPlayersView;
 import interface_adapter.filter_players.*;
 import use_case.filter_players.*;
-import view.FilterPlayersView;
 
 /*Run this file to run NBA Wizz*/
 public class Main {
@@ -210,12 +209,6 @@ public class Main {
         SortController sortController =
                 new SortController(sortInteractor, sortViewModel);
 
-        SortPlayersView sortPlayersView =
-                new SortPlayersView(sortController, sortViewModel);
-
-        views.add(sortPlayersView, sortPlayersView.viewName);
-
-
         java.util.Set<String> allTeams = new java.util.HashSet<>();
         java.util.Set<String> allPositions = new java.util.HashSet<>();
         for (var p : playerDataAccessObject.findAll()) {
@@ -231,10 +224,14 @@ public class Main {
         FilterPlayersPresenter filterPresenter = new FilterPlayersPresenter(filterVM);
         FilterPlayersInputBoundary filterInteractor =
                 new FilterPlayersInteractor(playerDataAccessObject, filterPresenter);
-        FilterPlayersController filterController = new FilterPlayersController(filterInteractor);
-        FilterPlayersView filterPlayersView = new FilterPlayersView(filterVM, filterController);
+        FilterPlayersController filterController =
+                new FilterPlayersController(filterInteractor);
 
-        views.add(filterPlayersView, filterPlayersView.viewName);
+        SortPlayersView sortPlayersView =
+                new SortPlayersView(sortController, sortViewModel, filterController, filterVM);
+
+        views.add(sortPlayersView, sortPlayersView.viewName);
+
 
         AskQuestionPresenter askQuestionPresenter = new AskQuestionPresenter(askQuestionViewModel, viewManagerModel);
         AskQuestionInputBoundary askQuestionInteractor = new AskQuestionInteractor(geminiDataAccessObject, askQuestionPresenter);
