@@ -1,5 +1,6 @@
 package view;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
@@ -15,13 +16,14 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     public final String viewName = "sign up";
 
     private final SignupViewModel signupViewModel;
-    private final JTextField usernameInputField = new JTextField(15);
-    private final JPasswordField passwordInputField = new JPasswordField(15);
-    private final JPasswordField repeatPasswordInputField = new JPasswordField(15);
+    private final JTextField usernameInputField = new JTextField(20);
+    private final JPasswordField passwordInputField = new JPasswordField(20);
+    private final JPasswordField repeatPasswordInputField = new JPasswordField(20);
     private final SignupController signupController;
 
     private final JButton signUp;
     private final JButton cancel;
+    private JPanel contentPanel;
 
     public SignupView(SignupController controller, SignupViewModel signupViewModel) {
 
@@ -29,68 +31,87 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         this.signupViewModel = signupViewModel;
         signupViewModel.addPropertyChangeListener(this);
 
-        // Styling
-        Font titleFont = new Font("Arial", Font.BOLD, 24);
-        Font fieldFont = new Font("Arial", Font.PLAIN, 18);
-        Font buttonFont = new Font("Arial", Font.BOLD, 16);
+        setLayout(new GridBagLayout());
 
-        JLabel title = new JLabel(SignupViewModel.TITLE_LABEL);
-        title.setFont(titleFont);
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // Main content panel
+        contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1),
+            BorderFactory.createEmptyBorder(100, 150, 100, 150)
+        ));
+        contentPanel.putClientProperty(FlatClientProperties.STYLE, "arc: 20; background: lighten($Panel.background, 3%)");
 
-        // Setup fields
-        usernameInputField.setFont(fieldFont);
-        usernameInputField.setColumns(20);
-        passwordInputField.setFont(fieldFont);
-        passwordInputField.setColumns(20);
-        repeatPasswordInputField.setFont(fieldFont);
-        repeatPasswordInputField.setColumns(20);
-
-        JLabel usernameLabel = new JLabel(SignupViewModel.USERNAME_LABEL);
-        usernameLabel.setFont(fieldFont);
-        JLabel passwordLabel = new JLabel(SignupViewModel.PASSWORD_LABEL);
-        passwordLabel.setFont(fieldFont);
-        JLabel repeatPasswordLabel = new JLabel(SignupViewModel.REPEAT_PASSWORD_LABEL);
-        repeatPasswordLabel.setFont(fieldFont);
-
-        LabelTextPanel usernameInfo = new LabelTextPanel(usernameLabel, usernameInputField);
-        LabelTextPanel passwordInfo = new LabelTextPanel(passwordLabel, passwordInputField);
-        LabelTextPanel repeatPasswordInfo = new LabelTextPanel(repeatPasswordLabel, repeatPasswordInputField);
-
-        JPanel buttons = new JPanel();
-        signUp = new JButton(SignupViewModel.SIGNUP_BUTTON_LABEL);
-        signUp.setFont(buttonFont);
-        signUp.setPreferredSize(new Dimension(120, 40));
-        buttons.add(signUp);
-        cancel = new JButton(SignupViewModel.CANCEL_BUTTON_LABEL);
-        cancel.setFont(buttonFont);
-        cancel.setPreferredSize(new Dimension(120, 40));
-        buttons.add(cancel);
-
-        signUp.addActionListener(this);
-        cancel.addActionListener(this);
-
-        // Layout
-        this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 20, 0);
 
-        this.add(title, gbc);
-        
+        // Title
+        JLabel title = new JLabel(SignupViewModel.TITLE_LABEL);
+        title.putClientProperty(FlatClientProperties.STYLE, "font: bold +20");
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPanel.add(title, gbc);
+
+        // Username
         gbc.gridy++;
-        this.add(usernameInfo, gbc);
-        
+        gbc.insets = new Insets(0, 0, 5, 0);
+        JLabel usernameLabel = new JLabel(SignupViewModel.USERNAME_LABEL);
+        usernameLabel.putClientProperty(FlatClientProperties.STYLE, "font: +5");
+        contentPanel.add(usernameLabel, gbc);
+
         gbc.gridy++;
-        this.add(passwordInfo, gbc);
-        
+        gbc.insets = new Insets(0, 0, 15, 0);
+        usernameInputField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Choose a username");
+        usernameInputField.putClientProperty(FlatClientProperties.STYLE, "showClearButton: true; font: +5");
+        contentPanel.add(usernameInputField, gbc);
+
+        // Password
         gbc.gridy++;
-        this.add(repeatPasswordInfo, gbc);
-        
+        gbc.insets = new Insets(0, 0, 5, 0);
+        JLabel passwordLabel = new JLabel(SignupViewModel.PASSWORD_LABEL);
+        passwordLabel.putClientProperty(FlatClientProperties.STYLE, "font: +5");
+        contentPanel.add(passwordLabel, gbc);
+
         gbc.gridy++;
-        this.add(buttons, gbc);
+        gbc.insets = new Insets(0, 0, 15, 0);
+        passwordInputField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Create a password");
+        passwordInputField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true; font: +5");
+        contentPanel.add(passwordInputField, gbc);
+
+        // Repeat Password
+        gbc.gridy++;
+        gbc.insets = new Insets(0, 0, 5, 0);
+        JLabel repeatPasswordLabel = new JLabel(SignupViewModel.REPEAT_PASSWORD_LABEL);
+        repeatPasswordLabel.putClientProperty(FlatClientProperties.STYLE, "font: +5");
+        contentPanel.add(repeatPasswordLabel, gbc);
+
+        gbc.gridy++;
+        gbc.insets = new Insets(0, 0, 20, 0);
+        repeatPasswordInputField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Confirm your password");
+        repeatPasswordInputField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true; font: +5");
+        contentPanel.add(repeatPasswordInputField, gbc);
+
+        // Buttons
+        gbc.gridy++;
+        gbc.insets = new Insets(20, 0, 0, 0);
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        buttonPanel.setOpaque(false);
+
+        signUp = new JButton(SignupViewModel.SIGNUP_BUTTON_LABEL);
+        signUp.putClientProperty(FlatClientProperties.STYLE, "font: bold +5");
+        cancel = new JButton(SignupViewModel.CANCEL_BUTTON_LABEL);
+        cancel.putClientProperty(FlatClientProperties.STYLE, "font: bold +5");
+
+        buttonPanel.add(signUp);
+        buttonPanel.add(cancel);
+        contentPanel.add(buttonPanel, gbc);
+
+        // Add content panel
+        add(contentPanel);
+
+        signUp.addActionListener(this);
+        cancel.addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -120,7 +141,18 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     public void propertyChange(PropertyChangeEvent evt) {
         SignupState state = (SignupState) evt.getNewValue();
         if (state.getError() != null) {
-            JOptionPane.showMessageDialog(this, state.getError());
+            JOptionPane.showMessageDialog(this, state.getError(), "Sign Up Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        if (contentPanel != null) {
+            contentPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1),
+                BorderFactory.createEmptyBorder(100, 150, 100, 150)
+            ));
         }
     }
 }
