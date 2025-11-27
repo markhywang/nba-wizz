@@ -66,6 +66,10 @@ import view.ChatView;
 import javax.swing.*;
 import java.awt.*;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+
 import interface_adapter.sort_players.SortViewModel;
 import interface_adapter.sort_players.SortController;
 import interface_adapter.sort_players.SortPresenter;
@@ -79,12 +83,43 @@ import use_case.filter_players.*;
 /*Run this file to run NBA Wizz*/
 public class Main {
     public static void main(String[] args) {
+        // Setup FlatLaf theme
+        try {
+            FlatLightLaf.setup();
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize FlatLaf");
+        }
+
         JFrame application = new JFrame("NBA Wizz");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        JPanel rootPanel = new JPanel(new BorderLayout());
+        application.add(rootPanel);
+
         CardLayout cardLayout = new CardLayout();
         JPanel views = new JPanel(cardLayout);
-        application.add(views);
+        
+        // Header with Theme Toggle
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        headerPanel.setOpaque(false); // Make it transparent to blend in
+        JButton themeToggle = new JButton("Dark Mode \uD83C\uDF19");
+        themeToggle.setFocusable(false);
+        themeToggle.putClientProperty("JButton.buttonType", "toolBarButton");
+        
+        themeToggle.addActionListener(e -> {
+            if (FlatLaf.isLafDark()) {
+                FlatLightLaf.setup();
+                themeToggle.setText("Dark Mode \uD83C\uDF19");
+            } else {
+                FlatDarkLaf.setup();
+                themeToggle.setText("Light Mode \u2600");
+            }
+            FlatLaf.updateUI();
+        });
+        
+        headerPanel.add(themeToggle);
+        rootPanel.add(headerPanel, BorderLayout.NORTH);
+        rootPanel.add(views, BorderLayout.CENTER);
 
         // Favourites
         FavouriteViewModel favouriteViewModel = new FavouriteViewModel();
@@ -111,7 +146,7 @@ public class Main {
         // TODO: Update the path to the CSV file.
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
         GeminiDataAccessObject geminiDataAccessObject = new GeminiDataAccessObject();
-        TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("TeamStatsDataset.csv");
+        TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("PlayerStatsDataset.csv");
 
         UserDataAccessInterface userDataAccessInterface = new FileUserDataAccessObject("src/main/java/data/users.csv");
         
