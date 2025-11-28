@@ -213,7 +213,7 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
             lineChart = new LineChart<>(xAxis, yAxis);
             lineChart.setTitle("Performance History");
             lineChart.setLegendVisible(true);
-            lineChart.setLegendSide(Side.BOTTOM);
+            lineChart.setLegendSide(Side.LEFT);
             lineChart.setAnimated(false);
             
             // Minimal CSS for dark mode chart if needed, but default might suffice or use stylesheets
