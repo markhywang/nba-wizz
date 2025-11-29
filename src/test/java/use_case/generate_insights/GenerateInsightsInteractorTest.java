@@ -182,4 +182,86 @@ class GenerateInsightsInteractorTest {
         // Assert
         verify(generateInsightsPresenter).prepareFailView("Player or team name cannot be empty.");
     }
+
+    @Test
+    void testExecute_TeamFailure_APIError() {
+        // Arrange
+        Team mockTeam = new Team(10, "Lakers", "Los Angeles", new ArrayList<>(), 40, 42, "West", Collections.emptyMap());
+        when(generateInsightsDataAccessInterface.getTeamByName("Lakers")).thenReturn(Optional.of(mockTeam));
+        when(generateInsightsDataAccessInterface.getAiInsight(any(String.class))).thenThrow(new RuntimeException("API error"));
+
+        GenerateInsightsInputData inputData = new GenerateInsightsInputData("Lakers", "Team");
+
+        // Act
+        generateInsightsInteractor.execute(inputData);
+
+        // Assert
+        verify(generateInsightsPresenter).prepareFailView("API error");
+        verify(generateInsightsPresenter, never()).prepareSuccessView(any(GenerateInsightsOutputData.class));
+    }
+
+    @Test
+    void testExecute_TeamSuccess_NoPlayers() {
+        // Arrange
+        Team mockTeam = new Team(10, "Lakers", "Los Angeles", null, 40, 42, "West", Collections.emptyMap());
+        when(generateInsightsDataAccessInterface.getTeamByName("Lakers")).thenReturn(Optional.of(mockTeam));
+        when(generateInsightsDataAccessInterface.getAiInsight(any(String.class))).thenReturn("Team Insight");
+
+        GenerateInsightsInputData inputData = new GenerateInsightsInputData("Lakers", "Team");
+
+        // Act
+        generateInsightsInteractor.execute(inputData);
+
+        // Assert
+        verify(generateInsightsDataAccessInterface).getAiInsight(any(String.class));
+        verify(generateInsightsPresenter).prepareSuccessView(any(GenerateInsightsOutputData.class));
+    }
+
+    @Test
+    void testExecute_TeamSuccess_PlayerWithNullStats() {
+        // Arrange
+        Player p1 = new Player(1, "Player One", null, "PG", 25, 190, 90, null);
+        List<Player> roster = Collections.singletonList(p1);
+        Team mockTeam = new Team(10, "Lakers", "Los Angeles", roster, 40, 42, "West", Collections.emptyMap());
+
+        when(generateInsightsDataAccessInterface.getTeamByName("Lakers")).thenReturn(Optional.of(mockTeam));
+        when(generateInsightsDataAccessInterface.getAiInsight(any(String.class))).thenReturn("Team Insight");
+
+        GenerateInsightsInputData inputData = new GenerateInsightsInputData("Lakers", "Team");
+
+        // Act
+        generateInsightsInteractor.execute(inputData);
+
+        // Assert
+        verify(generateInsightsPresenter).prepareSuccessView(any(GenerateInsightsOutputData.class));
+    }
+
+    @Test
+    void testExecute_TeamSuccess_EmptyPlayersList() {
+        // Arrange
+        Team mockTeam = new Team(10, "Lakers", "Los Angeles", new ArrayList<>(), 40, 42, "West", Collections.emptyMap());
+
+        when(generateInsightsDataAccessInterface.getTeamByName("Lakers")).thenReturn(Optional.of(mockTeam));
+        when(generateInsightsDataAccessInterface.getAiInsight(any(String.class))).thenReturn("Team Insight");
+
+        GenerateInsightsInputData inputData = new GenerateInsightsInputData("Lakers", "Team");
+
+        // Act
+        generateInsightsInteractor.execute(inputData);
+
+        // Assert
+        verify(generateInsightsPresenter).prepareSuccessView(any(GenerateInsightsOutputData.class));
+    }
+
+    @Test
+    void testExecute_NameWithWhitespace() {
+        // Arrange
+        GenerateInsightsInputData inputData = new GenerateInsightsInputData("   ", "Player");
+
+        // Act
+        generateInsightsInteractor.execute(inputData);
+
+        // Assert
+        verify(generateInsightsPresenter).prepareFailView("Player or team name cannot be empty.");
+    }
 }
