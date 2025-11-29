@@ -1,4 +1,4 @@
-package use_case.sort;
+package use_case.sort_players;
 
 import java.util.List;
 

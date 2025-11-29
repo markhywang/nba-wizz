@@ -1,12 +1,13 @@
 package interface_adapter.filter_players;
 
 import interface_adapter.ViewModel;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Set;
 
-/** ViewModel for the Filter Players screen. */
 public class FilterPlayersViewModel extends ViewModel {
+
     private final Set<String> allTeams;
     private final Set<String> allPositions;
 
@@ -20,15 +21,22 @@ public class FilterPlayersViewModel extends ViewModel {
         this.allPositions = allPositions;
     }
 
-    public Set<String> getAllTeams() { return allTeams; }
-    public Set<String> getAllPositions() { return allPositions; }
+    public FilterPlayersState getState() {
+        return state;
+    }
 
-    public FilterPlayersState getState() { return state; }
     public void setState(FilterPlayersState state) {
         this.state = state;
         firePropertyChanged();
     }
 
+    public Set<String> getAllTeams() {
+        return allTeams;
+    }
+
+    public Set<String> getAllPositions() {
+        return allPositions;
+    }
 
     @Override
     public void firePropertyChanged() {

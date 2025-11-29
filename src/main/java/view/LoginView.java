@@ -1,5 +1,6 @@
 package view;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
@@ -16,90 +17,110 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     public final String viewName = "log in";
     private final LoginViewModel loginViewModel;
 
-    private final JTextField usernameInputField = new JTextField(15);
-    private final JPasswordField passwordInputField = new JPasswordField(15);
+    private final JTextField usernameInputField = new JTextField(20);
+    private final JPasswordField passwordInputField = new JPasswordField(20);
     private final JLabel errorLabel = new JLabel();
     private final JLabel infoLabel = new JLabel();
 
     private final JButton logIn;
     private final JButton signUp;
     private final LoginController loginController;
+    private JPanel contentPanel;
 
     public LoginView(LoginViewModel loginViewModel, LoginController controller) {
-
         this.loginController = controller;
         this.loginViewModel = loginViewModel;
         this.loginViewModel.addPropertyChangeListener(this);
 
-        // Styling
-        Font titleFont = new Font("Arial", Font.BOLD, 24);
-        Font fieldFont = new Font("Arial", Font.PLAIN, 18);
-        Font buttonFont = new Font("Arial", Font.BOLD, 16);
-
-        JLabel title = new JLabel(LoginViewModel.TITLE_LABEL);
-        title.setFont(titleFont);
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Setup fields
-        usernameInputField.setFont(fieldFont);
-        usernameInputField.setColumns(20);
-        passwordInputField.setFont(fieldFont);
-        passwordInputField.setColumns(20);
-
-        JLabel usernameLabel = new JLabel(LoginViewModel.USERNAME_LABEL);
-        usernameLabel.setFont(fieldFont);
-        JLabel passwordLabel = new JLabel(LoginViewModel.PASSWORD_LABEL);
-        passwordLabel.setFont(fieldFont);
-
-        LabelTextPanel usernameInfo = new LabelTextPanel(usernameLabel, usernameInputField);
-        LabelTextPanel passwordInfo = new LabelTextPanel(passwordLabel, passwordInputField);
-
-        JPanel buttons = new JPanel();
-        logIn = new JButton(LoginViewModel.LOGIN_BUTTON_LABEL);
-        logIn.setFont(buttonFont);
-        logIn.setPreferredSize(new Dimension(120, 40));
-        buttons.add(logIn);
+        setLayout(new GridBagLayout());
         
-        signUp = new JButton(LoginViewModel.SIGNUP_BUTTON_LABEL);
-        signUp.setFont(buttonFont);
-        signUp.setPreferredSize(new Dimension(120, 40));
-        buttons.add(signUp);
+        // Main content panel
+        contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1),
+            BorderFactory.createEmptyBorder(100, 150, 100, 150)
+        ));
+        contentPanel.putClientProperty(FlatClientProperties.STYLE, "arc: 20; background: lighten($Panel.background, 3%)");
 
-        logIn.addActionListener(this);
-        signUp.addActionListener(this);
-
-        // Layout
-        this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.CENTER;
-        
-        errorLabel.setForeground(Color.RED);
-        errorLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        infoLabel.setForeground(Color.GREEN);
-        infoLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 20, 0);
 
-        this.add(title, gbc);
-        
+        // Title
+        JLabel title = new JLabel(LoginViewModel.TITLE_LABEL);
+        title.putClientProperty(FlatClientProperties.STYLE, "font: bold +20");
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPanel.add(title, gbc);
+
+        // Username
         gbc.gridy++;
-        this.add(usernameInfo, gbc);
-        
+        gbc.insets = new Insets(0, 0, 5, 0);
+        JLabel usernameLabel = new JLabel(LoginViewModel.USERNAME_LABEL);
+        usernameLabel.putClientProperty(FlatClientProperties.STYLE, "font: +5");
+        contentPanel.add(usernameLabel, gbc);
+
         gbc.gridy++;
-        this.add(passwordInfo, gbc);
-        
+        gbc.insets = new Insets(0, 0, 15, 0);
+        usernameInputField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your username");
+        usernameInputField.putClientProperty(FlatClientProperties.STYLE, "showClearButton: true; font: +5");
+        contentPanel.add(usernameInputField, gbc);
+
+        // Password
         gbc.gridy++;
-        this.add(errorLabel, gbc);
-        
+        gbc.insets = new Insets(0, 0, 5, 0);
+        JLabel passwordLabel = new JLabel(LoginViewModel.PASSWORD_LABEL);
+        passwordLabel.putClientProperty(FlatClientProperties.STYLE, "font: +5");
+        contentPanel.add(passwordLabel, gbc);
+
         gbc.gridy++;
-        this.add(infoLabel, gbc);
-        
+        gbc.insets = new Insets(0, 0, 20, 0);
+        passwordInputField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your password");
+        passwordInputField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true; font: +5");
+        contentPanel.add(passwordInputField, gbc);
+
+        // Messages
         gbc.gridy++;
-        this.add(buttons, gbc);
+        gbc.insets = new Insets(0, 0, 10, 0);
+        errorLabel.setForeground(new Color(255, 69, 58)); // Brighter red
+        errorLabel.putClientProperty(FlatClientProperties.STYLE, "font: +2");
+        errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPanel.add(errorLabel, gbc);
+
+        gbc.gridy++;
+        infoLabel.setForeground(new Color(48, 209, 88)); // Brighter green
+        infoLabel.putClientProperty(FlatClientProperties.STYLE, "font: +2");
+        infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPanel.add(infoLabel, gbc);
+
+        // Buttons
+        gbc.gridy++;
+        gbc.insets = new Insets(20, 0, 0, 0);
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        buttonPanel.setOpaque(false);
+
+        logIn = new JButton(LoginViewModel.LOGIN_BUTTON_LABEL);
+        logIn.putClientProperty(FlatClientProperties.STYLE, "font: bold +5");
+        signUp = new JButton(LoginViewModel.SIGNUP_BUTTON_LABEL);
+        signUp.putClientProperty(FlatClientProperties.STYLE, "font: bold +5");
+        
+        buttonPanel.add(logIn);
+        buttonPanel.add(signUp);
+        contentPanel.add(buttonPanel, gbc);
+
+        // Add content panel to main view
+        add(contentPanel);
+
+        // Listeners
+        logIn.addActionListener(this);
+        signUp.addActionListener(this);
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        SwingUtilities.getRootPane(this).setDefaultButton(logIn);
     }
 
     public void actionPerformed(ActionEvent evt) {
@@ -133,11 +154,16 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         } else {
             infoLabel.setText("");
         }
-        
-        // Update fields if state changes (e.g. cleared on logout)
-        // Avoid resetting if user is typing? 
-        // Typically we only update text fields if the state value is different from what's in the box
-        // or if we want to force clear.
-        // For now, let's just handle error/info.
+    }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        if (contentPanel != null) {
+            contentPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1),
+                BorderFactory.createEmptyBorder(100, 150, 100, 150)
+            ));
+        }
     }
 }

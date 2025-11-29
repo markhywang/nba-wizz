@@ -13,9 +13,6 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
-import interface_adapter.compare.CompareController;
-import interface_adapter.compare.ComparePresenter;
-import interface_adapter.compare.CompareViewModel;
 import interface_adapter.favourite.FavouriteController;
 import interface_adapter.favourite.FavouritePresenter;
 import interface_adapter.favourite.FavouriteViewModel;
@@ -27,9 +24,6 @@ import use_case.authentication.login.LoginInputBoundary;
 import use_case.authentication.login.LoginInteractor;
 import use_case.authentication.signup.SignupInputBoundary;
 import use_case.authentication.signup.SignupInteractor;
-import use_case.compare.CompareInputBoundary;
-import use_case.compare.CompareInteractor;
-import use_case.compare.CompareOutputBoundary;
 import interface_adapter.search_player.SearchPlayerController;
 import interface_adapter.search_player.SearchPlayerPresenter;
 import interface_adapter.search_player.SearchPlayerViewModel;
@@ -52,12 +46,11 @@ import interface_adapter.generate_insights.GenerateInsightsViewModel;
 import interface_adapter.generate_insights.GenerateInsightsController;
 import interface_adapter.generate_insights.GenerateInsightsPresenter;
 import data_access.GeminiDataAccessObject;
-import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 import use_case.generate_insights.GenerateInsightsInputBoundary;
 import use_case.generate_insights.GenerateInsightsInteractor;
 import use_case.generate_insights.GenerateInsightsOutputBoundary;
 import view.GenerateInsightsView;
-import view.FavoritedPlayersView;
+import view.FavouritedPlayersView;
 import interface_adapter.ask_question.AskQuestionController;
 import interface_adapter.ask_question.AskQuestionPresenter;
 import interface_adapter.ask_question.AskQuestionViewModel;
@@ -70,31 +63,63 @@ import use_case.compare_players.ComparePlayersInputBoundary;
 import use_case.compare_players.ComparePlayersInteractor;
 import view.ChatView;
 
-import view.compare.CompareView;
-
 import javax.swing.*;
 import java.awt.*;
+
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 import interface_adapter.sort_players.SortViewModel;
 import interface_adapter.sort_players.SortController;
 import interface_adapter.sort_players.SortPresenter;
-import use_case.sort.SortInputBoundary;
-import use_case.sort.SortInteractor;
-import use_case.sort.SortOutputBoundary;
-import view.SortPlayersView;
+import use_case.sort_players.SortInputBoundary;
+import use_case.sort_players.SortInteractor;
+import use_case.sort_players.SortOutputBoundary;
+import view.FilterSortPlayersView;
 import interface_adapter.filter_players.*;
 import use_case.filter_players.*;
-import view.FilterPlayersView;
 
 /*Run this file to run NBA Wizz*/
 public class Main {
     public static void main(String[] args) {
+        // Setup FlatLaf theme
+        try {
+            FlatLightLaf.setup();
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize FlatLaf");
+        }
+
         JFrame application = new JFrame("NBA Wizz");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        JPanel rootPanel = new JPanel(new BorderLayout());
+        application.add(rootPanel);
+
         CardLayout cardLayout = new CardLayout();
         JPanel views = new JPanel(cardLayout);
-        application.add(views);
+        
+        // Header with Theme Toggle
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        headerPanel.setOpaque(false); // Make it transparent to blend in
+        JButton themeToggle = new JButton("Dark Mode \uD83C\uDF19");
+        themeToggle.setFocusable(false);
+        themeToggle.putClientProperty("JButton.buttonType", "toolBarButton");
+        
+        themeToggle.addActionListener(e -> {
+            if (FlatLaf.isLafDark()) {
+                FlatLightLaf.setup();
+                themeToggle.setText("Dark Mode \uD83C\uDF19");
+            } else {
+                FlatDarkLaf.setup();
+                themeToggle.setText("Light Mode \u2600");
+            }
+            FlatLaf.updateUI();
+        });
+        
+        headerPanel.add(themeToggle);
+        rootPanel.add(headerPanel, BorderLayout.NORTH);
+        rootPanel.add(views, BorderLayout.CENTER);
 
         // Favourites
         FavouriteViewModel favouriteViewModel = new FavouriteViewModel();
@@ -121,7 +146,7 @@ public class Main {
         // TODO: Update the path to the CSV file.
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
         GeminiDataAccessObject geminiDataAccessObject = new GeminiDataAccessObject();
-        TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("TeamStatsDataset.csv");
+        TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("PlayerStatsDataset.csv");
 
         UserDataAccessInterface userDataAccessInterface = new FileUserDataAccessObject("src/main/java/data/users.csv");
         
@@ -192,9 +217,9 @@ public class Main {
 
         views.add(searchPlayerView, searchPlayerView.viewName);
 
-        // Now that SearchPlayerController and SearchPlayerView exist, register the favorited players card with them
-        FavoritedPlayersView favoritedPlayersView = new FavoritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
-        views.add(favoritedPlayersView, favoritedPlayersView.viewName);
+        // Now that SearchPlayerController and SearchPlayerView exist, register the favourited players card with them
+        FavouritedPlayersView favouritedPlayersView = new FavouritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
+        views.add(favouritedPlayersView, favouritedPlayersView.viewName);
 
 
         // Sort Players Feature Setup
@@ -209,12 +234,6 @@ public class Main {
 
         SortController sortController =
                 new SortController(sortInteractor, sortViewModel);
-
-        SortPlayersView sortPlayersView =
-                new SortPlayersView(sortController, sortViewModel);
-
-        views.add(sortPlayersView, sortPlayersView.viewName);
-
 
         java.util.Set<String> allTeams = new java.util.HashSet<>();
         java.util.Set<String> allPositions = new java.util.HashSet<>();
@@ -231,10 +250,14 @@ public class Main {
         FilterPlayersPresenter filterPresenter = new FilterPlayersPresenter(filterVM);
         FilterPlayersInputBoundary filterInteractor =
                 new FilterPlayersInteractor(playerDataAccessObject, filterPresenter);
-        FilterPlayersController filterController = new FilterPlayersController(filterInteractor);
-        FilterPlayersView filterPlayersView = new FilterPlayersView(filterVM, filterController);
+        FilterPlayersController filterController =
+                new FilterPlayersController(filterInteractor);
 
-        views.add(filterPlayersView, filterPlayersView.viewName);
+        FilterSortPlayersView sortPlayersView =
+                new FilterSortPlayersView(sortController, sortViewModel, filterController, filterVM);
+
+        views.add(sortPlayersView, sortPlayersView.viewName);
+
 
         AskQuestionPresenter askQuestionPresenter = new AskQuestionPresenter(askQuestionViewModel, viewManagerModel);
         AskQuestionInputBoundary askQuestionInteractor = new AskQuestionInteractor(geminiDataAccessObject, askQuestionPresenter);

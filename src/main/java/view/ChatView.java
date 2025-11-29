@@ -1,5 +1,6 @@
 package view;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.ask_question.AskQuestionController;
 import interface_adapter.ask_question.AskQuestionState;
@@ -31,8 +32,7 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     private final JButton homeButton;
     private final JRadioButton askQuestionRadioButton;
     private final JRadioButton comparePlayersRadioButton;
-    private static final Font INPUT_FONT = new Font("Arial", Font.PLAIN, 16);
-    private final Timer loadingTimer; // Timer to animate loading bubble
+    private final Timer loadingTimer;
 
     private enum Mode {
         ASK_QUESTION,
@@ -57,53 +57,100 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
         setLayout(new BorderLayout());
 
-        // Top panel for Home button and loading indicator
-        JPanel topPanel = new JPanel(new BorderLayout());
+        // Header
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+
+        JLabel title = new JLabel("AI Basketball Assistant");
+        title.putClientProperty(FlatClientProperties.STYLE, "font: bold +16");
+        title.setForeground(new Color(37, 99, 235)); // Modern Blue
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel subtitle = new JLabel("Ask anything or compare players instantly");
+        subtitle.putClientProperty(FlatClientProperties.STYLE, "font: 0; foreground: $Label.disabledForeground");
+        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JPanel topRow = new JPanel(new BorderLayout());
         homeButton = new JButton("Home");
-        homeButton.setFont(INPUT_FONT);
+        homeButton.putClientProperty(FlatClientProperties.STYLE, "buttonType: roundRect");
         homeButton.addActionListener(this);
-        topPanel.add(homeButton, BorderLayout.WEST);
+        topRow.add(homeButton, BorderLayout.WEST);
+        
+        // Wrap title/subtitle to center them relative to the panel, not just available space
+        JPanel titleWrapper = new JPanel();
+        titleWrapper.setLayout(new BoxLayout(titleWrapper, BoxLayout.Y_AXIS));
+        titleWrapper.add(title);
+        titleWrapper.add(Box.createVerticalStrut(2));
+        titleWrapper.add(subtitle);
+        
+        // This is a bit of a hack to center the title while having a button on the left
+        // A better way is a 3-column grid or overlay, but this is simple:
+        // We add the titleWrapper to the center of topRow.
+        // However, standard BorderLayout center isn't perfectly centered if West/East differ.
+        // For simplicity in this CLI context, we'll just stack: Home button top-left, Title centered below.
+        
+        JPanel realHeader = new JPanel(new BorderLayout());
+        realHeader.add(homeButton, BorderLayout.WEST);
+        
+        JPanel centerTitlePanel = new JPanel();
+        centerTitlePanel.setLayout(new BoxLayout(centerTitlePanel, BoxLayout.Y_AXIS));
+        centerTitlePanel.add(title);
+        centerTitlePanel.add(subtitle);
+        
+        realHeader.add(centerTitlePanel, BorderLayout.CENTER);
+        realHeader.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        
+        add(realHeader, BorderLayout.NORTH);
 
-        // Removed static loading indicator
-        add(topPanel, BorderLayout.NORTH);
-
-
+        // Chat Area
         chatModel = new DefaultListModel<>();
         chatList = new JList<>(chatModel);
         chatList.setCellRenderer(new ChatBubbleCellRenderer());
+        chatList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
         JScrollPane scrollPane = new JScrollPane(chatList);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(scrollPane, BorderLayout.CENTER);
         
-        // Timer for 60 FPS animation of loading bubble
         loadingTimer = new Timer(16, e -> chatList.repaint());
 
-        JPanel inputPanel = new JPanel(new BorderLayout(5, 5));
-        inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        inputField = new JTextField();
-        inputField.setFont(INPUT_FONT);
-        sendButton = new JButton("Send");
-        sendButton.setFont(INPUT_FONT);
-        sendButton.addActionListener(this);
-        inputPanel.add(inputField, BorderLayout.CENTER);
-        inputPanel.add(sendButton, BorderLayout.EAST);
-        inputPanel.setPreferredSize(new Dimension(0, 60));
+        // Bottom Control Area
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 20, 20));
 
-
-        JPanel modePanel = new JPanel();
-        askQuestionRadioButton = new JRadioButton("Ask a Question", true);
-        askQuestionRadioButton.setFont(INPUT_FONT);
+        // Mode Selection
+        JPanel modePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        askQuestionRadioButton = new JRadioButton("Ask Question", true);
         comparePlayersRadioButton = new JRadioButton("Compare Players");
-        comparePlayersRadioButton.setFont(INPUT_FONT);
+        
         ButtonGroup modeGroup = new ButtonGroup();
         modeGroup.add(askQuestionRadioButton);
         modeGroup.add(comparePlayersRadioButton);
+        
         modePanel.add(askQuestionRadioButton);
+        modePanel.add(Box.createHorizontalStrut(10));
         modePanel.add(comparePlayersRadioButton);
 
         askQuestionRadioButton.addActionListener(e -> setMode(Mode.ASK_QUESTION));
         comparePlayersRadioButton.addActionListener(e -> setMode(Mode.COMPARE_PLAYERS));
 
-        JPanel bottomPanel = new JPanel(new BorderLayout());
+        // Input Area
+        JPanel inputPanel = new JPanel(new BorderLayout(10, 0));
+        inputField = new JTextField();
+        inputField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your NBA question here...");
+        // Increased padding to make it taller
+        inputField.putClientProperty(FlatClientProperties.STYLE, "arc: 15; padding: 10,10,10,10; font: +2");
+        
+        sendButton = new JButton("Send");
+        // Increased font size and potentially padding via style
+        sendButton.putClientProperty(FlatClientProperties.STYLE, "font: bold +2; type: default; margin: 5,15,5,15");
+        sendButton.setPreferredSize(new Dimension(100, 45)); // Explicit height bump
+        sendButton.addActionListener(this);
+
+        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(sendButton, BorderLayout.EAST);
+        
         bottomPanel.add(modePanel, BorderLayout.NORTH);
         bottomPanel.add(inputPanel, BorderLayout.CENTER);
 
@@ -115,9 +162,11 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     private void setMode(Mode mode) {
         currentMode = mode;
         if (mode == Mode.ASK_QUESTION) {
+            inputField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your NBA question here...");
             inputField.setToolTipText("Enter your question here");
         } else {
-            inputField.setToolTipText("Enter two player names, separated by a comma (e.g., LeBron James, Michael Jordan)");
+            inputField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. LeBron James, Michael Jordan");
+            inputField.setToolTipText("Enter two player names, separated by a comma");
         }
     }
 
@@ -125,21 +174,25 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == sendButton) {
             String inputText = inputField.getText();
+            if (inputText.trim().isEmpty()) return;
+
             if (currentMode == Mode.ASK_QUESTION) {
-                                    chatModel.addElement(new ChatMessage(inputText, ChatMessage.Sender.USER));
-                                    chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+                chatModel.addElement(new ChatMessage(inputText, ChatMessage.Sender.USER));
+                scrollToBottom();
 
-                                    AskQuestionState currentState = askQuestionViewModel.getState();
-                                    currentState.setAnswer(""); // Clear the old answer before starting a new question
-                                    currentState.setError(null); // Clear any previous errors
-                                    currentState.setLoading(true);
-                                    askQuestionViewModel.firePropertyChanged();
+                AskQuestionState currentState = askQuestionViewModel.getState();
+                currentState.setAnswer(""); 
+                currentState.setError(null);
+                currentState.setLoading(true);
+                askQuestionViewModel.firePropertyChanged();
 
-                                    askQuestionController.execute(inputText);            } else {
+                askQuestionController.execute(inputText);            
+            } else {
                 String[] playerNames = inputText.split(",");
                 if (playerNames.length == 2) {
                     String message = "Compare " + playerNames[0].trim() + " and " + playerNames[1].trim();
                     chatModel.addElement(new ChatMessage(message, ChatMessage.Sender.USER));
+                    scrollToBottom();
                     comparePlayersController.execute(playerNames[0].trim(), playerNames[1].trim());
                 } else {
                     JOptionPane.showMessageDialog(this, "Please enter two player names separated by a comma.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
@@ -151,6 +204,10 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
             viewManagerModel.firePropertyChanged();
         }
     }
+    
+    private void scrollToBottom() {
+        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
+    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -158,99 +215,46 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
             if ("state".equals(evt.getPropertyName())) {
                 if (evt.getSource() == askQuestionViewModel) {
                     AskQuestionState state = askQuestionViewModel.getState();
-
-                    // Handle loading state
-                    if (state.isLoading()) {
-                        if (!loadingTimer.isRunning()) loadingTimer.start();
-                        // Disable input while loading
-                        inputField.setEnabled(false);
-                        sendButton.setEnabled(false);
-
-                        // Add loading bubble if not already present
-                        if (chatModel.isEmpty() || chatModel.lastElement().getSender() != ChatMessage.Sender.LOADING) {
-                            chatModel.addElement(new ChatMessage("", ChatMessage.Sender.LOADING));
-                            chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                        }
-                    } else {
-                        if (loadingTimer.isRunning()) loadingTimer.stop();
-                        // Re-enable input
-                        inputField.setEnabled(true);
-                        sendButton.setEnabled(true);
-                        inputField.requestFocusInWindow();
-
-                        // Remove ALL loading bubbles (iterate backwards)
-                        for (int i = chatModel.getSize() - 1; i >= 0; i--) {
-                            if (chatModel.get(i).getSender() == ChatMessage.Sender.LOADING) {
-                                chatModel.removeElementAt(i);
-                            }
-                        }
-                    }
-
-                    String answer = state.getAnswer();
-                    // Only display the answer when loading is complete (non-streaming)
-                    if (answer != null && !answer.isEmpty() && !state.isLoading()) {
-                        // If the last message is from the user, create a new AI message bubble
-                        // Otherwise, update the existing AI message
-                        if (chatModel.isEmpty() || chatModel.lastElement().getSender() == ChatMessage.Sender.USER) {
-                            chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
-                        } else {
-                             // This case might happen if we removed loading and now adding answer
-                            chatModel.addElement(new ChatMessage(answer, ChatMessage.Sender.AI));
-                        }
-                        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                        chatList.repaint();
-                    }
-
-
-                    String error = state.getError();
-                    if (error != null) {
-                        // Loading bubbles already removed above
-                        chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
-                        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                    }
+                    handleStateUpdate(state.isLoading(), state.getAnswer(), state.getError());
                 } else if (evt.getSource() == comparePlayersViewModel) {
                     ComparePlayersState state = comparePlayersViewModel.getState();
-
-                    // Handle loading state
-                    if (state.isLoading()) {
-                        if (!loadingTimer.isRunning()) loadingTimer.start();
-                        // Disable input while loading
-                        inputField.setEnabled(false);
-                        sendButton.setEnabled(false);
-
-                        // Add loading bubble if not already present
-                        if (chatModel.isEmpty() || chatModel.lastElement().getSender() != ChatMessage.Sender.LOADING) {
-                            chatModel.addElement(new ChatMessage("", ChatMessage.Sender.LOADING));
-                            chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                        }
-                    } else {
-                        if (loadingTimer.isRunning()) loadingTimer.stop();
-                        // Re-enable input
-                        inputField.setEnabled(true);
-                        sendButton.setEnabled(true);
-                        inputField.requestFocusInWindow();
-
-                        // Remove ALL loading bubbles (iterate backwards)
-                        for (int i = chatModel.getSize() - 1; i >= 0; i--) {
-                            if (chatModel.get(i).getSender() == ChatMessage.Sender.LOADING) {
-                                chatModel.removeElementAt(i);
-                            }
-                        }
-                    }
-
-                    String comparison = state.getComparison();
-                    if (comparison != null && !comparison.isEmpty() && !state.isLoading()) {
-                        chatModel.addElement(new ChatMessage(comparison, ChatMessage.Sender.AI));
-                        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                    }
-                    String error = state.getError();
-                    if (error != null) {
-                        // Note: Loading bubbles already removed above
-                        chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
-                        chatList.ensureIndexIsVisible(chatModel.getSize() - 1);
-                    }
+                    handleStateUpdate(state.isLoading(), state.getComparison(), state.getError());
                 }
             }
         });
+    }
+
+    private void handleStateUpdate(boolean isLoading, String response, String error) {
+        if (isLoading) {
+            if (!loadingTimer.isRunning()) loadingTimer.start();
+            inputField.setEnabled(false);
+            sendButton.setEnabled(false);
+
+            if (chatModel.isEmpty() || chatModel.lastElement().getSender() != ChatMessage.Sender.LOADING) {
+                chatModel.addElement(new ChatMessage("", ChatMessage.Sender.LOADING));
+                scrollToBottom();
+            }
+        } else {
+            if (loadingTimer.isRunning()) loadingTimer.stop();
+            inputField.setEnabled(true);
+            sendButton.setEnabled(true);
+            inputField.requestFocusInWindow();
+
+            // Remove loading bubble
+            if (!chatModel.isEmpty() && chatModel.lastElement().getSender() == ChatMessage.Sender.LOADING) {
+                chatModel.removeElementAt(chatModel.getSize() - 1);
+            }
+
+            if (response != null && !response.isEmpty()) {
+                chatModel.addElement(new ChatMessage(response, ChatMessage.Sender.AI));
+                scrollToBottom();
+            }
+
+            if (error != null) {
+                chatModel.addElement(new ChatMessage("Error: " + error, ChatMessage.Sender.AI));
+                scrollToBottom();
+            }
+            chatList.repaint();
+        }
     }
 }
