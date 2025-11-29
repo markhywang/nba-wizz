@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="278190ef-353f-45aa-aace-b8c3d34d143a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/data/favourites.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/favourites.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data/users.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/users.csv" afterDir="false" />
+    <list default="true" id="278190ef-353f-45aa-aace-b8c3d34d143a" name="Changes" comment="Finish Compare Use Case, Except for the Listener on the main menu">
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/data/PlayerStatsDataset.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/PlayerStatsDataset.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/FavoritedPlayersView.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/FavouritedPlayersView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/FavouritedPlayersView.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,17 +21,18 @@
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;favourite-list&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "main"
   }
-}</component>
+}]]></component>
   <component name="TaskManager">
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="LAST_COMMIT_MESSAGE" value="" />
+    <MESSAGE value="Finish Compare Use Case, Except for the Listener on the main menu" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish Compare Use Case, Except for the Listener on the main menu" />
   </component>
 </project>
