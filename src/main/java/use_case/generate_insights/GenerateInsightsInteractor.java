@@ -51,10 +51,14 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
             if (teamOptional.isPresent()) {
                 Team team = teamOptional.get();
                 String prompt = createTeamPrompt(team);
-                String insightText = dataAccess.getAiInsight(prompt);
-                AIInsight insight = new AIInsight(1, "Team", team.getName(), insightText, LocalDateTime.now());
-                GenerateInsightsOutputData outputData = new GenerateInsightsOutputData(insight, false);
-                presenter.prepareSuccessView(outputData);
+                try {
+                    String insightText = dataAccess.getAiInsight(prompt);
+                    AIInsight insight = new AIInsight(1, "Team", team.getName(), insightText, LocalDateTime.now());
+                    GenerateInsightsOutputData outputData = new GenerateInsightsOutputData(insight, false);
+                    presenter.prepareSuccessView(outputData);
+                } catch (Exception e) {
+                    presenter.prepareFailView(e.getMessage());
+                }
             } else {
                 presenter.prepareFailView("Team not found.");
             }
