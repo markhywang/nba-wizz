@@ -3,9 +3,7 @@ package interface_adapter.main_menu;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.favourite.FavouriteController;
 import use_case.main_menu.MainMenuInputBoundary;
-import use_case.main_menu.MainMenuInputData;
 
-import java.util.List;
 
 public class MainMenuController {
     private final MainMenuInputBoundary interactor;
@@ -42,12 +40,9 @@ public class MainMenuController {
         viewManagerModel.firePropertyChanged();
     }
 
-    public void onViewFavoritedPlayersPressed() {
-        viewManagerModel.setActiveView("favorited_players");
+    public void onViewFavouritedPlayersPressed() {
+        viewManagerModel.setActiveView("favourited_players");
         viewManagerModel.firePropertyChanged();
     }
 
-    public List<String> getFavoritedPlayers() {
-        return favouriteController.getFavourites();
-    }
 }

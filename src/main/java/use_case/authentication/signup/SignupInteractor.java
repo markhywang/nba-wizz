@@ -17,9 +17,9 @@ public class SignupInteractor implements SignupInputBoundary {
 
     @Override
     public void execute(SignupInputData inputData) {
-        String username = inputData.getUsername();
-        String password = inputData.getPassword();
-        String repeatPassword = inputData.getRepeatPassword();
+        String username = inputData.username();
+        String password = inputData.password();
+        String repeatPassword = inputData.repeatPassword();
 
         if (username == null || username.trim().isEmpty()) {
             signupOutputBoundary.prepareSignupFail("Username is required.");

@@ -16,8 +16,8 @@ public class ComparePlayersInteractor implements ComparePlayersInputBoundary {
 
     @Override
     public void execute(ComparePlayersInputData inputData) {
-        if (inputData.getPlayer1Name() == null || inputData.getPlayer1Name().trim().isEmpty() ||
-            inputData.getPlayer2Name() == null || inputData.getPlayer2Name().trim().isEmpty()) {
+        if (inputData.player1Name() == null || inputData.player1Name().trim().isEmpty() ||
+            inputData.player2Name() == null || inputData.player2Name().trim().isEmpty()) {
             presenter.prepareFailView("Player names cannot be empty.");
             return;
         }
@@ -25,8 +25,8 @@ public class ComparePlayersInteractor implements ComparePlayersInputBoundary {
         presenter.prepareLoadingView();
 
         new Thread(() -> {
-            Optional<Player> player1Optional = dataAccess.getPlayerByName(inputData.getPlayer1Name());
-            Optional<Player> player2Optional = dataAccess.getPlayerByName(inputData.getPlayer2Name());
+            Optional<Player> player1Optional = dataAccess.getPlayerByName(inputData.player1Name());
+            Optional<Player> player2Optional = dataAccess.getPlayerByName(inputData.player2Name());
 
             if (player1Optional.isEmpty()) {
                 presenter.prepareFailView("Player 1 not found.");

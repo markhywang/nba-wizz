@@ -25,7 +25,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private final JButton logIn;
     private final JButton signUp;
     private final LoginController loginController;
-    private JPanel contentPanel;
+    private final JPanel contentPanel;
 
     public LoginView(LoginViewModel loginViewModel, LoginController controller) {
         this.loginController = controller;

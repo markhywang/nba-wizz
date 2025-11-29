@@ -15,7 +15,7 @@ public class AskQuestionInteractor implements AskQuestionInputBoundary {
 
     @Override
     public void execute(AskQuestionInputData inputData) {
-        if (inputData.getQuestion() == null || inputData.getQuestion().trim().isEmpty()) {
+        if (inputData.question() == null || inputData.question().trim().isEmpty()) {
             presenter.prepareFailView("Question cannot be empty.");
             return;
         }
@@ -26,9 +26,9 @@ public class AskQuestionInteractor implements AskQuestionInputBoundary {
         new Thread(() -> {
             try {
                 String context = dataAccess.getDatasetContent();
-                String fullAnswer = dataAccess.getAnswerSync(inputData.getQuestion(), context);
+                String fullAnswer = dataAccess.getAnswerSync(inputData.question(), context);
                 Answer answer = new Answer(fullAnswer);
-                AskQuestionOutputData outputData = new AskQuestionOutputData(answer, inputData.getQuestion(), false);
+                AskQuestionOutputData outputData = new AskQuestionOutputData(answer, inputData.question(), false);
                 presenter.prepareSuccessView(outputData);
             } catch (IOException e) {
                 presenter.prepareFailView("Error getting answer: " + e.getMessage());

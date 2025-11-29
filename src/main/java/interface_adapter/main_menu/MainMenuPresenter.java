@@ -9,7 +9,7 @@ public class MainMenuPresenter implements MainMenuOutputBoundary {
     private final ViewManagerModel viewManagerModel;
     private final GenerateInsightsViewModel generateInsightsViewModel;
 
-    private MainMenuViewModel mainMenuViewModel;
+    private final MainMenuViewModel mainMenuViewModel;
     public MainMenuPresenter(MainMenuViewModel mainMenuViewModel, ViewManagerModel viewManagerModel, GenerateInsightsViewModel generateInsightsViewModel) {
         this.mainMenuViewModel = mainMenuViewModel;
         this.viewManagerModel = viewManagerModel;

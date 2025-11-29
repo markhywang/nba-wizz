@@ -16,7 +16,7 @@ public class ComparePlayersPresenter implements ComparePlayersOutputBoundary {
     @Override
     public void prepareSuccessView(ComparePlayersOutputData outputData) {
         ComparePlayersState state = comparePlayersViewModel.getState();
-        state.setComparison(outputData.getComparison().getResponse());
+        state.setComparison(outputData.getComparison().response());
         state.setLoading(false);
         comparePlayersViewModel.setState(state);
         comparePlayersViewModel.firePropertyChanged();

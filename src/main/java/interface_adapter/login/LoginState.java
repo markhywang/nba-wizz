@@ -6,13 +6,6 @@ public class LoginState {
     private String error = null;
     private String infoMessage = null;
 
-    public LoginState(LoginState copy) {
-        username = copy.username;
-        password = copy.password;
-        error = copy.error;
-        infoMessage = copy.infoMessage;
-    }
-
     // Because of the previous copy constructor, the default constructor must be explicit.
     public LoginState() {}
 

@@ -21,7 +21,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
     private final JButton filterAndSort;
     private final JButton compare;
     private final JButton aiInsights;
-    private final JButton viewFavoritedPlayers;
+    private final JButton viewFavouritedPlayers;
     private final JButton aiChat;
 
     public MainMenuView(MainMenuViewModel mainMenuViewModel, MainMenuController controller) {
@@ -66,7 +66,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         filterAndSort = createDashboardButton(MainMenuViewModel.FILTER_SORT_BUTTON_LABEL, "Filter and sort players by stats");
         compare = createDashboardButton(MainMenuViewModel.COMPARE_BUTTON_LABEL, "Compare two players head-to-head");
         aiInsights = createDashboardButton(MainMenuViewModel.AI_INSIGHTS_BUTTON_LABEL, "Get AI-powered analysis");
-        viewFavoritedPlayers = createDashboardButton("View Favorites", "Access your saved players list");
+        viewFavouritedPlayers = createDashboardButton("View Favorites", "Access your saved players list");
         aiChat = createDashboardButton(MainMenuViewModel.AI_CHAT_BUTTON_LABEL, "Chat with our NBA expert AI");
 
         // Row 1
@@ -85,7 +85,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
 
         // Row 3
         gbc.gridx = 0; gbc.gridy = 2;
-        dashboard.add(viewFavoritedPlayers, gbc);
+        dashboard.add(viewFavouritedPlayers, gbc);
 
         gbc.gridx = 1;
         dashboard.add(aiChat, gbc);
@@ -98,7 +98,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
         aiInsights.addActionListener(this);
         aiChat.addActionListener(this);
         compare.addActionListener(this);
-        viewFavoritedPlayers.addActionListener(this);
+        viewFavouritedPlayers.addActionListener(this);
     }
     
     private JButton createDashboardButton(String title, String description) {
@@ -119,8 +119,8 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
             mainMenuController.switchToChat();
         } else if (e.getSource().equals(compare)) {
             mainMenuController.onCompareButtonClicked();
-        } else if (e.getSource().equals(viewFavoritedPlayers)) {
-            mainMenuController.onViewFavoritedPlayersPressed();
+        } else if (e.getSource().equals(viewFavouritedPlayers)) {
+            mainMenuController.onViewFavouritedPlayersPressed();
         }
     }
 

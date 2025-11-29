@@ -7,9 +7,6 @@ import java.util.Map;
 
 public interface PlayerDataAccessInterface extends DataAccessInterface<Player> {
     Player getPlayerByName(String playerName);
-    List<Player> findByTeam(String teamName);
-    List<Player> findByPosition(String position);
-    List<Player> findBySeason(int seasonYear);
 
     /**
      * Returns a map of aggregated for a given player across a season range.

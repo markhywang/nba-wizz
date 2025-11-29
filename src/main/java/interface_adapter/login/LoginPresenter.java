@@ -48,7 +48,7 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.viewManagerModel.firePropertyChanged();
         // Set the active user for per-user favourites and refresh the favourites view model
         if (favouriteDataAccessInterface != null) {
-            favouriteDataAccessInterface.setCurrentUser(response.getUsername());
+            favouriteDataAccessInterface.setCurrentUser(response.username());
             if (favouriteOutputBoundary != null) {
                 favouriteOutputBoundary.addFavourite(new FavouriteOutputData(true, favouriteDataAccessInterface.getFavourites()));
             }

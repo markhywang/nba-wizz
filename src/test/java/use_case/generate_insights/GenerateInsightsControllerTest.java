@@ -36,7 +36,7 @@ class GenerateInsightsControllerTest {
         verify(generateInsightsInteractor).execute(argumentCaptor.capture());
         
         GenerateInsightsInputData capturedInputData = argumentCaptor.getValue();
-        assertEquals(playerName, capturedInputData.getEntityName());
-        assertEquals(entityType, capturedInputData.getEntityType());
+        assertEquals(playerName, capturedInputData.entityName());
+        assertEquals(entityType, capturedInputData.entityType());
     }
 }

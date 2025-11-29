@@ -218,8 +218,8 @@ public class CompareView extends JPanel implements PropertyChangeListener {
         if (state.table != null) {
             for (CompareState.RowVM row : state.table) {
                 List<Object> cells = new ArrayList<>();
-                cells.add(row.metric);
-                cells.addAll(row.cells);
+                cells.add(row.metric());
+                cells.addAll(row.cells());
                 model.addRow(cells.toArray());
             }
         }
@@ -241,7 +241,7 @@ public class CompareView extends JPanel implements PropertyChangeListener {
                 // bestIndex is 0-based index into values list (so matches column-1)
                 if (currentState != null && currentState.table != null && row >= 0 && row < currentState.table.size()) {
                     CompareState.RowVM rowVM = currentState.table.get(row);
-                    if (rowVM != null && rowVM.bestIndex != null && column - 1 == rowVM.bestIndex) {
+                    if (rowVM != null && rowVM.bestIndex() != null && column - 1 == rowVM.bestIndex()) {
                         if (!isSelected) {
                              // Use a nice green for "Best"
                              Color green = FlatLaf.isLafDark() ? new Color(40, 100, 40) : new Color(40, 167, 69);
