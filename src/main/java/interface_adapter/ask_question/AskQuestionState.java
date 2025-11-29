@@ -6,13 +6,6 @@ public class AskQuestionState {
     private String error = null;
     private boolean isLoading = false;
 
-    public AskQuestionState(AskQuestionState copy) {
-        this.question = copy.question;
-        this.answer = copy.answer;
-        this.error = copy.error;
-        this.isLoading = copy.isLoading;
-    }
-
     public AskQuestionState() {}
 
     public String getQuestion() {

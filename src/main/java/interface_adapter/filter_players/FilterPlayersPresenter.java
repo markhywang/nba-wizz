@@ -21,7 +21,7 @@ public class FilterPlayersPresenter implements FilterPlayersOutputBoundary {
     @Override
     public void present(FilterPlayersOutputData outputData) {
         FilterPlayersState s = state();
-        s.tableRows = outputData.getRows();
+        s.tableRows = outputData.rows();
         s.bannerMessage = "";
         s.errorMessage = "";
         viewModel.firePropertyChanged();
@@ -54,7 +54,7 @@ public class FilterPlayersPresenter implements FilterPlayersOutputBoundary {
     @Override
     public void presentLargeResultNotice(FilterPlayersOutputData outputData, String summary) {
         FilterPlayersState s = state();
-        s.tableRows = outputData.getRows();
+        s.tableRows = outputData.rows();
         s.bannerMessage = summary;
         s.errorMessage = "";
         viewModel.firePropertyChanged();

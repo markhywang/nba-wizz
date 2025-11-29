@@ -4,6 +4,7 @@ import interface_adapter.favourite.FavouriteViewModel;
 import interface_adapter.favourite.FavouriteController;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.search_player.SearchPlayerController;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * A panel to display the list of favorited players. This is added to the main CardLayout
+ * A panel to display the list of favourited players. This is added to the main CardLayout
  * (so it replaces the main window view when activated).
  */
 public class FavouritedPlayersView extends JPanel implements PropertyChangeListener {
@@ -23,7 +24,7 @@ public class FavouritedPlayersView extends JPanel implements PropertyChangeListe
 
     private final JPanel listPanel = new JPanel();
 
-    public final String viewName = "favorited_players";
+    public final String viewName = "favourited_players";
 
     public FavouritedPlayersView(FavouriteViewModel favouriteViewModel,
                                  FavouriteController favouriteController,
@@ -43,7 +44,7 @@ public class FavouritedPlayersView extends JPanel implements PropertyChangeListe
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // --- TITLE ---
-        JLabel titleLabel = new JLabel("Favorited Players", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Favourited Players", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
         add(titleLabel, BorderLayout.NORTH);
@@ -94,22 +95,14 @@ public class FavouritedPlayersView extends JPanel implements PropertyChangeListe
                 nameLabel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
                 row.add(nameLabel, BorderLayout.WEST);
 
-                JButton searchBtn = new JButton("Search");
-                searchBtn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-                searchBtn.setPreferredSize(new Dimension(90, 30));
-                searchBtn.addActionListener(e -> {
-                    searchPlayerView.setPlayerNameForSearch(p);
-                    viewManagerModel.setActiveView("search_player");
-                    viewManagerModel.firePropertyChanged();
-                    searchPlayerController.executeSearch(p, "1980", "2024", new java.util.ArrayList<>());
-                });
+                JButton searchBtn = getSearchBtn(p);
                 row.add(searchBtn, BorderLayout.EAST);
 
                 listPanel.add(row);
                 listPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             }
         } else {
-            JLabel empty = new JLabel("No favorited players yet.", SwingConstants.CENTER);
+            JLabel empty = new JLabel("No favourited players yet.", SwingConstants.CENTER);
             empty.setFont(new Font("Segoe UI", Font.ITALIC, 16));
             empty.setBorder(BorderFactory.createEmptyBorder(25, 0, 25, 0));
             listPanel.add(empty);
@@ -117,6 +110,20 @@ public class FavouritedPlayersView extends JPanel implements PropertyChangeListe
 
         revalidate();
         repaint();
+    }
+
+    @NotNull
+    private JButton getSearchBtn(String p) {
+        JButton searchBtn = new JButton("Search");
+        searchBtn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        searchBtn.setPreferredSize(new Dimension(90, 30));
+        searchBtn.addActionListener(e -> {
+            searchPlayerView.setPlayerNameForSearch(p);
+            viewManagerModel.setActiveView("search_player");
+            viewManagerModel.firePropertyChanged();
+            searchPlayerController.executeSearch(p, "1980", "2024", new java.util.ArrayList<>());
+        });
+        return searchBtn;
     }
 
     @Override

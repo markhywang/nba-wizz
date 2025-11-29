@@ -2,12 +2,14 @@ package use_case.compare;
 
 import data_access.PlayerDataAccessInterface;
 import data_access.TeamDataAccessInterface;
-import entity.Normalization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class CompareInteractor implements CompareInputBoundary {
 
+    private static final Logger log = LoggerFactory.getLogger(CompareInteractor.class);
     private final PlayerDataAccessInterface playerDAO;
     private final TeamDataAccessInterface teamDAO;
     private final CompareOutputBoundary presenter;
@@ -88,7 +90,7 @@ public class CompareInteractor implements CompareInputBoundary {
                 presenter.presentError("Comparison not supported by data source.");
                 return;
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("e: ", e);
                 stats = Collections.emptyMap();
                 notices.add("Could not load data for " + name + ".");
             }

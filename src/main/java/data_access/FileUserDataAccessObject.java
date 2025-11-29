@@ -58,7 +58,7 @@ public class FileUserDataAccessObject implements UserDataAccessInterface {
                 return;
             }
             for (String line : Files.readAllLines(storagePath, StandardCharsets.UTF_8)) {
-                if (line == null || line.trim().isEmpty() || !line.contains(",")) {
+                if (line.trim().isEmpty() || !line.contains(",")) {
                     continue;
                 }
                 String[] parts = line.split(",", 2);

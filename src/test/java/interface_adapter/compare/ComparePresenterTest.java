@@ -55,15 +55,15 @@ public class ComparePresenterTest {
 
         // PTS row – numbers formatted
         CompareState.RowVM ptsVm = state.table.get(0);
-        assertEquals("PTS", ptsVm.metric);
-        assertEquals(List.of("25", "20.12"), ptsVm.cells);
-        assertEquals(Integer.valueOf(0), ptsVm.bestIndex);
+        assertEquals("PTS", ptsVm.metric());
+        assertEquals(List.of("25", "20.12"), ptsVm.cells());
+        assertEquals(Integer.valueOf(0), ptsVm.bestIndex());
 
         // AST row – second value was null -> "-"
         CompareState.RowVM astVm = state.table.get(1);
-        assertEquals("AST", astVm.metric);
-        assertEquals(List.of("7", "-"), astVm.cells);
-        assertEquals(Integer.valueOf(0), astVm.bestIndex);
+        assertEquals("AST", astVm.metric());
+        assertEquals(List.of("7", "-"), astVm.cells());
+        assertEquals(Integer.valueOf(0), astVm.bestIndex());
     }
 
     @Test

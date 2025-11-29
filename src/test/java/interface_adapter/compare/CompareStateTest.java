@@ -25,8 +25,8 @@ public class CompareStateTest {
         List<String> cells = List.of("25", "20.5");
         CompareState.RowVM row = new CompareState.RowVM("PTS", cells, 0);
 
-        assertEquals("PTS", row.metric);
-        assertEquals(cells, row.cells);
-        assertEquals(Integer.valueOf(0), row.bestIndex);
+        assertEquals("PTS", row.metric());
+        assertEquals(cells, row.cells());
+        assertEquals(Integer.valueOf(0), row.bestIndex());
     }
 }

@@ -16,7 +16,7 @@ public class AskQuestionPresenter implements AskQuestionOutputBoundary {
     @Override
     public void prepareSuccessView(AskQuestionOutputData outputData) {
         AskQuestionState state = askQuestionViewModel.getState();
-        state.setAnswer(outputData.getAnswer().getResponse());
+        state.setAnswer(outputData.getAnswer().response());
         state.setQuestion(outputData.getQuestion());
         state.setLoading(false); // Mark loading as complete
         askQuestionViewModel.setState(state);
@@ -45,7 +45,7 @@ public class AskQuestionPresenter implements AskQuestionOutputBoundary {
     public void presentPartialResponse(AskQuestionOutputData outputData) {
         AskQuestionState state = askQuestionViewModel.getState();
         String currentAnswer = state.getAnswer() != null ? state.getAnswer() : "";
-        state.setAnswer(currentAnswer + outputData.getAnswer().getResponse());
+        state.setAnswer(currentAnswer + outputData.getAnswer().response());
         askQuestionViewModel.setState(state);
         askQuestionViewModel.firePropertyChanged();
     }

@@ -24,13 +24,4 @@ public class FilterPlayersState {
     public FilterPlayersState() {
     }
 
-    public FilterPlayersState(FilterPlayersState copy) {
-        this.selectedTeams = new HashSet<>(copy.selectedTeams);
-        this.selectedPositions = new HashSet<>(copy.selectedPositions);
-        this.seasonMin = copy.seasonMin;
-        this.seasonMax = copy.seasonMax;
-        this.tableRows = new ArrayList<>(copy.tableRows);
-        this.bannerMessage = copy.bannerMessage;
-        this.errorMessage = copy.errorMessage;
-    }
 }

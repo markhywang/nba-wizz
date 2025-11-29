@@ -30,8 +30,6 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
     private final JTextField inputField;
     private final JButton sendButton;
     private final JButton homeButton;
-    private final JRadioButton askQuestionRadioButton;
-    private final JRadioButton comparePlayersRadioButton;
     private final Timer loadingTimer;
 
     private enum Mode {
@@ -121,8 +119,8 @@ public class ChatView extends JPanel implements ActionListener, PropertyChangeLi
 
         // Mode Selection
         JPanel modePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        askQuestionRadioButton = new JRadioButton("Ask Question", true);
-        comparePlayersRadioButton = new JRadioButton("Compare Players");
+        JRadioButton askQuestionRadioButton = new JRadioButton("Ask Question", true);
+        JRadioButton comparePlayersRadioButton = new JRadioButton("Compare Players");
         
         ButtonGroup modeGroup = new ButtonGroup();
         modeGroup.add(askQuestionRadioButton);

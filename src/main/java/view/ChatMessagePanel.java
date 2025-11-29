@@ -10,6 +10,7 @@ import javax.swing.text.html.StyleSheet;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import com.formdev.flatlaf.FlatLaf;
+import org.jetbrains.annotations.NotNull;
 
 public class ChatMessagePanel extends JPanel {
     private final JEditorPane messagePane;
@@ -52,6 +53,15 @@ public class ChatMessagePanel extends JPanel {
         
         messagePane.setText("<html><body>" + htmlContent + "</body></html>");
 
+        JPanel bubbleContent = getBubbleContent();
+        bubbleContent.add(messagePane, BorderLayout.CENTER);
+
+        setLayout(new BorderLayout());
+        add(bubbleContent, BorderLayout.CENTER);
+    }
+
+    @NotNull
+    private JPanel getBubbleContent() {
         JPanel bubbleContent = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -73,10 +83,7 @@ public class ChatMessagePanel extends JPanel {
             }
         };
         bubbleContent.setOpaque(false);
-        bubbleContent.add(messagePane, BorderLayout.CENTER);
-
-        setLayout(new BorderLayout());
-        add(bubbleContent, BorderLayout.CENTER);
+        return bubbleContent;
     }
 
     @Override

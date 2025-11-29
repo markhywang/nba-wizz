@@ -45,12 +45,12 @@ public class SearchPlayerView extends JPanel implements ActionListener, Property
     private final JToggleButton favouriteButton; // Changed to ToggleButton
     private boolean isFavourite = false;
     private String selected = null;
-    
+
     private final JTable resultTable;
     private final DefaultTableModel tableModel;
     private LineChart<Number, Number> lineChart;
-    private JPanel searchFormPanel;
-    private JFXPanel fxPanel;
+    private final JPanel searchFormPanel;
+    private final JFXPanel fxPanel;
 
     public SearchPlayerView(SearchPlayerController controller,
                             SearchPlayerViewModel viewModel,

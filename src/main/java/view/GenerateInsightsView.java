@@ -25,7 +25,7 @@ public class GenerateInsightsView extends JPanel implements ActionListener, Prop
     private final JButton backButton;
     private final JPanel outputContainer;
     private final Timer loadingTimer;
-    private JPanel formPanel;
+    private final JPanel formPanel;
 
     public GenerateInsightsView(GenerateInsightsViewModel generateInsightsViewModel, GenerateInsightsController controller) {
         this.generateInsightsController = controller;
