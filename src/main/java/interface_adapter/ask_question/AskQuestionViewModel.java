@@ -6,8 +6,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class AskQuestionViewModel extends ViewModel {
-    public static final String TITLE_LABEL = "Ask a Question";
-    public static final String ASK_BUTTON_LABEL = "Ask";
 
     private AskQuestionState state = new AskQuestionState();
 

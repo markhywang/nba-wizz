@@ -19,23 +19,23 @@ public class SearchPlayerInteractor implements SearchPlayerInputBoundary {
     @Override
     public void execute(SearchPlayerInputData inputData) {
 
-        if (inputData.getStartSeason().isEmpty() || inputData.getEndSeason().isEmpty()) {
+        if (inputData.startSeason().isEmpty() || inputData.endSeason().isEmpty()) {
             presenter.presentPlayerNotFound("Season fields cannot be empty.");
             return;
         }
 
-        String startStr = inputData.getStartSeason();
-        String endStr   = inputData.getEndSeason();
+        String startStr = inputData.startSeason();
+        String endStr   = inputData.endSeason();
 
         if (!startStr.matches("\\d+") || !endStr.matches("\\d+")) {
             presenter.presentPlayerNotFound("Season fields must be numbers only.");
             return;
         }
 
-        int start = Integer.parseInt(inputData.getStartSeason());
-        int end = Integer.parseInt(inputData.getEndSeason());
+        int start = Integer.parseInt(inputData.startSeason());
+        int end = Integer.parseInt(inputData.endSeason());
 
-        Player player = playerDataAccessObject.getPlayerByName(inputData.getPlayerName());
+        Player player = playerDataAccessObject.getPlayerByName(inputData.playerName());
 
         if (start < 1980 || end > 2024 ) {
             presenter.presentPlayerNotFound("Season range must be between 1980 and 2024");
@@ -55,7 +55,7 @@ public class SearchPlayerInteractor implements SearchPlayerInputBoundary {
         List<String[]> tableRows = new ArrayList<>();
         Map<String, Map<Integer, Double>> graphData = new HashMap<>();
 
-        for (String stat : inputData.getSelectedStats()) {
+        for (String stat : inputData.selectedStats()) {
             graphData.put(stat, new HashMap<>());
         }
 
@@ -71,13 +71,13 @@ public class SearchPlayerInteractor implements SearchPlayerInputBoundary {
             };
             tableRows.add(row);
 
-            if (inputData.getSelectedStats().contains("PPG"))
+            if (inputData.selectedStats().contains("PPG"))
                 graphData.get("PPG").put(stats.getSeasonYear(), stats.getPointsPerGame());
-            if (inputData.getSelectedStats().contains("APG"))
+            if (inputData.selectedStats().contains("APG"))
                 graphData.get("APG").put(stats.getSeasonYear(), stats.getAssistsPerGame());
-            if (inputData.getSelectedStats().contains("RPG"))
+            if (inputData.selectedStats().contains("RPG"))
                 graphData.get("RPG").put(stats.getSeasonYear(), stats.getReboundsPerGame());
-            if (inputData.getSelectedStats().contains("FG"))
+            if (inputData.selectedStats().contains("FG"))
                 graphData.get("FG").put(stats.getSeasonYear(), stats.getFieldGoalPercentage());
         }
 

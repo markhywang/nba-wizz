@@ -33,35 +33,25 @@
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
     &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;gqjlygz&quot;
+    &quot;assignee&quot;: &quot;Vizxe&quot;
   }
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/markhywang/nba-wizz.git&quot;,
-    &quot;accountId&quot;: &quot;1ff2698c-5e41-4c94-9584-d9ce40ad3a3e&quot;
-  },
-  &quot;recentNewPullRequestHead&quot;: {
-    &quot;server&quot;: {
-      &quot;useHttp&quot;: false,
-      &quot;host&quot;: &quot;github.com&quot;,
-      &quot;port&quot;: null,
-      &quot;suffix&quot;: null
-    },
-    &quot;owner&quot;: &quot;markhywang&quot;,
-    &quot;repository&quot;: &quot;nba-wizz&quot;
+    &quot;url&quot;: &quot;https://github.com/markhywang/nba-wizz&quot;,
+    &quot;accountId&quot;: &quot;c7075287-0e4f-4a4e-81dd-77e3d01ed6d2&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 1
+  &quot;associatedIndex&quot;: 5
 }</component>
-  <component name="ProjectId" id="35uoQmRRu8jHMdXl3W06YqiU84L" />
+  <component name="ProjectId" id="36Af2MN5bkrvQAXKFtDVudqyuUM" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
+    <option name="showScratchesAndConsoles" value="false" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
@@ -78,87 +68,45 @@
     "git-widget-placeholder": "b3",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "to.speed.mode.migration.done": "true"
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-      </set>
-    </attachedChunks>
+  <component name="RunManager">
+    <configuration name="All in nba-wizz" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="nba-wizz" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="com.soywiz.korge.intellij.UpdateResourceBeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.All in nba-wizz" />
+        <item itemvalue="JUnit.All in nba-wizz" />
+      </list>
+    </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Finish Compare Use Case, Except for the Listener on the main menu" />
-      <created>1763969303499</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1763969303499</updated>
-    </task>
-    <task id="LOCAL-00001" summary="filter">
+    <task id="LOCAL-00001" summary="fix merging issue">
       <option name="closed" value="true" />
-      <created>1763973290869</created>
+      <created>1764453769461</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1763973290869</updated>
+      <updated>1764453769461</updated>
     </task>
-    <task id="LOCAL-00002" summary="filter AND SORT">
-      <option name="closed" value="true" />
-      <created>1763973472866</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1763973472866</updated>
-    </task>
-    <task id="LOCAL-00003" summary="filter but no clear">
-      <option name="closed" value="true" />
-      <created>1764004703792</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1764004703792</updated>
-    </task>
-    <task id="LOCAL-00004" summary="filter and sort and clear UI finished">
-      <option name="closed" value="true" />
-      <created>1764004840475</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1764004840475</updated>
-    </task>
-    <task id="LOCAL-00005" summary="improve the filter and sort UI">
-      <option name="closed" value="true" />
-      <created>1764009255597</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1764009255597</updated>
-    </task>
-    <task id="LOCAL-00006" summary="improve the filter and sort UI">
-      <option name="closed" value="true" />
-      <created>1764010165591</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1764010165591</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Rename the package">
-      <option name="closed" value="true" />
-      <created>1764011073199</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1764011073199</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Improve the Filter UI 2">
-      <option name="closed" value="true" />
-      <created>1764012487261</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1764012487261</updated>
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="278190ef-353f-45aa-aace-b8c3d34d143a" name="Changes" comment="fix merging issue" />
+      <created>1764454089718</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764454089718</updated>
     </task>
     <task id="LOCAL-00009" summary="Improve the Filter UI 3">
       <option name="closed" value="true" />

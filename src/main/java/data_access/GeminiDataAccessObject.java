@@ -42,52 +42,54 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
         String line;
         String cvsSplitBy = ",";
 
-        try (InputStream inputStream = getClass().getResourceAsStream("/data/" + csvFile);
-             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/data/" + csvFile)) {
+            assert inputStream != null;
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
 
-            br.readLine(); // Skip header
+                br.readLine(); // Skip header
 
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(cvsSplitBy);
+                while ((line = br.readLine()) != null) {
+                    String[] data = line.split(cvsSplitBy);
 
-                try {
-                    String name = data[0].toLowerCase();
-                    String pos = data[1];
-                    int age = Integer.parseInt(data[2]);
-                    String teamName = data[3];
-                    int season = Integer.parseInt(data[4]);
-                    int gamesPlayed = Integer.parseInt(data[5]);
-                    double minutesPlayed = Double.parseDouble(data[6]);
-                    double fgPercentage = Double.parseDouble(data[7]);
-                    double threePtPercentage = Double.parseDouble(data[8]);
-                    double ftPercentage = Double.parseDouble(data[9]);
-                    double trb = Double.parseDouble(data[10]);
-                    double ast = Double.parseDouble(data[11]);
-                    double pts = Double.parseDouble(data[16]);
+                    try {
+                        String name = data[0].toLowerCase();
+                        String pos = data[1];
+                        int age = Integer.parseInt(data[2]);
+                        String teamName = data[3];
+                        int season = Integer.parseInt(data[4]);
+                        int gamesPlayed = Integer.parseInt(data[5]);
+                        double minutesPlayed = Double.parseDouble(data[6]);
+                        double fgPercentage = Double.parseDouble(data[7]);
+                        double threePtPercentage = Double.parseDouble(data[8]);
+                        //double ftPercentage = Double.parseDouble(data[9]);
+                        double trb = Double.parseDouble(data[10]);
+                        double ast = Double.parseDouble(data[11]);
+                        double pts = Double.parseDouble(data[16]);
 
-                    Team team = teamMap.computeIfAbsent(teamName,
-                            k -> new Team(nextTeamId++, teamName, "N/A",
-                                    new ArrayList<>(), 0, 0, "N/A", new HashMap<>()));
+                        Team team = teamMap.computeIfAbsent(teamName,
+                                k -> new Team(nextTeamId++, teamName, "N/A",
+                                        new ArrayList<>(), 0, 0, "N/A", new HashMap<>()));
 
-                    Player player = playerMap.get(name);
-                    if (player == null) {
-                        player = new Player(nextPlayerId++, name, team, pos, age, 0, 0, new ArrayList<>());
-                        playerMap.put(name, player);
+                        Player player = playerMap.get(name);
+                        if (player == null) {
+                            player = new Player(nextPlayerId++, name, team, pos, age, 0, 0, new ArrayList<>());
+                            playerMap.put(name, player);
+                        }
+
+
+                        SeasonStats seasonStats = new SeasonStats(
+                                season, pts, ast, trb, fgPercentage, gamesPlayed, minutesPlayed, threePtPercentage, player
+                        );
+
+                        player.getCareerStats().add(seasonStats);
+                        team.getPlayers().add(player);
+
+                    } catch (Exception e) {
+                        LOGGER.warning("Skipping malformed line: " + line);
                     }
-
-
-                    SeasonStats seasonStats = new SeasonStats(
-                            season, pts, ast, trb, fgPercentage, gamesPlayed, minutesPlayed, threePtPercentage, player
-                    );
-
-                    player.getCareerStats().add(seasonStats);
-                    team.getPlayers().add(player);
-
-                } catch (Exception e) {
-                    LOGGER.warning("Skipping malformed line: " + line);
                 }
-            }
 
+            }
         } catch (IOException e) {
             LOGGER.severe("Failed loading CSV: " + csvFile);
         }
@@ -142,11 +144,13 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
     @Override
     public String getDatasetContent() throws IOException {
         StringBuilder content = new StringBuilder();
-        try (InputStream inputStream = getClass().getResourceAsStream("/data/" + csvFile);
-             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                content.append(line).append("\n");
+        try (InputStream inputStream = getClass().getResourceAsStream("/data/" + csvFile)) {
+            assert inputStream != null;
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    content.append(line).append("\n");
+                }
             }
         }
         return content.toString();
@@ -186,7 +190,7 @@ public class GeminiDataAccessObject implements GenerateInsightsDataAccessInterfa
                 "Stats for " + player2.getName() + ":\n" + getPlayerStatsAsString(player2) + "\n\n" +
                 "Instructions:\n" +
                 "1. Use the provided stats as a foundation for your analysis.\n" +
-                "2. Incorporate your own knowledge about their playstyles, careers, impact, and legacy to provide a complete picture.\n" +
+                "2. Incorporate your own knowledge about their play-styles, careers, impact, and legacy to provide a complete picture.\n" +
                 "3. Write in a conversational, natural manner using paragraphs. Do not simply list the stats provided.\n" +
                 "4. Conclude with a summary of who might be considered 'better' or how they differ in value.\n\n" +
                 "Comparison:";

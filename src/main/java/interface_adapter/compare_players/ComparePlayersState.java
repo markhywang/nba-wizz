@@ -7,14 +7,6 @@ public class ComparePlayersState {
     private String error = null;
     private boolean isLoading = false;
 
-    public ComparePlayersState(ComparePlayersState copy) {
-        this.player1Name = copy.player1Name;
-        this.player2Name = copy.player2Name;
-        this.comparison = copy.comparison;
-        this.error = copy.error;
-        this.isLoading = copy.isLoading;
-    }
-
     public ComparePlayersState() {}
 
     public boolean isLoading() {

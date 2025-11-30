@@ -34,10 +34,10 @@ public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
             return;
         }
 
-        Set<String> teams = inputData.getTeams();
-        Set<String> positions = inputData.getPositions();
-        Optional<Integer> seasonMin = inputData.getSeasonMin();
-        Optional<Integer> seasonMax = inputData.getSeasonMax();
+        Set<String> teams = inputData.teams();
+        Set<String> positions = inputData.positions();
+        Optional<Integer> seasonMin = inputData.seasonMin();
+        Optional<Integer> seasonMax = inputData.seasonMax();
 
         List<String[]> result = new ArrayList<>();
 
@@ -153,7 +153,7 @@ public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
     private boolean matchesSeason(int seasonYear,
                                   Optional<Integer> seasonMin,
                                   Optional<Integer> seasonMax) {
-        if (!seasonMin.isPresent() && !seasonMax.isPresent()) {
+        if (seasonMin.isEmpty() && seasonMax.isEmpty()) {
             return true;
         }
         if (seasonYear == Integer.MIN_VALUE) {
@@ -162,10 +162,7 @@ public class FilterPlayersInteractor implements FilterPlayersInputBoundary {
         if (seasonMin.isPresent() && seasonYear < seasonMin.get()) {
             return false;
         }
-        if (seasonMax.isPresent() && seasonYear > seasonMax.get()) {
-            return false;
-        }
-        return true;
+        return seasonMax.isEmpty() || seasonYear <= seasonMax.get();
     }
 
     private int tryParseInt(String value) {

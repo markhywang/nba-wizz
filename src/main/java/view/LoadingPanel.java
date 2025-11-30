@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import com.formdev.flatlaf.FlatLaf;
 
 public class LoadingPanel extends JPanel {
 
@@ -25,11 +26,11 @@ public class LoadingPanel extends JPanel {
         int angle = (int) ((System.currentTimeMillis() / 5) % 360);
 
         // Draw track
-        g2.setColor(new Color(220, 220, 220));
+        g2.setColor(FlatLaf.isLafDark() ? new Color(80, 80, 80) : new Color(200, 200, 200)); // Dynamic grey for track
         g2.drawOval(x, y, size, size);
         
         // Draw spinner
         g2.setColor(new Color(50, 150, 250)); // Blueish
-        g2.drawArc(x, y, size, size, angle, 120);
+        g2.drawArc(x, y, size, size, -angle, 120); // Negative angle for clockwise
     }
 }

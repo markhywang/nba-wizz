@@ -1,10 +1,8 @@
 package interface_adapter.search_player;
 
-import entity.Player;
 import interface_adapter.ViewManagerModel;
 import use_case.search_player.SearchPlayerOutputBoundary;
 import use_case.search_player.SearchPlayerOutputData;
-import view.ViewManager;
 
 public class SearchPlayerPresenter implements SearchPlayerOutputBoundary {
     private final SearchPlayerViewModel viewModel;
@@ -21,9 +19,9 @@ public class SearchPlayerPresenter implements SearchPlayerOutputBoundary {
 
         state.setErrorMessage(null);
 
-        state.setResultsTableData(outputData.getTableRows());
+        state.setResultsTableData(outputData.tableRows());
 
-        state.setGraphData(outputData.getGraphData());
+        state.setGraphData(outputData.graphData());
 
         viewModel.setState(state);
 

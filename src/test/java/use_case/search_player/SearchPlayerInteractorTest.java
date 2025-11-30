@@ -28,21 +28,6 @@ class SearchPlayerInteractorTest {
         }
 
         @Override
-        public List<Player> findByTeam(String teamName) {
-            return List.of();
-        }
-
-        @Override
-        public List<Player> findByPosition(String position) {
-            return List.of();
-        }
-
-        @Override
-        public List<Player> findBySeason(int seasonYear) {
-            return List.of();
-        }
-
-        @Override
         public Map<String, Double> getAggregatedMetrics(
                 String playerName,
                 int seasonStartInclusive,
@@ -144,8 +129,8 @@ class SearchPlayerInteractorTest {
 
         assertNotNull(presenter.receivedOutput);
 
-        assertNotNull(presenter.receivedOutput.getTableRows());
-        assertNotNull(presenter.receivedOutput.getGraphData());
+        assertNotNull(presenter.receivedOutput.tableRows());
+        assertNotNull(presenter.receivedOutput.graphData());
     }
 
     // TEST: player not found
@@ -318,7 +303,7 @@ class SearchPlayerInteractorTest {
         assertTrue(presenter.presentCalled);
         assertNotNull(presenter.receivedOutput);
 
-        List<String[]> table = presenter.receivedOutput.getTableRows();
+        List<String[]> table = presenter.receivedOutput.tableRows();
         assertEquals(1, table.size());
 
         assertArrayEquals(
@@ -326,7 +311,7 @@ class SearchPlayerInteractorTest {
                 table.get(0)
         );
 
-        Map<String, Map<Integer, Double>> graph = presenter.receivedOutput.getGraphData();
+        Map<String, Map<Integer, Double>> graph = presenter.receivedOutput.graphData();
 
         assertTrue(graph.containsKey("PPG"));
         assertTrue(graph.containsKey("APG"));
@@ -360,9 +345,9 @@ class SearchPlayerInteractorTest {
 
         assertTrue(presenter.presentCalled);
 
-        assertEquals(1, presenter.receivedOutput.getTableRows().size());
+        assertEquals(1, presenter.receivedOutput.tableRows().size());
 
-        assertTrue(presenter.receivedOutput.getGraphData().isEmpty());
+        assertTrue(presenter.receivedOutput.graphData().isEmpty());
     }
 
     @Test
@@ -387,9 +372,9 @@ class SearchPlayerInteractorTest {
 
         assertTrue(presenter.presentCalled);
 
-        assertEquals(0, presenter.receivedOutput.getTableRows().size());
+        assertEquals(0, presenter.receivedOutput.tableRows().size());
 
-        assertTrue(presenter.receivedOutput.getGraphData().get("PPG").isEmpty());
-        assertTrue(presenter.receivedOutput.getGraphData().get("APG").isEmpty());
+        assertTrue(presenter.receivedOutput.graphData().get("PPG").isEmpty());
+        assertTrue(presenter.receivedOutput.graphData().get("APG").isEmpty());
     }
 }

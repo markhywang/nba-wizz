@@ -14,15 +14,15 @@ public class SortInteractor implements SortInputBoundary {
 
     @Override
     public void execute(SortInputData inputData) {
-        List<String[]> rows = inputData.getTableRows();
+        List<String[]> rows = inputData.tableRows();
 
         if (rows == null || rows.isEmpty()) {
             presenter.presentNoPlayers("No players to sort.");
             return;
         }
 
-        int columnIndex = inputData.getColumnIndex();
-        boolean ascending = inputData.isAscending();
+        int columnIndex = inputData.columnIndex();
+        boolean ascending = inputData.ascending();
 
         List<String[]> sortedRows = new ArrayList<>(rows);
 

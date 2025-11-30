@@ -19,8 +19,8 @@ public class LoginInteractor implements LoginInputBoundary {
 
     @Override
     public void execute(LoginInputData inputData) {
-        String username = inputData.getUsername();
-        String password = inputData.getPassword();
+        String username = inputData.username();
+        String password = inputData.password();
 
         if (username == null || username.trim().isEmpty()) {
             loginOutputBoundary.prepareLoginFail("Username is required.");

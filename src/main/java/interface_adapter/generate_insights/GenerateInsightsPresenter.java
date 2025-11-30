@@ -16,7 +16,7 @@ public class GenerateInsightsPresenter implements GenerateInsightsOutputBoundary
     @Override
     public void prepareSuccessView(GenerateInsightsOutputData outputData) {
         GenerateInsightsState state = generateInsightsViewModel.getState();
-        state.setInsight(outputData.getInsight().getSummaryText());
+        state.setInsight(outputData.getInsight().summaryText());
         state.setLoading(false);
         generateInsightsViewModel.setState(state);
         generateInsightsViewModel.firePropertyChanged();

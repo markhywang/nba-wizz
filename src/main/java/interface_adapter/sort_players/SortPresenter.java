@@ -20,9 +20,9 @@ public class SortPresenter implements SortOutputBoundary {
         SortState state = viewModel.getState();
 
         state.setErrorMessage(null);
-        state.setTableData(outputData.getSortedRows());
-        state.setSortedColumnIndex(outputData.getSortedColumnIndex());
-        state.setAscending(outputData.isAscending());
+        state.setTableData(outputData.sortedRows());
+        state.setSortedColumnIndex(outputData.sortedColumnIndex());
+        state.setAscending(outputData.ascending());
 
         viewModel.setState(state);
         viewModel.firePropertyChanged();

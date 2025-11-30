@@ -34,7 +34,7 @@ public class SignupPresenter implements SignupOutputBoundary {
 
         // Update login state with info message and username
         LoginState loginState = loginViewModel.getState();
-        loginState.setUsername(response.getUsername());
+        loginState.setUsername(response.username());
         loginState.setInfoMessage("Account created successfully. Please log in.");
         loginState.setError(null);
         loginViewModel.setState(loginState);

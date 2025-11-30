@@ -6,13 +6,6 @@ public class SignupState {
     private String repeatPassword = "";
     private String error = null;
 
-    public SignupState(SignupState copy) {
-        username = copy.username;
-        password = copy.password;
-        repeatPassword = copy.repeatPassword;
-        error = copy.error;
-    }
-
     // Because of the previous copy constructor, the default constructor must be explicit.
     public SignupState() {}
 

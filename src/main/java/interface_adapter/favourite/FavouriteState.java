@@ -1,6 +1,5 @@
 package interface_adapter.favourite;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class FavouriteState {

@@ -1,11 +1,9 @@
 package app;
 
 import data_access.CsvPlayerDataAccessObject;
-import data_access.CsvTeamDataAccessObject;
 import data_access.FavouriteDataAccessObject;
 import data_access.FileUserDataAccessObject;
 import data_access.PlayerDataAccessInterface;
-import data_access.TeamDataAccessInterface;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
@@ -19,6 +17,7 @@ import interface_adapter.favourite.FavouriteViewModel;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuPresenter;
 import interface_adapter.main_menu.MainMenuViewModel;
+import org.jetbrains.annotations.NotNull;
 import use_case.authentication.UserDataAccessInterface;
 import use_case.authentication.login.LoginInputBoundary;
 import use_case.authentication.login.LoginInteractor;
@@ -37,11 +36,7 @@ import use_case.main_menu.MainMenuOutputBoundary;
 import use_case.search_player.SearchPlayerInputBoundary;
 import use_case.search_player.SearchPlayerInteractor;
 import use_case.search_player.SearchPlayerOutputBoundary;
-import view.LoginView;
-import view.SignupView;
-import view.MainMenuView;
-import view.SearchPlayerView;
-import view.ViewManager;
+import view.*;
 import interface_adapter.generate_insights.GenerateInsightsViewModel;
 import interface_adapter.generate_insights.GenerateInsightsController;
 import interface_adapter.generate_insights.GenerateInsightsPresenter;
@@ -49,8 +44,7 @@ import data_access.GeminiDataAccessObject;
 import use_case.generate_insights.GenerateInsightsInputBoundary;
 import use_case.generate_insights.GenerateInsightsInteractor;
 import use_case.generate_insights.GenerateInsightsOutputBoundary;
-import view.GenerateInsightsView;
-import view.FavoritedPlayersView;
+import view.FavouritedPlayersView;
 import interface_adapter.ask_question.AskQuestionController;
 import interface_adapter.ask_question.AskQuestionPresenter;
 import interface_adapter.ask_question.AskQuestionViewModel;
@@ -61,10 +55,13 @@ import use_case.ask_question.AskQuestionInputBoundary;
 import use_case.ask_question.AskQuestionInteractor;
 import use_case.compare_players.ComparePlayersInputBoundary;
 import use_case.compare_players.ComparePlayersInteractor;
-import view.ChatView;
 
 import javax.swing.*;
 import java.awt.*;
+
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 import interface_adapter.sort_players.SortViewModel;
 import interface_adapter.sort_players.SortController;
@@ -72,19 +69,32 @@ import interface_adapter.sort_players.SortPresenter;
 import use_case.sort_players.SortInputBoundary;
 import use_case.sort_players.SortInteractor;
 import use_case.sort_players.SortOutputBoundary;
-import view.FilterSortPlayersView;
 import interface_adapter.filter_players.*;
 import use_case.filter_players.*;
 
 /*Run this file to run NBA Wizz*/
 public class Main {
     public static void main(String[] args) {
+        // Setup FlatLaf theme
+        try {
+            FlatLightLaf.setup();
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize FlatLaf");
+        }
+
         JFrame application = new JFrame("NBA Wizz");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        JPanel rootPanel = new JPanel(new BorderLayout());
+        application.add(rootPanel);
+
         CardLayout cardLayout = new CardLayout();
         JPanel views = new JPanel(cardLayout);
-        application.add(views);
+        
+        // Header with Theme Toggle
+        JPanel headerPanel = getHeaderPanel();
+        rootPanel.add(headerPanel, BorderLayout.NORTH);
+        rootPanel.add(views, BorderLayout.CENTER);
 
         // Favourites
         FavouriteViewModel favouriteViewModel = new FavouriteViewModel();
@@ -108,10 +118,8 @@ public class Main {
 
 
         // The data access object.
-        // TODO: Update the path to the CSV file.
         PlayerDataAccessInterface playerDataAccessObject = new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
         GeminiDataAccessObject geminiDataAccessObject = new GeminiDataAccessObject();
-        TeamDataAccessInterface teamDataAccessObject = new CsvTeamDataAccessObject("TeamStatsDataset.csv");
 
         UserDataAccessInterface userDataAccessInterface = new FileUserDataAccessObject("src/main/java/data/users.csv");
         
@@ -132,7 +140,7 @@ public class Main {
 
         MainMenuOutputBoundary mainMenuPresenter = new MainMenuPresenter(mainMenuViewModel, viewManagerModel, generateInsightsViewModel);
         MainMenuInputBoundary mainMenuInteractor = new MainMenuInteractor(playerDataAccessObject, mainMenuPresenter);
-        // Pass the favouriteController to MainMenuController so it can provide favorited players
+        // Pass the favouriteController to MainMenuController so it can provide favourited players
         MainMenuController mainMenuController = new MainMenuController(mainMenuInteractor, viewManagerModel, favouriteController);
         MainMenuView mainMenuView = new MainMenuView(mainMenuViewModel, mainMenuController);
         views.add(mainMenuView, mainMenuView.viewName);
@@ -144,7 +152,7 @@ public class Main {
         GenerateInsightsView generateInsightsView = new GenerateInsightsView(generateInsightsViewModel, generateInsightsController);
         views.add(generateInsightsView, generateInsightsView.viewName);
 
-        // (FavoritedPlayersView will be registered later after SearchPlayerController exists)
+        // (FavouritedPlayersView will be registered later after SearchPlayerController exists)
 
 
         viewManagerModel.setActiveView(loginView.viewName);
@@ -182,9 +190,9 @@ public class Main {
 
         views.add(searchPlayerView, searchPlayerView.viewName);
 
-        // Now that SearchPlayerController and SearchPlayerView exist, register the favorited players card with them
-        FavoritedPlayersView favoritedPlayersView = new FavoritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
-        views.add(favoritedPlayersView, favoritedPlayersView.viewName);
+        // Now that SearchPlayerController and SearchPlayerView exist, register the favourited players card with them
+        FavouritedPlayersView favouritedPlayersView = new FavouritedPlayersView(favouriteViewModel, favouriteController, viewManagerModel, searchPlayerController, searchPlayerView);
+        views.add(favouritedPlayersView, favouritedPlayersView.viewName);
 
 
         // Sort Players Feature Setup
@@ -239,5 +247,28 @@ public class Main {
         application.pack();
         application.setExtendedState(JFrame.MAXIMIZED_BOTH);
         application.setVisible(true);
+    }
+
+    @NotNull
+    private static JPanel getHeaderPanel() {
+        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        headerPanel.setOpaque(false); // Make it transparent to blend in
+        JButton themeToggle = new JButton("Dark Mode \uD83C\uDF19");
+        themeToggle.setFocusable(false);
+        themeToggle.putClientProperty("JButton.buttonType", "toolBarButton");
+
+        themeToggle.addActionListener(e -> {
+            if (FlatLaf.isLafDark()) {
+                FlatLightLaf.setup();
+                themeToggle.setText("Dark Mode \uD83C\uDF19");
+            } else {
+                FlatDarkLaf.setup();
+                themeToggle.setText("Light Mode ☀");
+            }
+            FlatLaf.updateUI();
+        });
+
+        headerPanel.add(themeToggle);
+        return headerPanel;
     }
 }

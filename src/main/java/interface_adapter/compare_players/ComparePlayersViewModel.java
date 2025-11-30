@@ -6,8 +6,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class ComparePlayersViewModel extends ViewModel {
-    public static final String TITLE_LABEL = "Compare Players";
-    public static final String COMPARE_BUTTON_LABEL = "Compare";
 
     private ComparePlayersState state = new ComparePlayersState();
 

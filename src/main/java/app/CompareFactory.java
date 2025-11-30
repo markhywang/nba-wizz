@@ -19,7 +19,6 @@ public class CompareFactory {
 
     /**
      * Builds the full Compare stack and returns the Swing panel.
-     * This does not change any provided code – it is pure “student code”.
      */
     public static JPanel createCompareView(ViewManagerModel viewManagerModel) {
         // Data access (you can tweak file names if needed)

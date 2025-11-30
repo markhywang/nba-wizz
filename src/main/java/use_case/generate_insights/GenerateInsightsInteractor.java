@@ -1,6 +1,5 @@
 package use_case.generate_insights;
 
-import use_case.generate_insights.GenerateInsightsDataAccessInterface;
 import entity.Player;
 import entity.AIInsight;
 import entity.Team;
@@ -23,15 +22,15 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
 
     @Override
     public void execute(GenerateInsightsInputData inputData) {
-        if (inputData.getEntityName() == null || inputData.getEntityName().trim().isEmpty()) {
+        if (inputData.entityName() == null || inputData.entityName().trim().isEmpty()) {
             presenter.prepareFailView("Player or team name cannot be empty.");
             return;
         }
 
         presenter.prepareLoadingView();
 
-        if ("Player".equalsIgnoreCase(inputData.getEntityType())) {
-            Optional<Player> playerOptional = dataAccess.getPlayerByName(inputData.getEntityName());
+        if ("Player".equalsIgnoreCase(inputData.entityType())) {
+            Optional<Player> playerOptional = dataAccess.getPlayerByName(inputData.entityName());
             if (playerOptional.isPresent()) {
                 Player player = playerOptional.get();
                 String prompt = createPlayerPrompt(player);
@@ -46,15 +45,19 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
             } else {
                 presenter.prepareFailView("Player not found.");
             }
-        } else if ("Team".equalsIgnoreCase(inputData.getEntityType())) {
-            Optional<Team> teamOptional = dataAccess.getTeamByName(inputData.getEntityName());
+        } else if ("Team".equalsIgnoreCase(inputData.entityType())) {
+            Optional<Team> teamOptional = dataAccess.getTeamByName(inputData.entityName());
             if (teamOptional.isPresent()) {
                 Team team = teamOptional.get();
                 String prompt = createTeamPrompt(team);
-                String insightText = dataAccess.getAiInsight(prompt);
-                AIInsight insight = new AIInsight(1, "Team", team.getName(), insightText, LocalDateTime.now());
-                GenerateInsightsOutputData outputData = new GenerateInsightsOutputData(insight, false);
-                presenter.prepareSuccessView(outputData);
+                try {
+                    String insightText = dataAccess.getAiInsight(prompt);
+                    AIInsight insight = new AIInsight(1, "Team", team.getName(), insightText, LocalDateTime.now());
+                    GenerateInsightsOutputData outputData = new GenerateInsightsOutputData(insight, false);
+                    presenter.prepareSuccessView(outputData);
+                } catch (Exception e) {
+                    presenter.prepareFailView(e.getMessage());
+                }
             } else {
                 presenter.prepareFailView("Team not found.");
             }
@@ -65,7 +68,7 @@ public class GenerateInsightsInteractor implements GenerateInsightsInputBoundary
 
     private String createPlayerPrompt(Player player) {
         StringBuilder prompt = new StringBuilder();
-        prompt.append("You are a basketball analyst. Provide a detailed insight (2-3 paragraphs) into the strengths, weaknesses, and playstyle of the following player. ");
+        prompt.append("You are a basketball analyst. Provide a detailed insight (2-3 paragraphs) into the strengths, weaknesses, and play-style of the following player. ");
         prompt.append("Use the provided statistics from all available seasons as a foundation, but also incorporate your own basketball knowledge about the player's career, impact, and reputation.\n\n");
         prompt.append("Player: ").append(player.getName()).append("\n");
         prompt.append("Position: ").append(player.getPosition()).append("\n");

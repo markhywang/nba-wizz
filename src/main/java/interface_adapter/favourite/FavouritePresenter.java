@@ -11,14 +11,14 @@ public class FavouritePresenter implements FavouriteOutputBoundary {
 
     @Override
     public void addFavourite(FavouriteOutputData favouriteOutputData) {
-        FavouriteState favouriteState = new FavouriteState(favouriteOutputData.getFavourites());
+        FavouriteState favouriteState = new FavouriteState(favouriteOutputData.favourites());
         this.favouriteViewModel.setState(favouriteState);
         this.favouriteViewModel.firePropertyChanged();
     }
 
     @Override
     public void removeFavourite(FavouriteOutputData favouriteOutputData) {
-        FavouriteState favouriteState = new FavouriteState(favouriteOutputData.getFavourites());
+        FavouriteState favouriteState = new FavouriteState(favouriteOutputData.favourites());
         this.favouriteViewModel.setState(favouriteState);
         this.favouriteViewModel.firePropertyChanged();
     }

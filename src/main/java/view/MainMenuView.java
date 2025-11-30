@@ -1,5 +1,6 @@
 package view;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import interface_adapter.main_menu.MainMenuController;
 import interface_adapter.main_menu.MainMenuState;
 import interface_adapter.main_menu.MainMenuViewModel;
@@ -10,96 +11,100 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.List;
 
 public class MainMenuView extends JPanel implements ActionListener, PropertyChangeListener {
     public final String viewName = "main_menu";
     private final MainMenuController mainMenuController;
-    private final MainMenuViewModel mainMenuViewModel; // Restored field
+    private final MainMenuViewModel mainMenuViewModel;
+    
     private final JButton searchForPlayer;
     private final JButton filterAndSort;
     private final JButton compare;
     private final JButton aiInsights;
-    private final JButton viewFavoritedPlayers; // New button for favorited players
-    private static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 24);
-    private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 18);
-
+    private final JButton viewFavouritedPlayers;
+    private final JButton aiChat;
 
     public MainMenuView(MainMenuViewModel mainMenuViewModel, MainMenuController controller) {
-        this.mainMenuViewModel = mainMenuViewModel; // Initialize the field
-        mainMenuViewModel.addPropertyChangeListener(this); // Restore listener setup
+        this.mainMenuViewModel = mainMenuViewModel;
         this.mainMenuController = controller;
+        mainMenuViewModel.addPropertyChangeListener(this);
 
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
+        
+        // Header
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(40, 0, 40, 0));
 
         JLabel title = new JLabel(MainMenuViewModel.TITLE_LABEL);
-        title.setFont(TITLE_FONT);
+        title.putClientProperty(FlatClientProperties.STYLE, "font: bold +24");
+        title.setForeground(new Color(37, 99, 235)); // Modern Blue
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel subtitle = new JLabel("Your Ultimate Basketball Companion");
+        subtitle.putClientProperty(FlatClientProperties.STYLE, "font: +2; foreground: $Label.disabledForeground");
+        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        headerPanel.add(title);
+        headerPanel.add(Box.createVerticalStrut(5));
+        headerPanel.add(subtitle);
+        
+        add(headerPanel, BorderLayout.NORTH);
 
-        JPanel buttons = new JPanel();
-        buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
-        // Ensure all buttons are the same size
-        Dimension buttonSize = new Dimension(300, 60); // width, height
-        searchForPlayer = new JButton(MainMenuViewModel.SEARCH_FOR_PLAYER_BUTTON_LABEL);
-        searchForPlayer.setFont(BUTTON_FONT);
-        searchForPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
-        searchForPlayer.setMaximumSize(buttonSize);
-        searchForPlayer.setPreferredSize(buttonSize);
+        // Dashboard Grid
+        JPanel dashboard = new JPanel(new GridBagLayout());
+        dashboard.setBorder(BorderFactory.createEmptyBorder(20, 40, 40, 40));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
 
-        filterAndSort = new JButton(MainMenuViewModel.FILTER_SORT_BUTTON_LABEL);
-        filterAndSort.setFont(BUTTON_FONT);
-        filterAndSort.setAlignmentX(Component.CENTER_ALIGNMENT);
-        filterAndSort.setMaximumSize(buttonSize);
-        filterAndSort.setPreferredSize(buttonSize);
+        // Initialize buttons
+        searchForPlayer = createDashboardButton(MainMenuViewModel.SEARCH_FOR_PLAYER_BUTTON_LABEL, "Search for specific players by name");
+        filterAndSort = createDashboardButton(MainMenuViewModel.FILTER_SORT_BUTTON_LABEL, "Filter and sort players by stats");
+        compare = createDashboardButton(MainMenuViewModel.COMPARE_BUTTON_LABEL, "Compare two players head-to-head");
+        aiInsights = createDashboardButton(MainMenuViewModel.AI_INSIGHTS_BUTTON_LABEL, "Get AI-powered analysis");
+        viewFavouritedPlayers = createDashboardButton("View Favorites", "Access your saved players list");
+        aiChat = createDashboardButton(MainMenuViewModel.AI_CHAT_BUTTON_LABEL, "Chat with our NBA expert AI");
 
-        compare = new JButton(MainMenuViewModel.COMPARE_BUTTON_LABEL);
-        compare.setFont(BUTTON_FONT);
-        compare.setAlignmentX(Component.CENTER_ALIGNMENT);
-        compare.setMaximumSize(buttonSize);
-        compare.setPreferredSize(buttonSize);
+        // Row 1
+        gbc.gridx = 0; gbc.gridy = 0;
+        dashboard.add(searchForPlayer, gbc);
+        
+        gbc.gridx = 1;
+        dashboard.add(filterAndSort, gbc);
 
-        aiInsights = new JButton(MainMenuViewModel.AI_INSIGHTS_BUTTON_LABEL);
-        aiInsights.setFont(BUTTON_FONT);
-        aiInsights.setAlignmentX(Component.CENTER_ALIGNMENT);
-        aiInsights.setMaximumSize(buttonSize);
-        aiInsights.setPreferredSize(buttonSize);
+        // Row 2
+        gbc.gridx = 0; gbc.gridy = 1;
+        dashboard.add(compare, gbc);
 
-        viewFavoritedPlayers = new JButton("View Favorited Players");
-        viewFavoritedPlayers.setFont(BUTTON_FONT);
-        viewFavoritedPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
-        viewFavoritedPlayers.setMaximumSize(buttonSize);
-        viewFavoritedPlayers.setPreferredSize(buttonSize);
+        gbc.gridx = 1;
+        dashboard.add(aiInsights, gbc);
 
-        JButton aiChat = new JButton(MainMenuViewModel.AI_CHAT_BUTTON_LABEL);
-        aiChat.setFont(BUTTON_FONT);
-        aiChat.setAlignmentX(Component.CENTER_ALIGNMENT);
-        aiChat.setMaximumSize(buttonSize);
-        aiChat.setPreferredSize(buttonSize);
+        // Row 3
+        gbc.gridx = 0; gbc.gridy = 2;
+        dashboard.add(viewFavouritedPlayers, gbc);
 
-        buttons.add(searchForPlayer);
-        buttons.add(Box.createRigidArea(new Dimension(0, 20)));
-        buttons.add(filterAndSort);
-        buttons.add(Box.createRigidArea(new Dimension(0, 20)));
-        buttons.add(compare);
-        buttons.add(Box.createRigidArea(new Dimension(0, 20)));
-        buttons.add(aiInsights);
-        buttons.add(Box.createRigidArea(new Dimension(0, 20)));
-        buttons.add(viewFavoritedPlayers);
-        buttons.add(Box.createRigidArea(new Dimension(0, 20)));
-        buttons.add(aiChat);
+        gbc.gridx = 1;
+        dashboard.add(aiChat, gbc);
 
+        add(dashboard, BorderLayout.CENTER);
+
+        // Listeners
         searchForPlayer.addActionListener(this);
         filterAndSort.addActionListener(this);
         aiInsights.addActionListener(this);
         aiChat.addActionListener(this);
         compare.addActionListener(this);
-        viewFavoritedPlayers.addActionListener(this);
-
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.add(title);
-        this.add(Box.createRigidArea(new Dimension(0, 40)));
-        this.add(buttons);
+        viewFavouritedPlayers.addActionListener(this);
+    }
+    
+    private JButton createDashboardButton(String title, String description) {
+        JButton button = new JButton("<html><center><span style='font-size:16px; font-weight:bold'>" + title + "</span><br/><br/><span style='font-size:10px'>" + description + "</span></center></html>");
+        button.putClientProperty(FlatClientProperties.STYLE, "arc: 15; margin: 10,10,10,10");
+        return button;
     }
 
     @Override
@@ -110,13 +115,12 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
             mainMenuController.onFilterAndSortButtonClicked();
         } else if (e.getSource().equals(aiInsights)) {
             mainMenuController.switchToGenerateInsights();
-        } else if (e.getSource() instanceof JButton && ((JButton) e.getSource()).getText().equals(MainMenuViewModel.AI_CHAT_BUTTON_LABEL)) {
+        } else if (e.getSource().equals(aiChat)) {
             mainMenuController.switchToChat();
         } else if (e.getSource().equals(compare)) {
             mainMenuController.onCompareButtonClicked();
-        } else if (e.getSource().equals(viewFavoritedPlayers)) {
-            // Switch to the favorited players card in the main CardLayout
-            mainMenuController.onViewFavoritedPlayersPressed();
+        } else if (e.getSource().equals(viewFavouritedPlayers)) {
+            mainMenuController.onViewFavouritedPlayersPressed();
         }
     }
 
@@ -124,8 +128,7 @@ public class MainMenuView extends JPanel implements ActionListener, PropertyChan
     public void propertyChange(PropertyChangeEvent evt) {
         MainMenuState state = (MainMenuState) evt.getNewValue();
         if (state.getError() != null) {
-            JOptionPane.showMessageDialog(this, state.getError());
+            JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-        // No action needed here for view switching; ViewManager listens to ViewManagerModel
     }
 }

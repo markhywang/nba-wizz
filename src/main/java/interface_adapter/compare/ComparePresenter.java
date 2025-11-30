@@ -22,18 +22,18 @@ public class ComparePresenter implements CompareOutputBoundary {
     @Override
     public void present(CompareOutputData compareOutputData) {
         CompareState state = new CompareState();
-        state.entities = compareOutputData.getEntities();
-        state.seasonLabel = compareOutputData.getSeasonLabel();
-        state.notices = compareOutputData.getNotices();
-        state.insight = compareOutputData.getInsight();
+        state.entities = compareOutputData.entities();
+        state.seasonLabel = compareOutputData.seasonLabel();
+        state.notices = compareOutputData.notices();
+        state.insight = compareOutputData.insight();
 
         List<CompareState.RowVM> rows = new ArrayList<>();
-        for (CompareOutputData.Row row : compareOutputData.getTable()) {
+        for (CompareOutputData.Row row : compareOutputData.table()) {
             List<String> cells = new ArrayList<>();
-            for (Double v : row.values) {
+            for (Double v : row.values()) {
                 cells.add(v == null ? "-" : DECIMAL_FORMAT.format(v));
             }
-            rows.add(new CompareState.RowVM(row.metric, cells, row.bestIndex));
+            rows.add(new CompareState.RowVM(row.metric(), cells, row.bestIndex()));
         }
         state.table = rows;
 
