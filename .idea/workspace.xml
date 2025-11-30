@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Finish Test 1">
-      <change afterPath="$PROJECT_DIR$/src/test/java/use_case/sort_players/SortPlayersInteractorTest.java" afterDir="false" />
+    <list default="true" id="24f2ac81-bd3a-4499-a02a-bb84f59afd8c" name="Changes" comment="fix merging issue">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,134 +24,23 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="main" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;Vizxe&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/markhywang/nba-wizz&quot;,
-    &quot;accountId&quot;: &quot;c7075287-0e4f-4a4e-81dd-77e3d01ed6d2&quot;
-  }
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 5
-}</component>
-  <component name="ProjectId" id="36Af2MN5bkrvQAXKFtDVudqyuUM" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="ProjectViewState">
-    <option name="showLibraryContents" value="true" />
-    <option name="showScratchesAndConsoles" value="false" />
-  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Application.Main.executor": "Run",
-    "JUnit.SearchPlayerControllerTest.executor": "Coverage",
-    "JUnit.SearchPlayerPresenterTest.executor": "Coverage",
-    "JUnit.SearchPlayerStateTest.executor": "Coverage",
-    "JUnit.SearchPlayerViewModelTest.executor": "Coverage",
-    "JUnit.SortPlayersInteractorTest.executor": "Coverage",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "b3",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "git-widget-placeholder": "minor__test__edits",
+    "node.js.selected.package.tslint": "(autodetect)"
   }
 }]]></component>
-  <component name="RunManager">
-    <configuration name="All in nba-wizz" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="nba-wizz" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="TEST_OBJECT" value="package" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-        <option name="com.soywiz.korge.intellij.UpdateResourceBeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="JUnit.All in nba-wizz" />
-        <item itemvalue="JUnit.All in nba-wizz" />
-      </list>
-    </recent_temporary>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task id="LOCAL-00001" summary="fix merging issue">
-      <option name="closed" value="true" />
-      <created>1764453769461</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1764453769461</updated>
-    </task>
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="278190ef-353f-45aa-aace-b8c3d34d143a" name="Changes" comment="fix merging issue" />
-      <created>1764454089718</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1764454089718</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Improve the Filter UI 3">
-      <option name="closed" value="true" />
-      <created>1764012660294</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1764012660294</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Finish Test 1">
-      <option name="closed" value="true" />
-      <created>1764529648238</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1764529648238</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="filter" />
-    <MESSAGE value="filter AND SORT" />
-    <MESSAGE value="filter but no clear" />
-    <MESSAGE value="filter and sort and clear UI finished" />
-    <MESSAGE value="improve the filter and sort UI" />
-    <MESSAGE value="Rename the package" />
-    <MESSAGE value="Improve the Filter UI 2" />
-    <MESSAGE value="Improve the Filter UI 3" />
-    <MESSAGE value="Finish Test 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish Test 1" />
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerControllerTest.ic" NAME="SearchPlayerControllerTest Coverage Results" MODIFIED="1764529754297" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>interface_adapter.search_player.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerPresenterTest.ic" NAME="SearchPlayerPresenterTest Coverage Results" MODIFIED="1764529748400" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>interface_adapter.search_player.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerStateTest.ic" NAME="SearchPlayerStateTest Coverage Results" MODIFIED="1764529707461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>interface_adapter.search_player.*</FILTER>
-    </SUITE>
-    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerViewModelTest.ic" NAME="SearchPlayerViewModelTest Coverage Results" MODIFIED="1764529738955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>interface_adapter.search_player.*</FILTER>
+    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerInteractorTest.ic" NAME="SearchPlayerInteractorTest Coverage Results" MODIFIED="1764533115306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>use_case.search_player.*</FILTER>
     </SUITE>
   </component>
 </project>
