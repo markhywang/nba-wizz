@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Improve the Filter UI 2" />
+    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Improve the Filter UI 3">
+      <change afterPath="$PROJECT_DIR$/src/test/java/interface_adapter/search_player/SearchPlayerControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,11 +57,12 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
+    "JUnit.SearchPlayerControllerTest.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
-    "git-widget-placeholder": "#37 on b3",
+    "git-widget-placeholder": "b3",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "to.speed.mode.migration.done": "true"
@@ -143,7 +147,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764012487261</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Improve the Filter UI 3">
+      <option name="closed" value="true" />
+      <created>1764012660294</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1764012660294</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -154,6 +166,7 @@
     <MESSAGE value="improve the filter and sort UI" />
     <MESSAGE value="Rename the package" />
     <MESSAGE value="Improve the Filter UI 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve the Filter UI 2" />
+    <MESSAGE value="Improve the Filter UI 3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve the Filter UI 3" />
   </component>
 </project>
