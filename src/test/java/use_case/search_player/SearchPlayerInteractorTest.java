@@ -37,16 +37,6 @@ class SearchPlayerInteractorTest {
             return Map.of();
         }
 
-//        @Override
-//        public Map<String, Double> getAggregateMetrics(
-//                String playerName,
-//                int seasonStartInclusive,
-//                int seasonEndInclusive,
-//                Normalization normalization,
-//                List<String> metrics) {
-//            return Map.of();
-//        }
-
         @Override
         public void save(Player entity) {
             // not needed for this test
@@ -295,7 +285,7 @@ class SearchPlayerInteractorTest {
                 "Test Player",
                 "2020",
                 "2020",
-                List.of("PPG", "APG")
+                List.of("PPG", "APG", "RPG", "FG")
         );
 
         interactor.execute(input);
@@ -315,9 +305,14 @@ class SearchPlayerInteractorTest {
 
         assertTrue(graph.containsKey("PPG"));
         assertTrue(graph.containsKey("APG"));
+        assertTrue(graph.containsKey("RPG"));
+        assertTrue(graph.containsKey("FG"));
 
         assertEquals(25.0, graph.get("PPG").get(2020));
         assertEquals(7.0, graph.get("APG").get(2020));
+        assertEquals(8.0, graph.get("RPG").get(2020));
+        assertEquals(0.5, graph.get("FG").get(2020));
+
     }
 
     @Test
