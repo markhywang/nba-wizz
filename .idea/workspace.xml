@@ -4,14 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Improve the Filter UI 3">
-      <change afterPath="$PROJECT_DIR$/src/test/java/interface_adapter/search_player/SearchPlayerControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="20533c2d-0bd1-4268-a54c-228a8de64740" name="Changes" comment="Finish Test 1">
+      <change afterPath="$PROJECT_DIR$/src/test/java/use_case/sort_players/SortPlayersInteractorTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageOptionsProvider">
+    <option name="myAddOrReplace" value="0" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -57,7 +66,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.Main.executor": "Run",
-    "JUnit.SearchPlayerControllerTest.executor": "Run",
+    "JUnit.SearchPlayerControllerTest.executor": "Coverage",
+    "JUnit.SearchPlayerPresenterTest.executor": "Coverage",
+    "JUnit.SearchPlayerStateTest.executor": "Coverage",
+    "JUnit.SearchPlayerViewModelTest.executor": "Coverage",
+    "JUnit.SortPlayersInteractorTest.executor": "Coverage",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -155,7 +168,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764012660294</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Finish Test 1">
+      <option name="closed" value="true" />
+      <created>1764529648238</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1764529648238</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -167,6 +188,21 @@
     <MESSAGE value="Rename the package" />
     <MESSAGE value="Improve the Filter UI 2" />
     <MESSAGE value="Improve the Filter UI 3" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve the Filter UI 3" />
+    <MESSAGE value="Finish Test 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish Test 1" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerControllerTest.ic" NAME="SearchPlayerControllerTest Coverage Results" MODIFIED="1764529754297" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>interface_adapter.search_player.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerPresenterTest.ic" NAME="SearchPlayerPresenterTest Coverage Results" MODIFIED="1764529748400" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>interface_adapter.search_player.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerStateTest.ic" NAME="SearchPlayerStateTest Coverage Results" MODIFIED="1764529707461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>interface_adapter.search_player.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerViewModelTest.ic" NAME="SearchPlayerViewModelTest Coverage Results" MODIFIED="1764529738955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>interface_adapter.search_player.*</FILTER>
+    </SUITE>
   </component>
 </project>
