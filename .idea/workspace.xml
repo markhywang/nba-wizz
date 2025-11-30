@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="24f2ac81-bd3a-4499-a02a-bb84f59afd8c" name="Changes" comment="fix merging issue">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="2b557537-c923-4f5b-9fb7-f0b886cedb14" name="Changes" comment="Finish test for sort interface" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,21 +23,93 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "gqjlygz"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/markhywang/nba-wizz.git",
+    "accountId": "1ff2698c-5e41-4c94-9584-d9ce40ad3a3e"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 8
+}]]></component>
+  <component name="ProjectId" id="36DO0mU967hKL05bxNzSHeB6rPb" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "git-widget-placeholder": "minor__test__edits",
-    "node.js.selected.package.tslint": "(autodetect)"
+    "Application.Main.executor": "Run",
+    "JUnit.SortControllerTest.executor": "Coverage",
+    "JUnit.SortPresenterTest.executor": "Coverage",
+    "JUnit.SortStateTest.executor": "Coverage",
+    "JUnit.SortViewModelTest.executor": "Coverage",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "git-widget-placeholder": "b1",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "to.speed.mode.migration.done": "true"
   }
 }]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2b557537-c923-4f5b-9fb7-f0b886cedb14" name="Changes" comment="" />
+      <created>1764537456201</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764537456201</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Finish test for sort interface">
+      <option name="closed" value="true" />
+      <created>1764539349768</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1764539349768</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Finish test for sort interface" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish test for sort interface" />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/nba_wizz$SearchPlayerInteractorTest.ic" NAME="SearchPlayerInteractorTest Coverage Results" MODIFIED="1764533115306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
-      <FILTER>use_case.search_player.*</FILTER>
+    <SUITE FILE_PATH="coverage/nba_wizz$SortPresenterTest.ic" NAME="SortPresenterTest Coverage Results" MODIFIED="1764539297611" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>interface_adapter.sort_players.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/nba_wizz$SortControllerTest.ic" NAME="SortControllerTest Coverage Results" MODIFIED="1764539318017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>interface_adapter.sort_players.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/nba_wizz$SortStateTest.ic" NAME="SortStateTest Coverage Results" MODIFIED="1764539249807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>interface_adapter.sort_players.*</FILTER>
+    </SUITE>
+    <SUITE FILE_PATH="coverage/nba_wizz$SortViewModelTest.ic" NAME="SortViewModelTest Coverage Results" MODIFIED="1764539275007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>interface_adapter.sort_players.*</FILTER>
     </SUITE>
   </component>
 </project>
