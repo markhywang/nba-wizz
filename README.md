@@ -24,9 +24,9 @@ Sports Analytics platform focused on NBA player and team insights. Users can loo
 
 ## Use Cases
 ### 1. Searching for Players (Ibraheem Hussain)
-- Enter player name (with autofill), select seasons and stats.
+- Enter player name, select seasons and stats.
 - Results shown in table and graphs (JavaFX).
-- Error handling for invalid names, seasons, or missing data.
+- Error handling for invalid names and seasons.
 
 ### 2. Filtering Players (Andrej Prekajski)
 - Filter by team, position, season; badges show active filters.
@@ -66,5 +66,6 @@ Sports Analytics platform focused on NBA player and team insights. Users can loo
 - [Historical NBA Data & Player Box Scores](https://www.kaggle.com/datasets/eoinamoore/historical-nba-data-and-player-box-scores/)
 - [NBA Players Data](https://www.kaggle.com/datasets/justinas/nba-players-data)
 - [Basketball Dataset](https://www.kaggle.com/datasets/wyattowalsh/basketball)
+
 
 
