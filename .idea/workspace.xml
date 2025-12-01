@@ -5,84 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="278190ef-353f-45aa-aace-b8c3d34d143a" name="Changes" comment="fix merging issue">
+      <change afterPath="$PROJECT_DIR$/src/test/java/use_case/compare/CompareInteractorTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/app/CompareFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/CompareFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/app/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data_access/CsvPlayerDataAccessObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data_access/CsvPlayerDataAccessObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data_access/CsvTeamDataAccessObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data_access/CsvTeamDataAccessObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data_access/FileUserDataAccessObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data_access/FileUserDataAccessObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data_access/GeminiDataAccessObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data_access/GeminiDataAccessObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data_access/GenerateInsightsDataAccessInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data_access/GenerateInsightsDataAccessInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/data_access/PlayerDataAccessInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data_access/PlayerDataAccessInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/AIInsight.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/AIInsight.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/Answer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/Filter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/entity/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/entity/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/ViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/ViewModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/ask_question/AskQuestionPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/ask_question/AskQuestionPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/ask_question/AskQuestionState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/ask_question/AskQuestionState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/ask_question/AskQuestionViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/ask_question/AskQuestionViewModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/compare/ComparePresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/compare/ComparePresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/compare/CompareState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/compare/CompareState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/compare_players/ComparePlayersPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/compare_players/ComparePlayersPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/compare_players/ComparePlayersState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/compare_players/ComparePlayersState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/compare_players/ComparePlayersViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/compare_players/ComparePlayersViewModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/favourite/FavouritePresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/favourite/FavouritePresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/favourite/FavouriteState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/favourite/FavouriteState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/filter_players/FilterPlayersState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/generate_insights/GenerateInsightsPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/generate_insights/GenerateInsightsPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/generate_insights/GenerateInsightsState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/generate_insights/GenerateInsightsState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/login/LoginPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/login/LoginPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/login/LoginState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/login/LoginState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/main_menu/MainMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/main_menu/MainMenuController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/main_menu/MainMenuPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/main_menu/MainMenuPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/main_menu/MainMenuState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/main_menu/MainMenuState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/search_player/SearchPlayerPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/search_player/SearchPlayerPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/signup/SignupPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/signup/SignupPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/signup/SignupState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/signup/SignupState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortPresenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/interface_adapter/sort_players/SortPresenter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/ask_question/AskQuestionInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/ask_question/AskQuestionInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/ask_question/AskQuestionInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/ask_question/AskQuestionInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/authentication/login/LoginInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/authentication/login/LoginInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/authentication/login/LoginInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/authentication/login/LoginInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/authentication/login/LoginOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/authentication/login/LoginOutputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/authentication/signup/SignupInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/authentication/signup/SignupInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/authentication/signup/SignupInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/authentication/signup/SignupInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/authentication/signup/SignupOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/authentication/signup/SignupOutputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/compare/CompareInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/compare/CompareInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/compare/CompareOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/compare/CompareOutputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/compare_players/ComparePlayersInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/compare_players/ComparePlayersInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/compare_players/ComparePlayersInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/compare_players/ComparePlayersInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/favourite/FavouriteOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/favourite/FavouriteOutputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/filter_players/FilterPlayersOutputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/generate_insights/GenerateInsightsInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/generate_insights/GenerateInsightsInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/generate_insights/GenerateInsightsInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/generate_insights/GenerateInsightsInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/main_menu/MainMenuInputData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/search_player/SearchPlayerInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/search_player/SearchPlayerInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/search_player/SearchPlayerInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/search_player/SearchPlayerInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/search_player/SearchPlayerOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/search_player/SearchPlayerOutputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortInputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortInputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortInteractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortInteractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortOutputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/use_case/sort_players/SortOutputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/ChatMessagePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/ChatMessagePanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/ChatView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/ChatView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/FavouritedPlayersView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/FavouritedPlayersView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/FilterSortPlayersView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/FilterSortPlayersView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/GenerateInsightsView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/GenerateInsightsView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/MainMenuView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/MainMenuView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/compare/CompareView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/compare/CompareView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/interface_adapter/compare/ComparePresenterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/interface_adapter/compare/ComparePresenterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/interface_adapter/compare/CompareStateTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/interface_adapter/compare/CompareStateTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/use_case/generate_insights/GenerateInsightsControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/use_case/generate_insights/GenerateInsightsControllerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/use_case/search_player/SearchPlayerInteractorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/data/users.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/data/users.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageOptionsProvider">
+    <option name="myAddOrReplace" value="0" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -98,12 +39,12 @@
     &quot;assignee&quot;: &quot;Vizxe&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/markhywang/nba-wizz&quot;,
-    &quot;accountId&quot;: &quot;c7075287-0e4f-4a4e-81dd-77e3d01ed6d2&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/markhywang/nba-wizz.git",
+    "accountId": "01caefde-13af-4d6f-a1eb-ef1bd8f154a2"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -119,18 +60,23 @@
   "keyToString": {
     "Application.Main.executor": "Run",
     "JUnit.All in nba-wizz.executor": "Run",
+    "JUnit.CompareInteractorTest.executor": "Coverage",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "checkstyle",
+    "git-widget-placeholder": "CompareInteractorTest",
     "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.CompareInteractorTest">
     <configuration name="All in nba-wizz" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="nba-wizz" />
       <option name="PACKAGE_NAME" value="" />
@@ -140,12 +86,36 @@
         <option name="com.soywiz.korge.intellij.UpdateResourceBeforeRunTask" enabled="false" />
       </method>
     </configuration>
+    <configuration name="CompareInteractorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="nba-wizz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="use_case.compare.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="use_case.compare" />
+      <option name="MAIN_CLASS_NAME" value="use_case.compare.CompareInteractorTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.CompareInteractorTest" />
         <item itemvalue="JUnit.All in nba-wizz" />
         <item itemvalue="JUnit.All in nba-wizz" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -163,12 +133,25 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764454089718</updated>
+      <workItem from="1764605908815" duration="2667000" />
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Finish Compare Use Case, Except for the Listener on the main menu" />
     <option name="LAST_COMMIT_MESSAGE" value="Finish Compare Use Case, Except for the Listener on the main menu" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/nba_wizz$CompareInteractorTest.ic" NAME="CompareInteractorTest Coverage Results" MODIFIED="1764608450463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>use_case.compare.*</FILTER>
+    </SUITE>
   </component>
 </project>
