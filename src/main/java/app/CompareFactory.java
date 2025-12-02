@@ -21,7 +21,7 @@ public class CompareFactory {
      * Builds the full Compare stack and returns the Swing panel.
      */
     public static JPanel createCompareView(ViewManagerModel viewManagerModel) {
-        // Data access (you can tweak file names if needed)
+        // Data access
         PlayerDataAccessInterface playerDAO =
                 new CsvPlayerDataAccessObject("PlayerStatsDataset.csv");
         TeamDataAccessInterface teamDAO =
