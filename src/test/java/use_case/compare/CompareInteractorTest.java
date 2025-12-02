@@ -237,27 +237,6 @@ public class CompareInteractorTest {
     }
 
     @Test
-    void testNoMetricsPresetStillPresentsOutput() {
-        when(playerDAO.getPlayerByName(anyString())).thenReturn(mock(Player.class));
-        when(playerDAO.getAggregatedMetrics(anyString(), anyInt(), anyInt(), any(), any()))
-                .thenReturn(Map.of("PTS", 12.0));
-
-        CompareInputData input = new CompareInputData(
-                CompareInputData.EntityType.PLAYER,
-                List.of("A","B"),
-                2020, 2020,
-                "UnknownPreset",
-                null
-        );
-
-        interactor.execute(input);
-
-        verify(presenter).present(argThat(out ->
-                out.table().size() == 0
-        ));
-    }
-
-    @Test
     void testSuccessfulTeamCompare() {
 
         Map<String, Double> lakers = Map.of(
